@@ -1,0 +1,4 @@
+[user]
+	email = chris.a.manahan@gmail.com
+[core]
+	excludesfile = /Users/christophermanahan/.gitignore_global
