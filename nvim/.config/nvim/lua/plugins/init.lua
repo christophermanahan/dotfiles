@@ -215,23 +215,6 @@ return {
   },
 
   {
-    "aznhe21/actions-preview.nvim",
-    event = "BufEnter",
-    opts = {
-      telescope = {
-        sorting_strategy = "ascending",
-        layout_strategy = "vertical",
-        layout_config = {
-          width = 0.3,
-          height = 0.3,
-          prompt_position = "top",
-          preview_height = 0,
-        },
-      },
-    },
-  },
-
-  {
     "rmagatti/goto-preview",
     event = "BufEnter",
     opts = {
@@ -316,5 +299,62 @@ return {
   {
     "RRethy/vim-illuminate",
     event = "BufEnter",
+  },
+
+  {
+    "sontungexpt/better-diagnostic-virtual-text",
+    event = "BufEnter",
+    config = function()
+      require("better-diagnostic-virtual-text").setup()
+      vim.diagnostic.config {
+        virtual_text = false,
+      }
+    end,
+  },
+
+  {
+    "rachartier/tiny-code-action.nvim",
+    dependencies = {
+      { "nvim-lua/plenary.nvim" },
+      { "nvim-telescope/telescope.nvim" },
+    },
+    event = "LspAttach",
+    opts = {},
+  },
+
+  {
+    "folke/flash.nvim",
+    event = "BufEnter",
+    opts = {
+      modes = {
+        char = {
+          enabled = false,
+        },
+      },
+    },
+    keys = {
+      {
+        "s",
+        mode = { "n", "x", "o" },
+        function()
+          require("flash").jump()
+        end,
+        desc = "Flash",
+      },
+      {
+        "S",
+        mode = { "n", "x", "o" },
+        function()
+          require("flash").treesitter()
+        end,
+        desc = "Flash Treesitter",
+      },
+    },
+  },
+
+  {
+    "stevearc/dressing.nvim",
+    event = "BufEnter",
+    opts = {},
   },
 }

@@ -76,7 +76,7 @@ return {
       "theHamsta/nvim-dap-virtual-text",
       opts = {
         enabled_commands = true,
-        display_callback = function(variable, buf, stackframe, node, options)
+        display_callback = function(variable)
           if #variable.value > 100 then
             return variable.value:sub(1, 100)
           end

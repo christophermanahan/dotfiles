@@ -6,10 +6,10 @@
 #: individual font faces and even specify special fonts for particular
 #: characters.
 
-font_family      Hack Nerd Font Mono
-bold_font        Hack Nerd Font Mono Bold
-italic_font      Hack Nerd Font Mono Italic
-bold_italic_font Hack Nerd Font Mono Bold Italic
+font_family      Hack Nerd Font
+bold_font        Hack Nerd Font Bold
+italic_font      Hack Nerd Font Italic 
+bold_italic_font Hack Nerd Font Bold Italic
 
 #: You can specify different fonts for the bold/italic/bold-italic
 #: variants. To get a full list of supported fonts use the `kitty
@@ -893,7 +893,7 @@ single_window_padding_width 0
 #: Fade the text in inactive windows by the specified amount (a number
 #: between zero and one, with zero being fully faded).
 
-hide_window_decorations yes
+# hide_window_decorations yes
 
 #: Hide the window decorations (title-bar and window borders) with
 #: yes. On macOS, titlebar-only and titlebar-and-corners can be used
@@ -1749,7 +1749,7 @@ macos_option_as_alt yes
 #: Use the macOS traditional full-screen transition, that is faster,
 #: but less pretty.
 
-# macos_show_window_title_in all
+macos_show_window_title_in none
 
 #: Control where the window title is displayed on macOS. A value of
 #: window will show the title of the currently active window at the
@@ -2530,6 +2530,6 @@ macos_option_as_alt yes
 
 
 # BEGIN_KITTY_THEME
-# Catppuccin-Frappe
+# Dracula
 include current-theme.conf
 # END_KITTY_THEME

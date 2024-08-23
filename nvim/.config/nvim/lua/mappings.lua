@@ -116,7 +116,7 @@ wk.add {
     {
       "ga",
       function()
-        require("actions-preview").code_actions()
+        require("tiny-code-action").code_action()
       end,
       desc = "code actions",
       icon = {
