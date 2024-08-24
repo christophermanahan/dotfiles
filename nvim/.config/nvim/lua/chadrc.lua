@@ -67,6 +67,8 @@ M.ui = {
     NvimTreeGitDirty = { fg = "pink" },
     NvimTreeGitDeleted = { fg = "red" },
     Visual = { bg = "#383d42" },
+    St_gitIcons = { fg = "green" },
+    St_Lsp = { fg = "white" },
   },
   hl_add = utils.merge_table(gen_highlights("path", "purple"), gen_highlights("file", "red")),
   transparency = true,

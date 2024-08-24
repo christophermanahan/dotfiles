@@ -357,4 +357,11 @@ return {
     event = "BufEnter",
     opts = {},
   },
+
+  {
+    "mrjones2014/smart-splits.nvim",
+    event = "BufEnter",
+    lazy = false,
+    opts = {},
+  },
 }

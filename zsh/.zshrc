@@ -55,3 +55,6 @@ function vi-yank-xclip {
 
 zle -N vi-yank-xclip
 bindkey -M vicmd 'y' vi-yank-xclip
+
+# Custom aliases
+alias ls="eza -T -L 1 --git-ignore -a"
