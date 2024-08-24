@@ -11,6 +11,7 @@ config = {
 	set_environment_variables = {
 		PATH = "/usr/local/bin:/usr/bin",
 	},
+	leader = { key = "a", mods = "CTRL" },
 	keys = {
 		{
 			key = "'",
@@ -21,6 +22,41 @@ config = {
 			key = "b",
 			mods = "CTRL",
 			action = wezterm.action.SplitHorizontal({ domain = "CurrentPaneDomain" }),
+		},
+		{
+			key = "w",
+			mods = "CMD",
+			action = wezterm.action.CloseCurrentTab({ confirm = false }),
+		},
+		{
+			key = "x",
+			mods = "CTRL",
+			action = wezterm.action.ActivateCopyMode,
+		},
+		{
+			key = "z",
+			mods = "CTRL",
+			action = wezterm.action.TogglePaneZoomState,
+		},
+		{
+			key = "h",
+			mods = "LEADER",
+			action = wezterm.action.AdjustPaneSize({ "Left", 10 }),
+		},
+		{
+			key = "j",
+			mods = "LEADER",
+			action = wezterm.action.AdjustPaneSize({ "Down", 10 }),
+		},
+		{
+			key = "k",
+			mods = "LEADER",
+			action = wezterm.action.AdjustPaneSize({ "Up", 10 }),
+		},
+		{
+			key = "l",
+			mods = "LEADER",
+			action = wezterm.action.AdjustPaneSize({ "Right", 10 }),
 		},
 	},
 	window_frame = {

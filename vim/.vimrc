@@ -1,0 +1,2 @@
+set autochdir
+set relativenumber

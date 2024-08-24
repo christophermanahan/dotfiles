@@ -10,6 +10,10 @@
  - font-hack-nerd-font
  - ripgrep
  - zsh
+ - zsh-vi-mode
+ - zsh-autosuggestions
+ - zsh-syntax-highlighting
+
 
 ## Installation
 
@@ -19,6 +23,9 @@
  - `brew install --cask font-hack-nerd-font`
  - `brew install --cask wezterm`
  - `brew install zsh`
+ - `brew install zsh-vi-mode`
+ - `brew install zsh-autosuggestions`
+ - `brew install zsh-syntax-highlighting`
  - `brew install starship`
  - `brew install nvim`
  - `brew install ripgrep`
