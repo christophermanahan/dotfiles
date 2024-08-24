@@ -58,6 +58,16 @@ config = {
 			mods = "LEADER",
 			action = wezterm.action.AdjustPaneSize({ "Right", 10 }),
 		},
+		{
+			key = "w",
+			mods = "LEADER",
+			action = wezterm.action.ShowTabNavigator,
+		},
+		{
+			key = "f",
+			mods = "LEADER",
+			action = wezterm.action.ToggleFullScreen,
+		},
 	},
 	window_frame = {
 		font = wezterm.font("Hack Nerd Font"),
@@ -106,7 +116,7 @@ config = {
 			},
 			width = "100%",
 			height = "100%",
-			opacity = 0.55,
+			opacity = 0.25,
 		},
 	},
 	-- from: https://akos.ma/blog/adopting-wezterm/

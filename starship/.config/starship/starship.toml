@@ -10,22 +10,23 @@ add_newline = true
 palette = "catppuccin_mocha"
 
 [directory]
-style = 'bold fg:dark_blue'
+style = 'bold fg:sapphire'
 format = '[$path ]($style)'
 truncation_length = 3
 truncation_symbol = '…/'
 truncate_to_repo = false
 
 [directory.substitutions]
-'Documents' = '󰈙'
-'Downloads' = ' '
-'Music' = ' '
-'Pictures' = ' '
+'~/Documents' = ' 󰈙 Documents'
+'~/Downloads' = '  Downloads'
+'~/Music' = '  Music'
+'~/Pictures' = '  Pictures'
+'~/dotfiles' = '  Dotfiles'
 
 [git_branch]
 style = 'fg:green'
 symbol = ' '
-format = '[on](white) [$symbol$branch ]($style)'
+format = '[on](flamingo) [$symbol$branch ]($style)'
 
 [git_status]
 style = 'fg:red'

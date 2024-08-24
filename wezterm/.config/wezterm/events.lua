@@ -124,6 +124,7 @@ wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_wid
 			{ Text = title },
 		}
 	end
+
 	if has_unseen_output(tab) then
 		return {
 			{ Foreground = { Color = "#EBD168" } },
@@ -133,12 +134,64 @@ wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_wid
 	return title
 end)
 
-wezterm.on("gui-attached", function(domain)
-	-- maximize all displayed windows on startup
+wezterm.on("gui-attached", function()
 	local workspace = mux.get_active_workspace()
 	for _, window in ipairs(mux.all_windows()) do
 		if window:get_workspace() == workspace then
 			window:gui_window():maximize()
 		end
 	end
+end)
+
+wezterm.on("update-status", function(window, pane)
+	local cells = {}
+
+	-- Figure out the hostname of the pane on a best-effort basis
+	local hostname = wezterm.hostname()
+	table.insert(cells, "  " .. hostname)
+
+	-- Format date/time in this style: "Wed Mar 3 08:14"
+	local date = wezterm.strftime("  %a %b %-d%l:%M %p")
+	table.insert(cells, date)
+
+	-- Add an entry for each battery (typically 0 or 1)
+	local batt_icons = { "", "", "", "", "" }
+	for _, b in ipairs(wezterm.battery_info()) do
+		local curr_batt_icon = batt_icons[math.ceil(b.state_of_charge * #batt_icons)]
+		table.insert(cells, string.format("%s  %.0f%%", curr_batt_icon, b.state_of_charge * 100))
+	end
+
+	local text_fg = "black"
+	local colors = {
+		"rgba(0, 0, 0, 0)",
+		"#94e2d5",
+		"#74c7ec",
+		"#89b4fa",
+	}
+
+	local elements = {}
+	while #cells > 0 and #colors > 1 do
+		local text = table.remove(cells, 1)
+		local prev_color = table.remove(colors, 1)
+		local curr_color = colors[1]
+
+		table.insert(elements, { Background = { Color = prev_color } })
+		table.insert(elements, { Foreground = { Color = curr_color } })
+		table.insert(elements, { Text = "" })
+		table.insert(elements, { Background = { Color = curr_color } })
+		table.insert(elements, { Foreground = { Color = text_fg } })
+		table.insert(elements, { Text = " " .. text .. " " })
+	end
+	window:set_right_status(wezterm.format(elements))
+end)
+
+wezterm.on("window-resized", function(window)
+	local overrides = window:get_config_overrides()
+	overrides.window_padding = {
+		left = 0,
+		right = 0,
+		top = 0,
+		bottom = 0,
+	}
+	window:set_config_overrides(overrides)
 end)
