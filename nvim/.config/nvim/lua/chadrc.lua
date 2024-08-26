@@ -68,7 +68,7 @@ M.ui = {
     NvimTreeGitDeleted = { fg = "red" },
     Visual = { bg = "#383d42" },
     St_gitIcons = { fg = "green" },
-    St_Lsp = { fg = "white" },
+    St_Lsp = { fg = "pink" },
   },
   hl_add = utils.merge_table(gen_highlights("path", "purple"), gen_highlights("file", "red")),
   transparency = true,
@@ -90,15 +90,18 @@ M.ui = {
           end
         else
           path_text = vim.fn.fnamemodify(vim.fn.expand "%:h", ":p:~:."):sub(1, -2)
+          if #path_text == 0 then
+            return " %#EmptySpace#"
+          end
           return gen_block(path_text, "", "%#St_path_sep#", "%#St_path_bg#", "%#St_path_txt#")
         end
       end,
       file = function()
-        local file_display = file_display()
-        if file_display[1] == "NvimTree_1" then
-          return gen_block("filetree", file_display[2], "%#St_file_sep#", "%#St_file_bg#", "%#St_file_txt#")
+        local file_info = file_display()
+        if file_info[1] == "NvimTree_1" then
+          return gen_block("filetree", "󰉋", "%#St_file_sep#", "%#St_file_bg#", "%#St_file_txt#")
         end
-        return gen_block(file_display[1], file_display[2], "%#St_file_sep#", "%#St_file_bg#", "%#St_file_txt#")
+        return gen_block(file_info[1], file_info[2], "%#St_file_sep#", "%#St_file_bg#", "%#St_file_txt#")
       end,
     },
   },
