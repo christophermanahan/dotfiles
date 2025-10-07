@@ -248,6 +248,16 @@ config = {
 			mods = "LEADER",
 			action = wezterm.action.ToggleFullScreen,
 		},
+		{
+			key = "h",
+			mods = "CMD|SHIFT",
+			action = wezterm.action.MoveTabRelative(-1),
+		},
+		{
+			key = "l",
+			mods = "CMD|SHIFT",
+			action = wezterm.action.MoveTabRelative(1),
+		},
 	},
 	window_frame = {
 		font = wezterm.font("Hack Nerd Font"),
