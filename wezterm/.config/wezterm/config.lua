@@ -34,7 +34,11 @@ local process_icons = {
 
 -- Return the Tab's current working directory
 local function get_cwd(tab)
-	return tab.active_pane.current_working_dir.file_path or ""
+	local cwd = tab.active_pane and tab.active_pane.current_working_dir
+	if cwd and cwd.file_path then
+		return cwd.file_path
+	end
+	return ""
 end
 
 -- Remove all path components and return only the last value
@@ -186,6 +190,7 @@ config = {
 	set_environment_variables = {
 		PATH = "/usr/local/bin:/usr/bin",
 	},
+	enable_kitty_keyboard = false,
 	leader = { key = "a", mods = "CTRL" },
 	keys = {
 		{
@@ -255,7 +260,7 @@ config = {
 			inactive_tab_edge = "rgba(0, 0, 0, 0)",
 		},
 	},
-	term = "wezterm",
+	term = "xterm-256color",
 	default_cursor_style = "SteadyBar",
 	automatically_reload_config = true,
 	window_close_confirmation = "NeverPrompt",
@@ -265,10 +270,10 @@ config = {
 	show_tabs_in_tab_bar = true,
 	use_fancy_tab_bar = true,
 	tab_bar_at_bottom = false,
-	show_close_tab_button_in_tabs = false,
 	show_new_tab_button_in_tab_bar = false,
 	font_size = 13,
-	font = wezterm.font("Hack Nerd Font"),
+	font = wezterm.font("Hack Nerd Font", { weight = "Regular", stretch = "Normal", style = "Normal" }),
+	warn_about_missing_glyphs = false,
 	window_padding = {
 		left = 0,
 		right = 0,
@@ -278,7 +283,7 @@ config = {
 	background = {
 		{
 			source = {
-				File = "/Users/" .. os.getenv("USER") .. "/.config/wezterm/bg-monterey.png",
+				File = "/Users/" .. os.getenv("USER") .. "/.config/wezterm/apple-logo-terminal-bg.png",
 			},
 			hsb = {
 				hue = 1.0,
