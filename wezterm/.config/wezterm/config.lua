@@ -209,6 +209,16 @@ config = {
 			action = wezterm.action.CloseCurrentTab({ confirm = false }),
 		},
 		{
+			key = "w",
+			mods = "ALT",
+			action = wezterm.action.CloseCurrentPane({ confirm = false }),
+		},
+		{
+			key = "l",
+			mods = "CMD",
+			action = wezterm.action.SendKey({ key = "l", mods = "CTRL" }),
+		},
+		{
 			key = "x",
 			mods = "CTRL",
 			action = wezterm.action.ActivateCopyMode,
@@ -247,6 +257,16 @@ config = {
 			key = "f",
 			mods = "LEADER",
 			action = wezterm.action.ToggleFullScreen,
+		},
+		{
+			key = "h",
+			mods = "CMD|SHIFT",
+			action = wezterm.action.MoveTabRelative(-1),
+		},
+		{
+			key = "l",
+			mods = "CMD|SHIFT",
+			action = wezterm.action.MoveTabRelative(1),
 		},
 	},
 	window_frame = {
@@ -297,7 +317,7 @@ config = {
 			},
 			width = "100%",
 			height = "100%",
-			opacity = 0.25,
+			opacity = 0.3,
 		},
 	},
 	-- from: https://akos.ma/blog/adopting-wezterm/

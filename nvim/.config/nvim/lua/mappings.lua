@@ -214,4 +214,31 @@ wk.add {
     { "<leader>q", "<cmd>q<CR>", desc = "quit", icon = "󰟢" },
     { "<leader>w", "<cmd>w<CR>", desc = "write", icon = { icon = "", color = "green" } },
   },
+  {
+    "<leader>.",
+    "@:",
+    desc = "repeat last command",
+    icon = {
+      icon = "󰑖",
+      color = "cyan",
+    },
+  },
+  {
+    "<leader><",
+    ":vertical resize -10<CR>",
+    desc = "decrease width",
+    icon = {
+      icon = "󰼁",
+      color = "blue",
+    },
+  },
+  {
+    "<leader>>",
+    ":vertical resize +10<CR>",
+    desc = "increase width",
+    icon = {
+      icon = "󰼀",
+      color = "blue",
+    },
+  },
 }
