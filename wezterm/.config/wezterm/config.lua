@@ -214,6 +214,11 @@ config = {
 			action = wezterm.action.CloseCurrentPane({ confirm = false }),
 		},
 		{
+			key = "l",
+			mods = "CMD",
+			action = wezterm.action.SendKey({ key = "l", mods = "CTRL" }),
+		},
+		{
 			key = "x",
 			mods = "CTRL",
 			action = wezterm.action.ActivateCopyMode,
