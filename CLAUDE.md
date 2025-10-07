@@ -80,6 +80,7 @@ Built on NvChad v2.5 with Lazy.nvim plugin manager.
 - Ctrl+b: Split horizontal
 - Ctrl+z: Zoom pane
 - Ctrl+x: Copy mode
+- CMD+w: Close current tab
 - Leader+hjkl: Resize panes
 - Leader+w: Tab navigator
 - Leader+f: Toggle fullscreen
