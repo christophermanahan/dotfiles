@@ -209,6 +209,11 @@ config = {
 			action = wezterm.action.CloseCurrentTab({ confirm = false }),
 		},
 		{
+			key = "w",
+			mods = "CTRL",
+			action = wezterm.action.CloseCurrentPane({ confirm = false }),
+		},
+		{
 			key = "x",
 			mods = "CTRL",
 			action = wezterm.action.ActivateCopyMode,
