@@ -317,7 +317,7 @@ config = {
 			},
 			width = "100%",
 			height = "100%",
-			opacity = 0.25,
+			opacity = 0.35,
 		},
 	},
 	-- from: https://akos.ma/blog/adopting-wezterm/
