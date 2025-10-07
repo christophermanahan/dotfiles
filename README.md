@@ -6,7 +6,6 @@
  - wezterm
  - starship
  - neovim
- - nvchad
  - font-hack-nerd-font
  - ripgrep
  - zsh
@@ -14,29 +13,53 @@
  - zsh-autosuggestions
  - zsh-syntax-highlighting
 
-
 ## Installation
 
- - `brew install eza`
- - `brew install zoxide`
- - `brew install stow`
- - `brew install --cask font-hack-nerd-font`
- - `brew install --cask wezterm`
- - `brew install zsh`
- - `brew install zsh-vi-mode`
- - `brew install zsh-autosuggestions`
- - `brew install zsh-syntax-highlighting`
- - `brew install starship`
- - `brew install nvim`
- - `brew install ripgrep`
- - `rm ~/.zshrc`
- - `git clone https://github.com/christophermanahan/dotfiles`
- - `cd ~/dotfiles`
- - `stow wezterm`
- - `stow zsh`
- - `stow starship`
- - `stow nvim`
- - `source ~/.zshrc`
+### 1. Install Homebrew dependencies
+
+```bash
+brew install eza zoxide stow zsh zsh-vi-mode zsh-autosuggestions zsh-syntax-highlighting starship neovim ripgrep
+brew install --cask font-hack-nerd-font wezterm
+```
+
+### 2. Clone dotfiles repository
+
+```bash
+git clone https://github.com/christophermanahan/dotfiles.git ~/dotfiles
+cd ~/dotfiles
+```
+
+### 3. Deploy configurations with Stow
+
+```bash
+# Remove existing zsh config if present
+rm -f ~/.zshrc
+
+# Stow configurations (creates symlinks)
+stow wezterm
+stow zsh
+stow starship
+stow nvim
+```
+
+### 4. Reload shell configuration
+
+```bash
+source ~/.zshrc
+```
+
+### 5. Launch Neovim to install plugins
+
+On first launch, Neovim will automatically:
+- Install NvChad (v2.5)
+- Install all plugins via Lazy.nvim
+- Install LSP servers via Mason
+
+```bash
+nvim
+```
+
+Wait for all installations to complete, then restart Neovim.
 
 ## Shortcuts
 
