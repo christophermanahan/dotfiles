@@ -37,6 +37,48 @@ dofile(vim.g.base46_cache .. "statusline")
 
 require "nvchad.autocmds"
 
+-- Force transparency after theme loads
+vim.api.nvim_create_autocmd("ColorScheme", {
+  pattern = "*",
+  callback = function()
+    local highlights = {
+      "Normal",
+      "NormalFloat",
+      "SignColumn",
+      "NvimTreeNormal",
+      "NvimTreeNormalNC",
+      "StatusLine",
+      "StatusLineNC",
+      "TbLineBufOn",
+      "TbLineBufOff",
+      "TblineFill",
+      "TelescopeNormal",
+      "TelescopeBorder",
+    }
+    for _, hl in ipairs(highlights) do
+      vim.api.nvim_set_hl(0, hl, { bg = "NONE" })
+    end
+  end,
+})
+
+-- Apply transparency immediately
 vim.schedule(function()
+  local highlights = {
+    "Normal",
+    "NormalFloat",
+    "SignColumn",
+    "NvimTreeNormal",
+    "NvimTreeNormalNC",
+    "StatusLine",
+    "StatusLineNC",
+    "TbLineBufOn",
+    "TbLineBufOff",
+    "TblineFill",
+    "TelescopeNormal",
+    "TelescopeBorder",
+  }
+  for _, hl in ipairs(highlights) do
+    vim.api.nvim_set_hl(0, hl, { bg = "NONE" })
+  end
   require "mappings"
 end)

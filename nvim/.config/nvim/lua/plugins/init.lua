@@ -1,5 +1,6 @@
 return {
   { "gitsigns", enabled = false },
+  { "FelipeLema/cmp-async-path", enabled = false },
   { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
 
   {
@@ -16,17 +17,19 @@ return {
     opts = {
       formatters_by_ft = {
         lua = { "stylua" },
-        javascript = { "prettierd" },
-        typescript = { "prettierd" },
-        javascriptreact = { "prettierd" },
-        typescriptreact = { "prettierd" },
+        javascript = { "biome", "prettierd" },
+        typescript = { "biome", "prettierd" },
+        javascriptreact = { "biome", "prettierd" },
+        typescriptreact = { "biome", "prettierd" },
         css = { "prettierd" },
         html = { "prettierd" },
+        json = { "biome", "prettierd" },
+        jsonc = { "biome", "prettierd" },
       },
 
       format_on_save = {
-        timeout_ms = 500,
-        lsp_fallback = false,
+        timeout_ms = 2000,
+        lsp_fallback = true,
       },
     },
   },
@@ -53,17 +56,35 @@ return {
       "zbirenbaum/copilot-cmp",
       "hrsh7th/cmp-nvim-lsp-signature-help",
     },
-    opts = {
-      sources = {
-        { name = "nvim_lsp" },
-        { name = "nvim_lsp_signature_help" },
-        { name = "copilot" },
-        { name = "path" },
-        { name = "buffer" },
-        { name = "luasnip" },
-        { name = "nvim_lua" },
-      },
-    },
+    opts = function()
+      local cmp = require "cmp"
+      return {
+        sources = {
+          { name = "nvim_lsp" },
+          { name = "nvim_lsp_signature_help" },
+          { name = "copilot" },
+          { name = "path" },
+          { name = "buffer" },
+          { name = "luasnip" },
+          { name = "nvim_lua" },
+        },
+        sorting = {
+          priority_weight = 2,
+          comparators = {
+            require("copilot_cmp.comparators").prioritize,
+            cmp.config.compare.offset,
+            cmp.config.compare.exact,
+            cmp.config.compare.score,
+            cmp.config.compare.recently_used,
+            cmp.config.compare.locality,
+            cmp.config.compare.kind,
+            cmp.config.compare.sort_text,
+            cmp.config.compare.length,
+            cmp.config.compare.order,
+          },
+        },
+      }
+    end,
   },
 
   {
@@ -151,7 +172,6 @@ return {
       ensure_installed = {
         "html",
         "cssls",
-        "tsserver",
         "vtsls",
         "marksman",
         "docker_compose_language_service",

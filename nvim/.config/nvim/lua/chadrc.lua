@@ -11,12 +11,12 @@ local function gen_highlights(name, color)
 
   M["St_" .. name .. "_txt"] = {
     fg = color,
-    bg = "one_bg",
+    bg = "NONE",
   }
 
   M["St_" .. name .. "_sep"] = {
     fg = color,
-    bg = "black",
+    bg = "NONE",
   }
   return M
 end
@@ -62,6 +62,11 @@ local path_text = ""
 
 M.ui = {
   hl_override = {
+    Normal = { bg = "NONE" },
+    NormalFloat = { bg = "NONE" },
+    SignColumn = { bg = "NONE" },
+    NvimTreeNormal = { bg = "NONE" },
+    NvimTreeNormalNC = { bg = "NONE" },
     NvimTreeGitNew = { fg = "yellow" },
     NvimTreeGitIgnored = { fg = "white" },
     NvimTreeGitDirty = { fg = "pink" },
@@ -69,6 +74,19 @@ M.ui = {
     Visual = { bg = "#383d42" },
     St_gitIcons = { fg = "green" },
     St_Lsp = { fg = "pink" },
+    TelescopeNormal = { bg = "NONE" },
+    TelescopeBorder = { bg = "NONE" },
+    StatusLine = { bg = "NONE" },
+    StatusLineNC = { bg = "NONE" },
+    TbLineBufOn = { bg = "NONE" },
+    TbLineBufOff = { bg = "NONE" },
+    TblineFill = { bg = "NONE" },
+    TbLineTabNewBtn = { bg = "NONE" },
+    TbLineTabOn = { bg = "NONE" },
+    TbLineTabOff = { bg = "NONE" },
+    TbLineTabCloseBtn = { bg = "NONE" },
+    TbLineThemeToggleBtn = { bg = "NONE" },
+    TbLineCloseAllBufsBtn = { bg = "NONE" },
   },
   hl_add = utils.merge_table(gen_highlights("path", "purple"), gen_highlights("file", "red")),
   transparency = true,
