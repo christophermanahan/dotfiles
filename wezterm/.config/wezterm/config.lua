@@ -210,7 +210,7 @@ config = {
 		},
 		{
 			key = "w",
-			mods = "CTRL",
+			mods = "ALT",
 			action = wezterm.action.CloseCurrentPane({ confirm = false }),
 		},
 		{
