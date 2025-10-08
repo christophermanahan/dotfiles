@@ -303,7 +303,7 @@ config = {
 	background = {
 		{
 			source = {
-				File = "/Users/" .. os.getenv("USER") .. "/.config/wezterm/apple-logo-terminal-bg.png",
+				File = "/Users/" .. os.getenv("USER") .. "/.config/wezterm/abstract-geometry.jpg",
 			},
 			hsb = {
 				hue = 1.0,
