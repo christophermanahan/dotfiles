@@ -112,13 +112,20 @@ local function select_contrasting_fg_color(hex_color)
 	return "#FFFFFF"
 end
 
+-- Convert hex color to rgba with transparency
+local function hex_to_rgba(hex, alpha)
+	local color = wezterm.color.parse(hex)
+	local r, g, b, _ = color:srgba_u8()
+	return string.format("rgba(%d, %d, %d, %.2f)", r, g, b, alpha)
+end
+
 wezterm.on("format-tab-title", function(tab)
 	local title = format_title(tab)
 	local color = string_to_color(get_cwd(tab))
 
 	if tab.is_active then
 		return {
-			{ Background = { Color = color } },
+			{ Background = { Color = hex_to_rgba(color, 0.8) } },
 			{ Foreground = { Color = select_contrasting_fg_color(color) } },
 			{ Text = title },
 		}
