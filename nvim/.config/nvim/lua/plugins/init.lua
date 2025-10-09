@@ -90,6 +90,25 @@ return {
   {
     "nvim-tree/nvim-tree.lua",
     opts = {
+      on_attach = function(bufnr)
+        local api = require "nvim-tree.api"
+        local function opts(desc)
+          return { desc = "nvim-tree: " .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
+        end
+
+        -- Load default mappings first
+        api.config.mappings.default_on_attach(bufnr)
+
+        -- Explicitly ensure h and l work for navigation
+        vim.keymap.set("n", "h", api.node.navigate.parent_close, opts "Close Directory")
+        vim.keymap.set("n", "l", api.node.open.edit, opts "Open")
+
+        -- Preserve smart-splits navigation with CTRL+hjkl
+        vim.keymap.set("n", "<C-h>", require("smart-splits").move_cursor_left, opts "Move to left pane")
+        vim.keymap.set("n", "<C-j>", require("smart-splits").move_cursor_down, opts "Move to bottom pane")
+        vim.keymap.set("n", "<C-k>", require("smart-splits").move_cursor_up, opts "Move to top pane")
+        vim.keymap.set("n", "<C-l>", require("smart-splits").move_cursor_right, opts "Move to right pane")
+      end,
       actions = {
         change_dir = {
           global = true,
