@@ -1,4 +1,19 @@
-# Requirements
+# Dotfiles
+
+Personal development environment configuration using GNU Stow.
+
+## Screenshots
+
+### Wezterm with Split Terminals
+![Wezterm Split Terminal](screenshots/wezterm-split-terminal-env.png)
+
+### Neovim with Split Editor
+![Neovim Split Editor](screenshots/nvim-split-editor.png)
+
+### Neovim with Ripgrep Search
+![Neovim Ripgrep Example](screenshots/nvim-ripgrep-example.png)
+
+## Requirements
 
  - eza
  - zoxide
