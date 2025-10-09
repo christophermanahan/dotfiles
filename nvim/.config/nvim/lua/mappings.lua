@@ -241,4 +241,15 @@ wk.add {
       color = "blue",
     },
   },
+  {
+    "<leader>tw",
+    function()
+      vim.wo.wrap = not vim.wo.wrap
+    end,
+    desc = "toggle word wrap",
+    icon = {
+      icon = "󰖶",
+      color = "purple",
+    },
+  },
 }

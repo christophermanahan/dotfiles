@@ -384,4 +384,9 @@ return {
     lazy = false,
     opts = {},
   },
+
+  {
+    "MTDL9/vim-log-highlighting",
+    ft = "log",
+  },
 }
