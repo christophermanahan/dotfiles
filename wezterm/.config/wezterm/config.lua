@@ -249,6 +249,21 @@ config = {
 			action = wezterm.action.AdjustPaneSize({ "Right", 10 }),
 		},
 		{
+			key = "r",
+			mods = "LEADER",
+			action = wezterm.action.RotatePanes("Clockwise"),
+		},
+		{
+			key = "r",
+			mods = "LEADER|SHIFT",
+			action = wezterm.action.RotatePanes("CounterClockwise"),
+		},
+		{
+			key = "s",
+			mods = "LEADER",
+			action = wezterm.action.PaneSelect({ mode = "SwapWithActive" }),
+		},
+		{
 			key = "w",
 			mods = "LEADER",
 			action = wezterm.action.ShowTabNavigator,
