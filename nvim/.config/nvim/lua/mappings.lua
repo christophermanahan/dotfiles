@@ -253,3 +253,81 @@ wk.add {
     },
   },
 }
+
+-- Track if we've started Claude in the terminal
+_G.claude_started = false
+_G.tmux_started = false
+
+-- ALT+k toggles the Claude terminal and starts Claude on first open
+map({ "n", "t" }, "<A-k>", function()
+  local term = require "nvchad.term"
+
+  term.toggle {
+    pos = "float",
+    id = "claude_term",
+    float_opts = {
+      row = 0.05,
+      col = 0.05,
+      width = 0.85,
+      height = 0.85,
+    }
+  }
+
+  -- If this is the first time opening and we haven't started Claude yet
+  if not _G.claude_started then
+    vim.defer_fn(function()
+      -- After toggle, the terminal should be the current buffer
+      local bufnr = vim.api.nvim_get_current_buf()
+
+      -- Check if it's a terminal buffer
+      if vim.bo[bufnr].buftype == "terminal" then
+        -- Get the job_id from the buffer
+        local success, job_id = pcall(vim.api.nvim_buf_get_var, bufnr, "terminal_job_id")
+
+        if success and job_id then
+          vim.api.nvim_chan_send(job_id, "clear && claude\n")
+          _G.claude_started = true
+        else
+          vim.notify("Failed to get terminal job_id: " .. tostring(job_id), vim.log.levels.WARN)
+        end
+      else
+        vim.notify("Current buffer is not a terminal: " .. vim.bo[bufnr].buftype, vim.log.levels.WARN)
+      end
+    end, 200)
+  end
+end, { desc = "terminal toggle claude code" })
+
+-- ALT+i toggles the floating terminal and starts tmux on first open
+map({ "n", "t" }, "<A-i>", function()
+  local term = require "nvchad.term"
+
+  term.toggle {
+    pos = "float",
+    id = "floatTerm",
+    float_opts = {
+      row = 0.05,
+      col = 0.1,
+      width = 0.85,
+      height = 0.85,
+    }
+  }
+
+  -- If this is the first time opening and we haven't started tmux yet
+  if not _G.tmux_started then
+    vim.defer_fn(function()
+      -- After toggle, the terminal should be the current buffer
+      local bufnr = vim.api.nvim_get_current_buf()
+
+      -- Check if it's a terminal buffer
+      if vim.bo[bufnr].buftype == "terminal" then
+        -- Get the job_id from the buffer
+        local success, job_id = pcall(vim.api.nvim_buf_get_var, bufnr, "terminal_job_id")
+
+        if success and job_id then
+          vim.api.nvim_chan_send(job_id, "tmux new-session -A -s multiflexing\n")
+          _G.tmux_started = true
+        end
+      end
+    end, 200)
+  end
+end, { desc = "terminal toggle floating with tmux" })

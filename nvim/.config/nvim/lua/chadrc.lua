@@ -90,7 +90,6 @@ M.ui = {
   },
   hl_add = utils.merge_table(gen_highlights("path", "purple"), gen_highlights("file", "red")),
   transparency = true,
-  theme = "catppuccin",
   statusline = {
     theme = "minimal",
     separator_style = "round",
@@ -129,6 +128,7 @@ M.ui = {
 }
 
 M.base46 = {
+  theme = "flouromachine",
   integrations = {
     "codeactionmenu",
     "dap",
@@ -140,5 +140,20 @@ M.base46 = {
 }
 
 M.lsp = { signature = false }
+
+M.term = {
+  winopts = { number = false, relativenumber = false },
+  sizes = { sp = 0.3, vsp = 0.2, ["bo sp"] = 0.3, ["bo vsp"] = 0.2 },
+  float = {
+    relative = "editor",
+    row = 0.1,
+    col = 0.1,
+    width = 0.8,
+    height = 0.7,
+    border = "single",
+    title = " 󰆍 Terminal ",
+    title_pos = "center",
+  },
+}
 
 return M
