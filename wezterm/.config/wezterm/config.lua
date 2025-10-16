@@ -72,6 +72,13 @@ end
 -- Pretty format the tab title
 local function format_title(tab)
 	local index = string.format("%s%s", tab.tab_index + 1, ")")
+
+	-- Check if pane has a custom title set via user vars
+	local custom_title = tab.active_pane and tab.active_pane.user_vars.pane_title
+	if custom_title and custom_title ~= "" then
+		return string.format(" %s %s ", index, custom_title)
+	end
+
 	local cwd = get_display_cwd(tab)
 	local process = get_process(tab)
 
@@ -188,7 +195,7 @@ config = {
 	front_end = "WebGpu",
 	color_scheme = "catppuccin-mocha",
 	set_environment_variables = {
-		PATH = "/usr/local/bin:/usr/bin",
+		PATH = "/opt/homebrew/bin:/usr/local/bin:/usr/bin",
 	},
 	enable_kitty_keyboard = false,
 	leader = { key = "a", mods = "CTRL" },
@@ -264,6 +271,11 @@ config = {
 			action = wezterm.action.PaneSelect({ mode = "SwapWithActive" }),
 		},
 		{
+			key = "n",
+			mods = "ALT",
+			action = wezterm.action.SendString("nvim\n"),
+		},
+		{
 			key = "w",
 			mods = "LEADER",
 			action = wezterm.action.ShowTabNavigator,
@@ -282,6 +294,14 @@ config = {
 			key = "l",
 			mods = "CMD|SHIFT",
 			action = wezterm.action.MoveTabRelative(1),
+		},
+		{
+			key = "k",
+			mods = "ALT",
+			action = wezterm.action.SpawnCommandInNewTab({
+				label = "Claude Code",
+				args = { "/bin/zsh", "-l", "-c", "claude" },
+			}),
 		},
 	},
 	window_frame = {
