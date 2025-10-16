@@ -298,22 +298,32 @@ map({ "n", "t" }, "<A-k>", function()
 end, { desc = "terminal toggle claude code" })
 
 -- ALT+i toggles the floating terminal and starts tmux on first open
+-- Each nvim instance gets its own unique tmux session based on nvim PID
 map({ "n", "t" }, "<A-i>", function()
   local term = require "nvchad.term"
+  local nvim_pid = vim.fn.getpid()
+  local term_id = "floatTerm_" .. nvim_pid
 
   term.toggle {
     pos = "float",
-    id = "floatTerm",
+    id = term_id,
     float_opts = {
       row = 0.05,
       col = 0.1,
       width = 0.85,
       height = 0.85,
+      title = "multiflexing 💪",
+      title_pos = "center",
     }
   }
 
-  -- If this is the first time opening and we haven't started tmux yet
-  if not _G.tmux_started then
+  -- Track if tmux has been started for this specific terminal instance
+  if not _G.tmux_sessions then
+    _G.tmux_sessions = {}
+  end
+
+  -- If this is the first time opening and we haven't started tmux for this instance yet
+  if not _G.tmux_sessions[term_id] then
     vim.defer_fn(function()
       -- After toggle, the terminal should be the current buffer
       local bufnr = vim.api.nvim_get_current_buf()
@@ -324,8 +334,10 @@ map({ "n", "t" }, "<A-i>", function()
         local success, job_id = pcall(vim.api.nvim_buf_get_var, bufnr, "terminal_job_id")
 
         if success and job_id then
-          vim.api.nvim_chan_send(job_id, "tmux new-session -A -s multiflexing\n")
-          _G.tmux_started = true
+          -- Use unique session name based on nvim PID
+          local session_name = "nvim_" .. nvim_pid
+          vim.api.nvim_chan_send(job_id, "tmux new-session -A -s " .. session_name .. "\n")
+          _G.tmux_sessions[term_id] = true
         end
       end
     end, 200)
