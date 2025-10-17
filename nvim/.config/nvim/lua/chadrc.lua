@@ -128,7 +128,7 @@ M.ui = {
 }
 
 M.base46 = {
-  theme = "flouromachine",
+  theme = "catppuccin",
   integrations = {
     "codeactionmenu",
     "dap",

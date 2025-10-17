@@ -1,0 +1,130 @@
+# Catppuccin Mocha theme for K9s
+# Matches wezterm and neovim color scheme
+
+# Catppuccin Mocha colors
+foreground: &foreground "#cdd6f4"
+background: &background "#1e1e2e"
+selection: &selection "#313244"
+comment: &comment "#6c7086"
+
+# Primary colors
+rosewater: &rosewater "#f5e0dc"
+flamingo: &flamingo "#f2cdcd"
+pink: &pink "#f5c2e7"
+mauve: &mauve "#cba6f7"
+red: &red "#f38ba8"
+maroon: &maroon "#eba0ac"
+peach: &peach "#fab387"
+yellow: &yellow "#f9e2af"
+green: &green "#a6e3a1"
+teal: &teal "#94e2d5"
+sky: &sky "#89dceb"
+sapphire: &sapphire "#74c7ec"
+blue: &blue "#89b4fa"
+lavender: &lavender "#b4befe"
+
+# Surface colors
+text: &text "#cdd6f4"
+subtext1: &subtext1 "#bac2de"
+subtext0: &subtext0 "#a6adc8"
+overlay2: &overlay2 "#9399b2"
+overlay1: &overlay1 "#7f849c"
+overlay0: &overlay0 "#6c7086"
+surface2: &surface2 "#585b70"
+surface1: &surface1 "#45475a"
+surface0: &surface0 "#313244"
+base: &base "#1e1e2e"
+mantle: &mantle "#181825"
+crust: &crust "#11111b"
+
+k9s:
+  body:
+    fgColor: *text
+    bgColor: *background
+    logoColor: *sky
+  prompt:
+    fgColor: *text
+    bgColor: *background
+    suggestColor: *teal
+  info:
+    fgColor: *pink
+    sectionColor: *text
+  help:
+    fgColor: *text
+    bgColor: *background
+    keyColor: *pink
+    numKeyColor: *sky
+    sectionColor: *green
+  dialog:
+    fgColor: *text
+    bgColor: *background
+    buttonFgColor: *text
+    buttonBgColor: *mauve
+    buttonFocusFgColor: *base
+    buttonFocusBgColor: *teal
+    labelFgColor: *peach
+    fieldFgColor: *text
+  frame:
+    border:
+      fgColor: *overlay1
+      focusColor: *pink
+    menu:
+      fgColor: *text
+      keyColor: *pink
+      numKeyColor: *lavender
+    crumbs:
+      fgColor: *text
+      bgColor: *surface0
+      activeColor: *sky
+    status:
+      newColor: *teal
+      modifyColor: *sapphire
+      addColor: *green
+      errorColor: *red
+      highlightColor: *yellow
+      killColor: *subtext0
+      completedColor: *overlay2
+    title:
+      fgColor: *text
+      bgColor: *background
+      highlightColor: *yellow
+      counterColor: *sky
+      filterColor: *pink
+  views:
+    charts:
+      bgColor: *background
+      defaultDialColors:
+        - *sky
+        - *teal
+        - *green
+      defaultChartColors:
+        - *sky
+        - *teal
+        - *green
+        - *peach
+        - *pink
+    table:
+      fgColor: *text
+      bgColor: *background
+      cursorFgColor: *base
+      cursorBgColor: *pink
+      header:
+        fgColor: *sky
+        bgColor: *background
+        sorterColor: *teal
+    xray:
+      fgColor: *text
+      bgColor: *background
+      cursorColor: *pink
+      graphicColor: *sky
+      showIcons: false
+    yaml:
+      keyColor: *pink
+      colonColor: *sky
+      valueColor: *teal
+    logs:
+      fgColor: *text
+      bgColor: *background
+      indicator:
+        fgColor: *pink
+        bgColor: *background
