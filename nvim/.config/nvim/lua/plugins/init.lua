@@ -12,6 +12,118 @@ return {
   },
 
   {
+    "catppuccin/nvim",
+    name = "catppuccin",
+    priority = 1000,
+    opts = {
+      flavour = "mocha", -- Change to "latte" for light theme with dark text
+      transparent_background = true,
+      dim_inactive = {
+        enabled = false,
+      },
+      color_overrides = {
+        mocha = {
+          -- Override with brightest possible colors
+          text = "#ffffff", -- Pure white for maximum brightness
+          subtext1 = "#f5f5f5",
+          subtext0 = "#eeeeee",
+        },
+      },
+      custom_highlights = function(colors)
+        return {
+          -- Normal text - brightest white
+          Normal = { fg = "#ffffff" },
+          NormalNC = { fg = "#ffffff" },
+
+          -- Syntax highlighting with maximum brightness
+          Comment = { fg = "#b4befe", style = { "italic" } }, -- Bright blue
+          Constant = { fg = "#fab387" }, -- Bright orange
+          String = { fg = "#a6e3a1" }, -- Bright green
+          Character = { fg = "#a6e3a1" },
+          Number = { fg = "#fab387" },
+          Boolean = { fg = "#fab387" },
+          Float = { fg = "#fab387" },
+
+          Identifier = { fg = "#ffffff" }, -- Pure white
+          Function = { fg = "#89dceb" }, -- Bright cyan
+
+          Statement = { fg = "#cba6f7" }, -- Bright mauve
+          Conditional = { fg = "#f38ba8" }, -- Bright red
+          Repeat = { fg = "#f38ba8" },
+          Label = { fg = "#fab387" },
+          Operator = { fg = "#89dceb" },
+          Keyword = { fg = "#f38ba8" },
+          Exception = { fg = "#f38ba8" },
+
+          PreProc = { fg = "#f9e2af" }, -- Bright yellow
+          Include = { fg = "#f38ba8" },
+          Define = { fg = "#f38ba8" },
+          Macro = { fg = "#f38ba8" },
+          PreCondit = { fg = "#89dceb" },
+
+          Type = { fg = "#f9e2af" },
+          StorageClass = { fg = "#f9e2af" },
+          Structure = { fg = "#89dceb" },
+          Typedef = { fg = "#f9e2af" },
+
+          Special = { fg = "#94e2d5" }, -- Bright teal
+          SpecialChar = { fg = "#94e2d5" },
+          Tag = { fg = "#f38ba8" },
+          Delimiter = { fg = "#ffffff" },
+          SpecialComment = { fg = "#89dceb" },
+          Debug = { fg = "#fab387" },
+
+          -- UI elements
+          Title = { fg = "#89dceb", style = { "bold" } },
+          Directory = { fg = "#89dceb" },
+
+          -- Variables with bright colors
+          ["@variable"] = { fg = "#ffffff" },
+          ["@variable.builtin"] = { fg = "#f38ba8" },
+          ["@variable.parameter"] = { fg = "#fab387" },
+          ["@variable.member"] = { fg = "#89dceb" },
+
+          -- Functions
+          ["@function"] = { fg = "#89dceb" },
+          ["@function.builtin"] = { fg = "#94e2d5" },
+          ["@function.method"] = { fg = "#89dceb" },
+
+          -- Keywords
+          ["@keyword"] = { fg = "#f38ba8" },
+          ["@keyword.function"] = { fg = "#cba6f7" },
+          ["@keyword.operator"] = { fg = "#89dceb" },
+          ["@keyword.return"] = { fg = "#f38ba8" },
+
+          -- Types
+          ["@type"] = { fg = "#f9e2af" },
+          ["@type.builtin"] = { fg = "#f9e2af" },
+
+          -- Strings and constants
+          ["@string"] = { fg = "#a6e3a1" },
+          ["@number"] = { fg = "#fab387" },
+          ["@boolean"] = { fg = "#fab387" },
+          ["@constant"] = { fg = "#fab387" },
+          ["@constant.builtin"] = { fg = "#fab387" },
+
+          -- Punctuation
+          ["@punctuation.delimiter"] = { fg = "#ffffff" },
+          ["@punctuation.bracket"] = { fg = "#ffffff" },
+          ["@punctuation.special"] = { fg = "#94e2d5" },
+
+          -- Properties and attributes
+          ["@property"] = { fg = "#89dceb" },
+          ["@attribute"] = { fg = "#f9e2af" },
+
+          -- Tags (HTML/JSX)
+          ["@tag"] = { fg = "#f38ba8" },
+          ["@tag.attribute"] = { fg = "#f9e2af" },
+          ["@tag.delimiter"] = { fg = "#ffffff" },
+        }
+      end,
+    },
+  },
+
+  {
     "stevearc/conform.nvim",
     event = "BufWritePre",
     opts = {
@@ -71,7 +183,6 @@ return {
         sorting = {
           priority_weight = 2,
           comparators = {
-            require("copilot_cmp.comparators").prioritize,
             cmp.config.compare.offset,
             cmp.config.compare.exact,
             cmp.config.compare.score,
@@ -198,6 +309,7 @@ return {
         "prismals",
         "rust_analyzer",
         "terraformls",
+        "pyright",
       },
       automatic_installation = true,
       handlers = {

@@ -13,6 +13,9 @@ map("n", "<C-j>", require("smart-splits").move_cursor_down)
 map("n", "<C-k>", require("smart-splits").move_cursor_up)
 map("n", "<C-l>", require("smart-splits").move_cursor_right)
 
+-- Terminal mode: double ESC to enter normal mode
+map("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Enter terminal normal mode" })
+
 vim.keymap.del({ "n", "t" }, "<A-v>")
 
 wk.add {
@@ -267,7 +270,7 @@ map({ "n", "t" }, "<A-k>", function()
     id = "claude_term",
     float_opts = {
       row = 0.05,
-      col = 0.05,
+      col = 0.03,
       width = 0.85,
       height = 0.85,
     }
@@ -309,7 +312,7 @@ map({ "n", "t" }, "<A-i>", function()
     id = term_id,
     float_opts = {
       row = 0.05,
-      col = 0.1,
+      col = 0.08,
       width = 0.85,
       height = 0.85,
       title = "multiflexing 💪",
@@ -343,3 +346,70 @@ map({ "n", "t" }, "<A-i>", function()
     end, 200)
   end
 end, { desc = "terminal toggle floating with tmux" })
+
+-- ALT+j toggles the k9s terminal and starts k9s on first open
+map({ "n", "t" }, "<A-j>", function()
+  local term = require "nvchad.term"
+
+  term.toggle {
+    pos = "float",
+    id = "k9s_term",
+    float_opts = {
+      row = 0.05,
+      col = 0.13,
+      width = 0.85,
+      height = 0.85,
+      title = "k9s 🚀",
+      title_pos = "center",
+    }
+  }
+
+  -- Track if k9s has been started
+  if not _G.k9s_started then
+    _G.k9s_started = false
+  end
+
+  -- If this is the first time opening and we haven't started k9s yet
+  if not _G.k9s_started then
+    vim.defer_fn(function()
+      -- After toggle, the terminal should be the current buffer
+      local bufnr = vim.api.nvim_get_current_buf()
+
+      -- Check if it's a terminal buffer
+      if vim.bo[bufnr].buftype == "terminal" then
+        -- Get the job_id from the buffer
+        local success, job_id = pcall(vim.api.nvim_buf_get_var, bufnr, "terminal_job_id")
+
+        if success and job_id then
+          vim.api.nvim_chan_send(job_id, "k9s\n")
+          _G.k9s_started = true
+        else
+          vim.notify("Failed to get terminal job_id: " .. tostring(job_id), vim.log.levels.WARN)
+        end
+      else
+        vim.notify("Current buffer is not a terminal: " .. vim.bo[bufnr].buftype, vim.log.levels.WARN)
+      end
+    end, 200)
+  end
+end, { desc = "terminal toggle k9s" })
+
+-- ALT+o closes and kills any floating terminal (ALT+i/k/j)
+map({ "n", "t" }, "<A-o>", function()
+  local bufnr = vim.api.nvim_get_current_buf()
+  if vim.bo[bufnr].buftype == "terminal" then
+    -- Reset all terminal session tracking so they restart on next toggle
+    local nvim_pid = vim.fn.getpid()
+    local term_id = "floatTerm_" .. nvim_pid
+
+    -- Reset tmux session tracking
+    if _G.tmux_sessions then
+      _G.tmux_sessions[term_id] = nil
+    end
+
+    -- Reset Claude and k9s tracking
+    _G.claude_started = false
+    _G.k9s_started = false
+
+    vim.api.nvim_buf_delete(bufnr, { force = true })
+  end
+end, { desc = "kill any floating terminal" })

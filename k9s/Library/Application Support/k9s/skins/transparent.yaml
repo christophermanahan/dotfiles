@@ -1,0 +1,87 @@
+# Transparent skin for k9s
+k9s:
+  body:
+    fgColor: "#cdd6f4"
+    bgColor: "#282c35"
+    logoColor: "#89b4fa"
+  prompt:
+    fgColor: "#cdd6f4"
+    bgColor: "#282c35"
+    suggestColor: "#89b4fa"
+  info:
+    fgColor: "#f9e2af"
+    sectionColor: "#cdd6f4"
+  dialog:
+    fgColor: "#cdd6f4"
+    bgColor: "#282c35"
+    buttonFgColor: "#cdd6f4"
+    buttonBgColor: "#89b4fa"
+    buttonFocusFgColor: "#11111b"
+    buttonFocusBgColor: "#f9e2af"
+    labelFgColor: "#fab387"
+    fieldFgColor: "#cdd6f4"
+  frame:
+    border:
+      fgColor: "#89b4fa"
+      focusColor: "#f9e2af"
+    menu:
+      fgColor: "#cdd6f4"
+      keyColor: "#f38ba8"
+      numKeyColor: "#f9e2af"
+    crumbs:
+      fgColor: "#11111b"
+      bgColor: "#89b4fa"
+      activeColor: "#f9e2af"
+    status:
+      newColor: "#a6e3a1"
+      modifyColor: "#89b4fa"
+      addColor: "#a6e3a1"
+      pendingColor: "#fab387"
+      errorColor: "#f38ba8"
+      highlightColor: "#f9e2af"
+      killColor: "#6c7086"
+      completedColor: "#585b70"
+    title:
+      fgColor: "#cdd6f4"
+      bgColor: "#282c35"
+      highlightColor: "#f9e2af"
+      counterColor: "#89b4fa"
+      filterColor: "#f38ba8"
+  views:
+    charts:
+      bgColor: "#282c35"
+      dialBgColor: "#282c35"
+      defaultDialColors:
+        - "#89b4fa"
+        - "#f38ba8"
+      defaultChartColors:
+        - "#89b4fa"
+        - "#f38ba8"
+    table:
+      fgColor: "#cdd6f4"
+      bgColor: "#282c35"
+      cursorFgColor: "#11111b"
+      cursorBgColor: "#89b4fa"
+      markColor: "#f9e2af"
+      header:
+        fgColor: "#cdd6f4"
+        bgColor: "#282c35"
+        sorterColor: "#a6e3a1"
+    xray:
+      fgColor: "#cdd6f4"
+      bgColor: "#282c35"
+      cursorColor: "#89b4fa"
+      cursorTextColor: "#11111b"
+      graphicColor: "#89b4fa"
+    yaml:
+      keyColor: "#89b4fa"
+      colonColor: "#585b70"
+      valueColor: "#cdd6f4"
+    logs:
+      fgColor: "#cdd6f4"
+      bgColor: "#282c35"
+      indicator:
+        fgColor: "#cdd6f4"
+        bgColor: "#89b4fa"
+        toggleOnColor: "#a6e3a1"
+        toggleOffColor: "#585b70"

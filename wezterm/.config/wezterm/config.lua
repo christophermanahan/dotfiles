@@ -223,7 +223,10 @@ config = {
 		{
 			key = "l",
 			mods = "CMD",
-			action = wezterm.action.SendKey({ key = "l", mods = "CTRL" }),
+			action = wezterm.action.Multiple({
+				wezterm.action.SendString("clear"),
+				wezterm.action.SendKey({ key = "Enter" }),
+			}),
 		},
 		{
 			key = "x",
