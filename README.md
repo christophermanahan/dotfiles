@@ -4,12 +4,13 @@ Personal development environment configuration using GNU Stow.
 
 ## Features
 
+- **Git**: Version control with comprehensive aliases and modern defaults
 - **Wezterm**: Smart terminal with custom tab formatting, smart-splits integration, and per-directory tab colors
 - **Neovim**: NvChad v2.5 with extensive LSP, formatting, completion, and navigation plugins
 - **ZSH**: Vi-mode, autosuggestions, syntax highlighting, and enhanced directory navigation
 - **Starship**: Custom prompt with Catppuccin Mocha theme
 - **tmux**: Terminal multiplexer with floating terminal integration in Neovim
-- **k9s**: Kubernetes CLI manager with dedicated Neovim terminal
+- **k9s**: Kubernetes CLI manager with cross-platform config (~/.config/k9s/) and dedicated Neovim terminal
 
 ## Screenshots
 
@@ -24,6 +25,8 @@ Personal development environment configuration using GNU Stow.
 
 ## Requirements
 
+ - git
+ - git-delta (optional but recommended for enhanced diffs)
  - eza
  - zoxide
  - stow
@@ -44,7 +47,7 @@ Personal development environment configuration using GNU Stow.
 ### 1. Install Homebrew dependencies
 
 ```bash
-brew install eza zoxide stow zsh zsh-vi-mode zsh-autosuggestions zsh-syntax-highlighting starship neovim ripgrep tmux k9s
+brew install eza zoxide stow zsh zsh-vi-mode zsh-autosuggestions zsh-syntax-highlighting starship neovim ripgrep tmux k9s git-delta
 brew install --cask font-hack-nerd-font wezterm
 ```
 
@@ -62,12 +65,13 @@ cd ~/dotfiles
 rm -f ~/.zshrc
 
 # Stow configurations (creates symlinks from repo to home directory)
+stow git      # Deploys to ~/.gitconfig
 stow wezterm
 stow zsh
 stow starship
 stow nvim
 stow tmux
-stow k9s
+stow k9s      # Cross-platform: deploys to ~/.config/k9s/
 ```
 
 ### 4. Reload shell configuration
@@ -241,7 +245,42 @@ Wait for all installations to complete, then restart Neovim.
 | `ls` | Enhanced tree view (eza) with git-ignore |
 | `cd` → `z` | Smart directory jumping (zoxide) |
 
+#### Git Aliases (Shell)
+| Alias | Command |
+|-------|---------|
+| `lg` | lazygit |
+| `gst` | git status |
+| `gco` | git checkout |
+| `gcb` | git checkout -b |
+| `gp` | git push |
+| `gpl` | git pull |
+| `gcm` | git commit -m |
+| `glog` | git log --oneline --graph --decorate --all |
+
 ## Configuration Details
+
+### Git Configuration
+
+**Useful Aliases:**
+- `git s` - Short status
+- `git br` - List branches sorted by last modified
+- `git lg` - Commit history with graph
+- `git l` - Short log (last 10 commits)
+- `git amend` - Amend last commit without editing message
+- `git undo` - Undo last commit but keep changes
+- `git today` - Show commits from today
+- `git pushf` - Push force with lease (safer than --force)
+- `git clean-merged` - Delete branches that have been merged
+
+**Modern Defaults:**
+- Auto-setup remote tracking on push
+- Rebase by default on pull with auto-stash
+- Auto-prune deleted remote branches
+- Use 'main' as default branch name
+- Better diff algorithm (histogram)
+- Show moved lines in diffs
+- Conflict style with common ancestor (diff3)
+- Delta integration for syntax-highlighted diffs with side-by-side view and line numbers
 
 ### Neovim Plugins
 

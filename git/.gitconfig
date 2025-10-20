@@ -1,0 +1,132 @@
+[user]
+	# Configure your identity
+	name = Christopher Manahan
+	email = christophermanahan@gmail.com
+
+[core]
+	# Use nvim as default editor
+	editor = nvim
+
+	# Whitespace handling
+	whitespace = trailing-space,space-before-tab
+
+	# Enable autocrlf on MacOS/Linux
+	autocrlf = input
+
+	# Use colors in git commands
+  pager = delta
+
+[init]
+	# Use 'main' as default branch name
+	defaultBranch = main
+
+[interactive]
+    diffFilter = delta --color-only
+
+[delta]
+    navigate = true
+    side-by-side = true
+    line-numbers = true
+
+[push]
+	# Push current branch to branch with same name
+	default = current
+
+	# Automatically set up remote tracking
+	autoSetupRemote = true
+
+[pull]
+	# Rebase instead of merge on pull
+	rebase = true
+
+[rebase]
+	# Automatically stash and unstash when rebasing
+	autoStash = true
+
+[fetch]
+	# Automatically prune deleted remote branches
+	prune = true
+
+[merge]
+	# Show common ancestor in conflict markers
+	conflictStyle = diff3
+
+[diff]
+	# Use better diff algorithm
+	algorithm = histogram
+
+	# Show moved lines differently
+	colorMoved = default
+
+[color]
+	ui = auto
+
+[color "branch"]
+	current = yellow reverse
+	local = yellow
+	remote = green
+
+[color "diff"]
+	meta = yellow bold
+	frag = magenta bold
+	old = red bold
+	new = green bold
+
+[color "status"]
+	added = green
+	changed = yellow
+	untracked = red
+
+[alias]
+	# Short status
+	s = status -s
+
+	# List branches sorted by last modified
+	br = branch --sort=-committerdate
+
+	# Show commit history with graph
+	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+
+	# Short log
+	l = log --oneline -10
+
+	# Amend last commit
+	amend = commit --amend --no-edit
+
+	# Undo last commit but keep changes
+	undo = reset HEAD~1 --soft
+
+	# Show what I've done today
+	today = log --since=midnight --author='Christopher Manahan' --oneline
+
+	# Checkout
+	co = checkout
+
+	# Commit
+	ci = commit
+
+	# Diff
+	d = diff
+
+	# Diff staged
+	ds = diff --staged
+
+	# Push force with lease (safer)
+	pushf = push --force-with-lease
+
+	# Pull with rebase
+	pr = pull --rebase
+
+	# Show contributors
+	contributors = shortlog --summary --numbered --email
+
+	# Clean merged branches
+	clean-merged = "!git branch --merged | grep -v '\\*\\|main\\|master\\|develop' | xargs -n 1 git branch -d"
+
+[help]
+	# Autocorrect typos after 0.1 seconds
+	autocorrect = 1
+
+[credential]
+	# Cache credentials for 1 hour
+	helper = cache --timeout=3600
