@@ -14,11 +14,19 @@
 	autocrlf = input
 
 	# Use colors in git commands
-	pager = less -R
+  pager = delta
 
 [init]
 	# Use 'main' as default branch name
 	defaultBranch = main
+
+[interactive]
+    diffFilter = delta --color-only
+
+[delta]
+    navigate = true
+    side-by-side = true
+    line-numbers = true
 
 [push]
 	# Push current branch to branch with same name
