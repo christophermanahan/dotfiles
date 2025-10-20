@@ -4,6 +4,7 @@ Personal development environment configuration using GNU Stow.
 
 ## Features
 
+- **Git**: Version control with comprehensive aliases and modern defaults
 - **Wezterm**: Smart terminal with custom tab formatting, smart-splits integration, and per-directory tab colors
 - **Neovim**: NvChad v2.5 with extensive LSP, formatting, completion, and navigation plugins
 - **ZSH**: Vi-mode, autosuggestions, syntax highlighting, and enhanced directory navigation
@@ -24,6 +25,7 @@ Personal development environment configuration using GNU Stow.
 
 ## Requirements
 
+ - git
  - eza
  - zoxide
  - stow
@@ -62,12 +64,13 @@ cd ~/dotfiles
 rm -f ~/.zshrc
 
 # Stow configurations (creates symlinks from repo to home directory)
+stow git      # Deploys to ~/.gitconfig
 stow wezterm
 stow zsh
 stow starship
 stow nvim
 stow tmux
-stow k9s  # Cross-platform: deploys to ~/.config/k9s/
+stow k9s      # Cross-platform: deploys to ~/.config/k9s/
 ```
 
 ### 4. Reload shell configuration
@@ -242,6 +245,28 @@ Wait for all installations to complete, then restart Neovim.
 | `cd` → `z` | Smart directory jumping (zoxide) |
 
 ## Configuration Details
+
+### Git Configuration
+
+**Useful Aliases:**
+- `git s` - Short status
+- `git br` - List branches sorted by last modified
+- `git lg` - Commit history with graph
+- `git l` - Short log (last 10 commits)
+- `git amend` - Amend last commit without editing message
+- `git undo` - Undo last commit but keep changes
+- `git today` - Show commits from today
+- `git pushf` - Push force with lease (safer than --force)
+- `git clean-merged` - Delete branches that have been merged
+
+**Modern Defaults:**
+- Auto-setup remote tracking on push
+- Rebase by default on pull with auto-stash
+- Auto-prune deleted remote branches
+- Use 'main' as default branch name
+- Better diff algorithm (histogram)
+- Show moved lines in diffs
+- Conflict style with common ancestor (diff3)
 
 ### Neovim Plugins
 
