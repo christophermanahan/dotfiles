@@ -102,7 +102,7 @@ Wait for all installations to complete, then restart Neovim.
 | `Ctrl+b` | Split horizontal |
 | `Ctrl+h/j/k/l` | Navigate between panes (nvim/wezterm) |
 | `Ctrl+z` | Zoom pane |
-| `Ctrl+x` | Copy mode |
+| `Ctrl+x` or `Leader+[` | Copy mode (vi keys to navigate) |
 | `Leader+h/j/k/l` | Resize panes |
 | `Leader+f` | Toggle fullscreen |
 
@@ -113,6 +113,7 @@ Wait for all installations to complete, then restart Neovim.
 | `CMD+Shift+h` | Move tab left |
 | `CMD+Shift+l` | Move tab right |
 | `Leader+w` | Tab navigator |
+| `Leader+m` | Quick launch menu (k9s, lazygit, lazydocker, btm, htop) |
 
 #### Terminal
 | Shortcut | Action |
@@ -188,6 +189,7 @@ Wait for all installations to complete, then restart Neovim.
 | `<leader><` | Decrease window width |
 | `<leader>>` | Increase window width |
 | `<leader>tw` | Toggle word wrap |
+| `<leader>mp` | Toggle markdown preview in browser |
 | `<leader>.` | Repeat last command |
 
 #### General
@@ -217,11 +219,25 @@ Wait for all installations to complete, then restart Neovim.
 | `Leader+r` | Rename window |
 | `Leader+w` | Window navigator |
 
+#### Copy Mode (Scrolling)
+| Shortcut | Action |
+|----------|--------|
+| `Leader+[` | Enter copy mode |
+| `j/k` | Scroll down/up (in copy mode) |
+| `Ctrl+d/Ctrl+u` | Page down/up (in copy mode) |
+| `g/G` | Top/bottom of scrollback (in copy mode) |
+| `/` | Search forward (in copy mode) |
+| `q` or `Esc` | Exit copy mode |
+
 ### ZSH
 
 | Shortcut | Action |
 |----------|--------|
 | `Ctrl+Space` | Accept autosuggestion |
+| `Tab` | Show completions / cycle through options |
+| `Arrow keys` or `h/j/k/l` | Navigate completion menu |
+| `Enter` | Accept selected completion |
+| `Esc` | Cancel completion menu |
 | `ls` | Enhanced tree view (eza) with git-ignore |
 | `cd` → `z` | Smart directory jumping (zoxide) |
 
@@ -264,6 +280,7 @@ Wait for all installations to complete, then restart Neovim.
 - grug-far.nvim (search and replace)
 - goto-preview (preview definitions)
 - todo-comments (highlight TODO/FIXME/etc)
+- markdown-preview.nvim (live markdown preview in browser)
 
 ### Wezterm Features
 
@@ -271,6 +288,7 @@ Wait for all installations to complete, then restart Neovim.
 - Custom tab formatting: tab index, process icon, current directory
 - Per-directory unique tab colors (derived from cwd path)
 - Status bar with hostname, date/time, battery
+- Quick launch menu for common tools (Leader+m)
 - Catppuccin Mocha theme with background image overlay
 - Process-aware tab icons (nvim, docker, git, etc.)
 

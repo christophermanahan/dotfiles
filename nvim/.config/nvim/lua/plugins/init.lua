@@ -148,9 +148,25 @@ return {
 
   {
     "zbirenbaum/copilot.lua",
+    lazy = false, -- Load on startup
+    event = "VimEnter", -- Start when Neovim starts
     opts = {
       suggestion = { enabled = false },
-      panel = { enabled = false },
+      panel = {
+        enabled = true,
+        auto_refresh = true,
+        keymap = {
+          jump_prev = "[[",
+          jump_next = "]]",
+          accept = "<CR>",
+          refresh = "gr",
+          open = "<M-CR>", -- Alt+Enter to open panel
+        },
+        layout = {
+          position = "right", -- or "bottom", "top", "left"
+          ratio = 0.4,
+        },
+      },
     },
   },
 
@@ -158,6 +174,52 @@ return {
     "zbirenbaum/copilot-cmp",
     dependencies = { "copilot.lua" },
     opts = {},
+  },
+
+  {
+    "CopilotC-Nvim/CopilotChat.nvim",
+    branch = "canary",
+    dependencies = {
+      { "zbirenbaum/copilot.lua" },
+      { "nvim-lua/plenary.nvim" },
+    },
+    opts = {
+      question_header = "## User ",
+      answer_header = "## Copilot ",
+      error_header = "## Error ",
+      prompts = {
+        Explain = {
+          prompt = "/COPILOT_EXPLAIN Write an explanation for the active selection as paragraphs of text.",
+        },
+        Review = {
+          prompt = "/COPILOT_REVIEW Review the selected code.",
+        },
+        Fix = {
+          prompt = "/COPILOT_GENERATE There is a problem in this code. Rewrite the code to show it with the bug fixed.",
+        },
+        Optimize = {
+          prompt = "/COPILOT_GENERATE Optimize the selected code to improve performance and readability.",
+        },
+        Docs = {
+          prompt = "/COPILOT_GENERATE Please add documentation comment for the selection.",
+        },
+        Tests = {
+          prompt = "/COPILOT_GENERATE Please generate tests for my code.",
+        },
+        FixDiagnostic = {
+          prompt = "Please assist with the following diagnostic issue in file:",
+        },
+      },
+    },
+    config = function(_, opts)
+      local chat = require "CopilotChat"
+      local select = require "CopilotChat.select"
+
+      -- Use unnamed register for selections
+      opts.selection = select.unnamed
+
+      chat.setup(opts)
+    end,
   },
 
   { "hrsh7th/cmp-nvim-lsp-signature-help" },
@@ -168,33 +230,63 @@ return {
       "zbirenbaum/copilot-cmp",
       "hrsh7th/cmp-nvim-lsp-signature-help",
     },
-    opts = function()
+    opts = function(_, opts)
       local cmp = require "cmp"
-      return {
-        sources = {
-          { name = "nvim_lsp" },
-          { name = "nvim_lsp_signature_help" },
-          { name = "copilot" },
-          { name = "path" },
-          { name = "buffer" },
-          { name = "luasnip" },
-          { name = "nvim_lua" },
-        },
-        sorting = {
-          priority_weight = 2,
-          comparators = {
-            cmp.config.compare.offset,
-            cmp.config.compare.exact,
-            cmp.config.compare.score,
-            cmp.config.compare.recently_used,
-            cmp.config.compare.locality,
-            cmp.config.compare.kind,
-            cmp.config.compare.sort_text,
-            cmp.config.compare.length,
-            cmp.config.compare.order,
-          },
+
+      -- Get default NvChad mappings first
+      local default_mappings = require("nvchad.configs.cmp").mapping or {}
+
+      -- Extend with custom mappings
+      opts.mapping = cmp.mapping.preset.insert(vim.tbl_deep_extend("force", default_mappings, {
+        -- Vi-style navigation through completion menu
+        ["<C-j>"] = cmp.mapping.select_next_item(),
+        ["<C-k>"] = cmp.mapping.select_prev_item(),
+
+        -- Scroll documentation window (only works if doc window is visible)
+        ["<C-f>"] = cmp.mapping.scroll_docs(4),
+        ["<C-b>"] = cmp.mapping.scroll_docs(-4),
+
+        -- Close completion menu
+        ["<C-e>"] = cmp.mapping.abort(),
+
+        -- Manually trigger completion - multiple options
+        ["<C-Space>"] = cmp.mapping.complete(),
+        ["<C-x><C-o>"] = cmp.mapping.complete(), -- Standard vim omnifunc trigger
+      }))
+
+      -- Enable documentation window
+      opts.window = {
+        documentation = cmp.config.window.bordered(),
+      }
+
+      -- Add custom sources
+      opts.sources = vim.list_extend(opts.sources or {}, {
+        { name = "nvim_lsp" },
+        { name = "nvim_lsp_signature_help" },
+        { name = "copilot" },
+        { name = "path" },
+        { name = "buffer" },
+        { name = "luasnip" },
+        { name = "nvim_lua" },
+      })
+
+      -- Custom sorting
+      opts.sorting = {
+        priority_weight = 2,
+        comparators = {
+          cmp.config.compare.offset,
+          cmp.config.compare.exact,
+          cmp.config.compare.score,
+          cmp.config.compare.recently_used,
+          cmp.config.compare.locality,
+          cmp.config.compare.kind,
+          cmp.config.compare.sort_text,
+          cmp.config.compare.length,
+          cmp.config.compare.order,
         },
       }
+
+      return opts
     end,
   },
 
@@ -219,6 +311,14 @@ return {
         vim.keymap.set("n", "<C-j>", require("smart-splits").move_cursor_down, opts "Move to bottom pane")
         vim.keymap.set("n", "<C-k>", require("smart-splits").move_cursor_up, opts "Move to top pane")
         vim.keymap.set("n", "<C-l>", require("smart-splits").move_cursor_right, opts "Move to right pane")
+
+        -- Enable flash.nvim in nvimtree
+        vim.keymap.set("n", "s", function()
+          require("flash").jump()
+        end, opts "Flash jump")
+        vim.keymap.set("n", "S", function()
+          require("flash").treesitter()
+        end, opts "Flash treesitter")
       end,
       actions = {
         change_dir = {
@@ -302,7 +402,7 @@ return {
       ensure_installed = {
         "html",
         "cssls",
-        "vtsls",
+        -- vtsls removed - using typescript-tools.nvim instead
         "marksman",
         "docker_compose_language_service",
         "dockerls",
@@ -314,6 +414,7 @@ return {
       automatic_installation = true,
       handlers = {
         function(server)
+          -- Skip tsserver, vtsls (using typescript-tools.nvim), and lua_ls
           if server == "tsserver" or server == "vtsls" or server == "lua_ls" then
             return
           end
@@ -371,15 +472,18 @@ return {
     opts = {
       width = 100,
       height = 20,
-      references = {
-        telescope = require("telescope.themes").get_dropdown { hide_preview = false },
-      },
       focus_on_open = true,
       dismiss_on_move = false,
       force_close = true,
       bufhidden = "wipe",
       preview_window_title = { enable = true, position = "left" },
       zindex = 1,
+      -- Just open first result when there are multiple, don't show picker
+      references = {
+        telescope = false, -- Disable telescope picker
+      },
+      -- Prevent opening multiple windows
+      stack_floating_preview_windows = false,
     },
   },
 
@@ -519,5 +623,21 @@ return {
   {
     "MTDL9/vim-log-highlighting",
     ft = "log",
+  },
+
+  {
+    "iamcco/markdown-preview.nvim",
+    build = "cd app && npm install",
+    ft = "markdown",
+    cmd = { "MarkdownPreview", "MarkdownPreviewStop", "MarkdownPreviewToggle" },
+    init = function()
+      vim.g.mkdp_filetypes = { "markdown" }
+      -- Auto-close preview when switching buffers
+      vim.g.mkdp_auto_close = 1
+      -- Use default browser
+      vim.g.mkdp_browser = ""
+      -- Preview page title (uses filename)
+      vim.g.mkdp_page_title = "${name}"
+    end,
   },
 }
