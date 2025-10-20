@@ -120,6 +120,24 @@ M.ui = {
         end
         return gen_block(file_info[1], file_info[2], "%#St_file_sep#", "%#St_file_bg#", "%#St_file_txt#")
       end,
+      lsp = function()
+        if rawget(vim, "lsp") then
+          local lsp_names = {}
+          -- Use new API: vim.lsp.get_clients() instead of deprecated get_active_clients()
+          for _, client in ipairs(vim.lsp.get_clients { bufnr = stbufnr() }) do
+            -- Filter out Copilot from LSP status
+            if client.name ~= "copilot" then
+              table.insert(lsp_names, client.name)
+            end
+          end
+
+          if #lsp_names == 0 then
+            return ""
+          end
+
+          return (vim.o.columns > 100 and ("%#St_Lsp#" .. "  " .. table.concat(lsp_names, ", "))) or "  LSP "
+        end
+      end,
     },
   },
   tabufline = {
@@ -128,7 +146,7 @@ M.ui = {
 }
 
 M.base46 = {
-  theme = "catppuccin",
+  theme = "embark",
   integrations = {
     "codeactionmenu",
     "dap",

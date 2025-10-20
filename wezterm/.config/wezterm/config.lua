@@ -234,6 +234,11 @@ config = {
 			action = wezterm.action.ActivateCopyMode,
 		},
 		{
+			key = "[",
+			mods = "LEADER",
+			action = wezterm.action.ActivateCopyMode,
+		},
+		{
 			key = "z",
 			mods = "CTRL",
 			action = wezterm.action.TogglePaneZoomState,
@@ -306,6 +311,11 @@ config = {
 				args = { "/bin/zsh", "-l", "-c", "claude" },
 			}),
 		},
+		{
+			key = "m",
+			mods = "LEADER",
+			action = wezterm.action.ShowLauncherArgs({ flags = "FUZZY|LAUNCH_MENU_ITEMS" }),
+		},
 	},
 	window_frame = {
 		font = wezterm.font("Hack Nerd Font"),
@@ -317,6 +327,12 @@ config = {
 		tab_bar = {
 			inactive_tab_edge = "rgba(0, 0, 0, 0)",
 		},
+		-- Launcher menu styling (Catppuccin Mocha colors)
+		compose_cursor = "#f38ba8", -- Red for cursor in launcher
+		scrollbar_thumb = "#585b70", -- Gray for scrollbar
+		-- Selection colors when navigating launcher
+		selection_fg = "#1e1e2e", -- Dark text
+		selection_bg = "#89b4fa", -- Blue background for selected items
 	},
 	term = "xterm-256color",
 	default_cursor_style = "SteadyBar",
@@ -398,6 +414,63 @@ config = {
 		{
 			regex = "\\b\\w+@[\\w-]+(\\.[\\w-]+)+\\b",
 			format = "mailto:$0",
+		},
+	},
+	-- Quick launch menu for common tools (Leader+m)
+	-- Organized by category with Nerd Font icons
+	launch_menu = {
+		-- Git Tools
+		{
+			label = "  lazygit - Interactive Git TUI",
+			args = { "lazygit" },
+		},
+		{
+			label = "  gh - GitHub CLI",
+			args = { "gh" },
+		},
+
+		-- Docker & Kubernetes
+		{
+			label = "  lazydocker - Docker Management TUI",
+			args = { "lazydocker" },
+		},
+		{
+			label = "  k9s - Kubernetes CLI",
+			args = { "k9s" },
+		},
+
+		-- System Monitoring
+		{
+			label = "  bottom - System Monitor (modern)",
+			args = { "btm" },
+		},
+		{
+			label = "  htop - Process Viewer (classic)",
+			args = { "htop" },
+		},
+
+		-- Development
+		{
+			label = "  nvim - Neovim Editor",
+			args = { "nvim" },
+		},
+		{
+			label = "  node - Node.js REPL",
+			args = { "node" },
+		},
+		{
+			label = "  python3 - Python REPL",
+			args = { "python3" },
+		},
+
+		-- Shell
+		{
+			label = "  zsh - Z Shell",
+			args = { "/bin/zsh", "-l" },
+		},
+		{
+			label = "  bash - Bash Shell",
+			args = { "/bin/bash", "-l" },
 		},
 	},
 }
