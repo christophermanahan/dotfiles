@@ -50,3 +50,13 @@ export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border --preview "bat -
 
 # Enable FZF keybindings
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# Define git aliases
+alias lg="lazygit"
+alias gst="git status"
+alias gco="git checkout"
+alias gcb="git checkout -b"
+alias gp="git push"
+alias gpl="git pull"
+alias gcm="git commit -m"
+alias glog="git log --oneline --graph --decorate --all"
