@@ -26,6 +26,7 @@ Personal development environment configuration using GNU Stow.
 ## Requirements
 
  - git
+ - git-delta (optional but recommended for enhanced diffs)
  - eza
  - zoxide
  - stow
@@ -46,7 +47,7 @@ Personal development environment configuration using GNU Stow.
 ### 1. Install Homebrew dependencies
 
 ```bash
-brew install eza zoxide stow zsh zsh-vi-mode zsh-autosuggestions zsh-syntax-highlighting starship neovim ripgrep tmux k9s
+brew install eza zoxide stow zsh zsh-vi-mode zsh-autosuggestions zsh-syntax-highlighting starship neovim ripgrep tmux k9s git-delta
 brew install --cask font-hack-nerd-font wezterm
 ```
 
@@ -267,6 +268,7 @@ Wait for all installations to complete, then restart Neovim.
 - Better diff algorithm (histogram)
 - Show moved lines in diffs
 - Conflict style with common ancestor (diff3)
+- Delta integration for syntax-highlighted diffs with side-by-side view and line numbers
 
 ### Neovim Plugins
 
