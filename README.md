@@ -245,6 +245,18 @@ Wait for all installations to complete, then restart Neovim.
 | `ls` | Enhanced tree view (eza) with git-ignore |
 | `cd` → `z` | Smart directory jumping (zoxide) |
 
+#### Git Aliases (Shell)
+| Alias | Command |
+|-------|---------|
+| `lg` | lazygit |
+| `gst` | git status |
+| `gco` | git checkout |
+| `gcb` | git checkout -b |
+| `gp` | git push |
+| `gpl` | git pull |
+| `gcm` | git commit -m |
+| `glog` | git log --oneline --graph --decorate --all |
+
 ## Configuration Details
 
 ### Git Configuration
