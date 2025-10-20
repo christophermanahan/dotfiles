@@ -124,8 +124,21 @@ wk.add {
   },
   {
     "<leader>gh",
-    ":Neogit<CR>",
-    desc = "git",
+    function()
+      require("nvchad.term").toggle {
+        pos = "float",
+        id = "lazygit",
+        cmd = "lazygit",
+        float_opts = {
+          relative = "editor",
+          row = 0.05,
+          col = 0.05,
+          width = 0.9,
+          height = 0.9,
+        },
+      }
+    end,
+    desc = "lazygit",
     icon = {
       icon = "",
       color = "green",

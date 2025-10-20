@@ -176,7 +176,7 @@ Wait for all installations to complete, then restart Neovim.
 #### Git
 | Shortcut | Action |
 |----------|--------|
-| `<leader>gh` | Open Neogit |
+| `<leader>gh` | Open lazygit (floating terminal) |
 
 #### Terminal Management
 | Shortcut | Action |
@@ -304,8 +304,9 @@ Wait for all installations to complete, then restart Neovim.
 - telescope.nvim with fzf extension
 
 **Git:**
-- neogit with diffview integration
-- gitsigns disabled (using neogit)
+- lazygit (via floating terminal with `<leader>gh`)
+- diffview.nvim for enhanced diff viewing
+- gitsigns disabled (using lazygit)
 
 **UI Enhancements:**
 - noice.nvim (command line UI)
