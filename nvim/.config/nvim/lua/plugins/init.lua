@@ -451,17 +451,6 @@ return {
   { "sindrets/diffview.nvim" },
 
   {
-    "NeogitOrg/neogit",
-    event = "BufEnter",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "sindrets/diffview.nvim",
-      "nvim-telescope/telescope.nvim",
-    },
-    opts = {},
-  },
-
-  {
     "numToStr/BufOnly.nvim",
     event = "BufEnter",
   },

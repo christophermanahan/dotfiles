@@ -52,7 +52,7 @@ Built on NvChad v2.5 with Lazy.nvim plugin manager.
 - Formatting: conform.nvim with prettierd (JS/TS/CSS/HTML) and stylua (Lua), auto-format on save
 - Completion: nvim-cmp with Copilot integration, LSP signature help
 - Navigation: smart-splits.nvim for seamless pane navigation with wezterm, flash.nvim for quick jumps
-- Git: neogit with diffview integration (gitsigns disabled)
+- Git: lazygit (floating terminal via `<leader>gh`) with diffview integration (gitsigns disabled)
 - UI enhancements: noice.nvim, nvim-notify, trouble.nvim, rainbow-delimiters
 
 **Important notes:**
