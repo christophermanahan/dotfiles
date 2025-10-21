@@ -10,7 +10,7 @@ Personal development environment configuration using GNU Stow.
 - **ZSH**: Vi-mode, autosuggestions, syntax highlighting, and enhanced directory navigation
 - **Starship**: Custom prompt with Catppuccin Mocha theme
 - **tmux**: Terminal multiplexer with floating terminal integration in Neovim
-- **k9s**: Kubernetes CLI manager with cross-platform config (~/.config/k9s/) and dedicated Neovim terminal
+- **k9s**: Kubernetes CLI manager with cross-platform config (~/.config/k9s/ via K9S_CONFIG_DIR) and dedicated Neovim terminal
 
 ## Screenshots
 
@@ -71,7 +71,7 @@ stow zsh
 stow starship
 stow nvim
 stow tmux
-stow k9s      # Cross-platform: deploys to ~/.config/k9s/
+stow k9s      # Cross-platform: deploys to ~/.config/k9s/ (K9S_CONFIG_DIR enforces XDG)
 ```
 
 ### 4. Reload shell configuration

@@ -1,6 +1,9 @@
 # Homebrew
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
+# Force k9s to use XDG config directory (cross-platform)
+export K9S_CONFIG_DIR="$HOME/.config/k9s"
+
 # Initialize completion system
 autoload -Uz compinit
 compinit
