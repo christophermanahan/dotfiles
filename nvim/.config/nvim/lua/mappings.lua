@@ -744,8 +744,54 @@ map({ "n", "t" }, "<A-h>", function()
   }
 end, { desc = "terminal toggle lazygit" })
 
--- ALT+o closes and kills any floating terminal (ALT+i/k/j/h)
+-- ALT+o toggles the OpenAI CLI terminal
 map({ "n", "t" }, "<A-o>", function()
+  local term = require "nvchad.term"
+
+  term.toggle {
+    pos = "float",
+    id = "openai_term",
+    float_opts = {
+      row = 0.05,
+      col = 0.08,
+      width = 0.85,
+      height = 0.85,
+      title = "OpenAI CLI 🤖",
+      title_pos = "center",
+    }
+  }
+
+  -- Track if OpenAI CLI has been started
+  if not _G.openai_started then
+    _G.openai_started = false
+  end
+
+  -- If this is the first time opening and we haven't started OpenAI yet
+  if not _G.openai_started then
+    vim.defer_fn(function()
+      -- After toggle, the terminal should be the current buffer
+      local bufnr = vim.api.nvim_get_current_buf()
+
+      -- Check if it's a terminal buffer
+      if vim.bo[bufnr].buftype == "terminal" then
+        -- Get the job_id from the buffer
+        local success, job_id = pcall(vim.api.nvim_buf_get_var, bufnr, "terminal_job_id")
+
+        if success and job_id then
+          vim.api.nvim_chan_send(job_id, "clear && openai\n")
+          _G.openai_started = true
+        else
+          vim.notify("Failed to get terminal job_id: " .. tostring(job_id), vim.log.levels.WARN)
+        end
+      else
+        vim.notify("Current buffer is not a terminal: " .. vim.bo[bufnr].buftype, vim.log.levels.WARN)
+      end
+    end, 200)
+  end
+end, { desc = "terminal toggle openai cli" })
+
+-- ALT+p closes and kills any floating terminal (ALT+i/k/j/h/o)
+map({ "n", "t" }, "<A-p>", function()
   local bufnr = vim.api.nvim_get_current_buf()
   if vim.bo[bufnr].buftype == "terminal" then
     -- Reset all terminal session tracking so they restart on next toggle
@@ -757,9 +803,10 @@ map({ "n", "t" }, "<A-o>", function()
       _G.tmux_sessions[term_id] = nil
     end
 
-    -- Reset Claude and k9s tracking
+    -- Reset Claude, k9s, and OpenAI tracking
     _G.claude_started = false
     _G.k9s_started = false
+    _G.openai_started = false
 
     vim.api.nvim_buf_delete(bufnr, { force = true })
   end
