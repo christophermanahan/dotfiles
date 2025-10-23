@@ -10,7 +10,8 @@ Personal development environment configuration using GNU Stow.
 - **ZSH**: Vi-mode, autosuggestions, syntax highlighting, FZF integration, and enhanced directory navigation
 - **Starship**: Custom prompt with Catppuccin Mocha theme
 - **tmux**: Terminal multiplexer with floating terminal integration in Neovim
-- **k9s**: Kubernetes CLI manager with cross-platform config (~/.config/k9s/ via K9S_CONFIG_DIR) and dedicated Neovim terminal
+- **k9s**: Kubernetes CLI manager with cross-platform config (~/.config/k9s/ via K9S_CONFIG_DIR) and dedicated Neovim terminal with cluster/namespace selection
+- **Codex CLI**: OpenAI Codex assistant with dedicated floating terminal in Neovim
 
 ## Screenshots
 
@@ -40,6 +41,7 @@ Personal development environment configuration using GNU Stow.
  - fzf (fuzzy finder)
  - fd (find alternative)
  - bat (cat alternative with syntax highlighting)
+ - codex (OpenAI Codex CLI)
  - zsh
  - zsh-vi-mode
  - zsh-autosuggestions
@@ -50,7 +52,7 @@ Personal development environment configuration using GNU Stow.
 ### 1. Install Homebrew dependencies
 
 ```bash
-brew install eza zoxide stow zsh zsh-vi-mode zsh-autosuggestions zsh-syntax-highlighting starship neovim ripgrep tmux k9s git-delta fzf fd bat
+brew install eza zoxide stow zsh zsh-vi-mode zsh-autosuggestions zsh-syntax-highlighting starship neovim ripgrep tmux k9s git-delta fzf fd bat codex
 brew install --cask font-hack-nerd-font wezterm
 ```
 
@@ -181,14 +183,17 @@ Wait for all installations to complete, then restart Neovim.
 |----------|--------|
 | `ALT+i` | Toggle floating tmux terminal (auto-cleanup on exit) |
 | `ALT+k` | Toggle Claude Code terminal |
-| `ALT+j` | Toggle k9s terminal (cluster selection on first open) |
+| `ALT+j` | Toggle k9s terminal (cluster + namespace selection on first open) |
 | `ALT+h` | Toggle lazygit terminal |
-| `ALT+o` | Kill any floating terminal (restarts on reopen) |
+| `ALT+o` | Toggle Codex CLI terminal (OpenAI Codex) |
+| `ALT+p` | Kill any floating terminal (restarts on reopen) |
 | `Ctrl+q` | Exit terminal mode to normal mode (allows scrolling) |
 
 **Note:**
 - Each Neovim instance creates a unique tmux session. The session is automatically killed when Neovim exits, preventing orphaned tmux sessions.
-- k9s terminal shows a cluster selection menu (via fzf) on first open, allowing you to choose from all configured kubectl contexts. Press ESC to cancel selection.
+- k9s terminal shows a two-step selection menu (via fzf) on first open: first select cluster, then select namespace (or "all"). Press ESC to cancel selection at either step.
+- Codex CLI terminal auto-starts the `codex` command on first open for quick access to OpenAI's Codex assistant.
+- **To kill a terminal with a running app (like k9s):** Press `Ctrl+q` first to exit terminal mode, then press `ALT+p`. Alternatively, quit the app first (e.g., press `q` in k9s), then `ALT+p` works directly.
 
 #### Window & Display
 | Shortcut | Action |
