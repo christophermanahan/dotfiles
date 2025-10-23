@@ -682,11 +682,36 @@ map({ "n", "t" }, "<A-j>", function()
         local success, job_id = pcall(vim.api.nvim_buf_get_var, bufnr, "terminal_job_id")
 
         if success and job_id then
-          -- Send command to select cluster with fzf, then launch k9s
+          -- Send command to select cluster with fzf, then select namespace, then launch k9s
           -- Clear terminal first for a clean interface
-          -- If user cancels (ESC), just show the prompt without starting k9s
+          -- Two-step selection: cluster -> namespace
+          -- "all" option in namespace list uses -A flag for all namespaces
           local cmd = [[
-clear && ctx=$(kubectl config get-contexts -o name | fzf --height=40% --reverse --border --prompt="Select K8s cluster: " --preview="kubectl config get-contexts {}" --preview-window=down:3:wrap) && k9s --context "$ctx" || echo "Cluster selection cancelled"
+clear && \
+ctx=$(kubectl config get-contexts -o name | \
+  fzf --height=40% --reverse --border \
+      --prompt="Select K8s cluster: " \
+      --preview="kubectl config get-contexts {}" \
+      --preview-window=down:3:wrap) && \
+if [ -n "$ctx" ]; then
+  ns=$(echo -e "all\n$(kubectl --context "$ctx" get namespaces -o jsonpath='{.items[*].metadata.name}' | tr ' ' '\n')" | \
+    fzf --height=40% --reverse --border \
+        --prompt="Select namespace ($ctx): " \
+        --preview="if [ {} = 'all' ]; then echo 'View all namespaces'; else kubectl --context $ctx get pods -n {} 2>/dev/null | head -20; fi" \
+        --preview-window=down:10:wrap)
+  if [ -n "$ns" ]; then
+    clear
+    if [ "$ns" = "all" ]; then
+      k9s --context "$ctx" -A
+    else
+      k9s --context "$ctx" -n "$ns"
+    fi
+  else
+    echo "Namespace selection cancelled"
+  fi
+else
+  echo "Cluster selection cancelled"
+fi
 ]]
           vim.api.nvim_chan_send(job_id, cmd)
           _G.k9s_started = true
