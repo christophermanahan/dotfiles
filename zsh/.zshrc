@@ -51,9 +51,10 @@ function zvm_after_init() {
   bindkey -M menuselect 'k' vi-up-line-or-history
   bindkey -M menuselect 'l' vi-forward-char
 
-  # Alternative to ESC: Ctrl+J to enter normal mode
-  # Home row key, easy to reach and won't falsely trigger with fast key polling
-  bindkey -M viins '^J' vi-cmd-mode
+  # Alternative to ESC: Ctrl+; to enter normal mode
+  # Home row key, easy to reach and works in tmux/floating terminals
+  # Note: Terminal must support sending Ctrl+; (most modern terminals do)
+  bindkey -M viins '^;' vi-cmd-mode
 
   # ALT+n to launch nvim
   # Creates a widget that accepts the current line, runs nvim, and resets the prompt
