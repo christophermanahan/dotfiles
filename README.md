@@ -176,19 +176,17 @@ Wait for all installations to complete, then restart Neovim.
 | `gT` | Previous tab |
 | `<leader>X` | Close all other buffers |
 
-#### Git
-| Shortcut | Action |
-|----------|--------|
-| `<leader>gh` | Open lazygit (floating terminal) |
-
 #### Terminal Management
 | Shortcut | Action |
 |----------|--------|
-| `ALT+i` | Toggle floating tmux terminal |
+| `ALT+i` | Toggle floating tmux terminal (auto-cleanup on exit) |
 | `ALT+k` | Toggle Claude Code terminal |
 | `ALT+j` | Toggle k9s terminal |
+| `ALT+h` | Toggle lazygit terminal |
 | `ALT+o` | Kill any floating terminal (restarts on reopen) |
-| `ESC ESC` | Exit terminal mode to normal mode |
+| `Ctrl+q` | Exit terminal mode to normal mode (allows scrolling) |
+
+**Note:** Each Neovim instance creates a unique tmux session. The session is automatically killed when Neovim exits, preventing orphaned tmux sessions.
 
 #### Window & Display
 | Shortcut | Action |
@@ -256,7 +254,6 @@ Wait for all installations to complete, then restart Neovim.
 | Shortcut | Action |
 |----------|--------|
 | `ESC` | Enter normal mode (10ms delay) |
-| `Ctrl+g` | Enter normal mode (alternative, works in all terminals) |
 | `i` | Enter insert mode |
 | `v` | Enter visual mode |
 
@@ -325,6 +322,7 @@ Wait for all installations to complete, then restart Neovim.
 
 **Integration:**
 - Works seamlessly with `fd`, `bat`, and `ripgrep`
+- Compatible with zsh-vi-mode (keybindings work in vi insert mode)
 - Completion and key bindings from homebrew installation
 - Custom preview window with syntax highlighting
 
@@ -350,7 +348,7 @@ Wait for all installations to complete, then restart Neovim.
 - telescope.nvim with fzf extension
 
 **Git:**
-- lazygit (via floating terminal with `<leader>gh`)
+- lazygit (via floating terminal with `ALT+h`)
 - diffview.nvim for enhanced diff viewing
 - gitsigns disabled (using lazygit)
 

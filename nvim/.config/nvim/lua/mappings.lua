@@ -13,8 +13,12 @@ map("n", "<C-j>", require("smart-splits").move_cursor_down)
 map("n", "<C-k>", require("smart-splits").move_cursor_up)
 map("n", "<C-l>", require("smart-splits").move_cursor_right)
 
--- Terminal mode: double ESC to enter normal mode
-map("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Enter terminal normal mode" })
+-- Terminal mode: Ctrl+q to enter normal mode (allows scrolling in floating terminals)
+-- Note: We don't use Ctrl+[ or ESC because:
+-- - Ctrl+[ is identical to ESC at terminal level, would break ZSH vi-mode ESC
+-- - ESC should pass through to the shell for vi-mode
+-- Ctrl+q is rarely used and doesn't conflict with terminal applications
+map("t", "<C-q>", "<C-\\><C-n>", { desc = "Enter terminal normal mode" })
 
 vim.keymap.del({ "n", "t" }, "<A-v>")
 
@@ -121,28 +125,6 @@ wk.add {
     ":BufOnly<CR>",
     desc = "close all other buffers",
     icon = "󰟢",
-  },
-  {
-    "<leader>gh",
-    function()
-      require("nvchad.term").toggle {
-        pos = "float",
-        id = "lazygit",
-        cmd = "lazygit",
-        float_opts = {
-          relative = "editor",
-          row = 0.05,
-          col = 0.05,
-          width = 0.9,
-          height = 0.9,
-        },
-      }
-    end,
-    desc = "lazygit",
-    icon = {
-      icon = "",
-      color = "green",
-    },
   },
   {
     mode = { "n", "v" }, -- NORMAL and VISUAL mode
@@ -712,7 +694,26 @@ map({ "n", "t" }, "<A-j>", function()
   end
 end, { desc = "terminal toggle k9s" })
 
--- ALT+o closes and kills any floating terminal (ALT+i/k/j)
+-- ALT+h toggles the lazygit terminal
+map({ "n", "t" }, "<A-h>", function()
+  local term = require "nvchad.term"
+
+  term.toggle {
+    pos = "float",
+    id = "lazygit_term",
+    cmd = "lazygit",
+    float_opts = {
+      row = 0.05,
+      col = 0.10,
+      width = 0.85,
+      height = 0.85,
+      title = "lazygit 🚀",
+      title_pos = "center",
+    }
+  }
+end, { desc = "terminal toggle lazygit" })
+
+-- ALT+o closes and kills any floating terminal (ALT+i/k/j/h)
 map({ "n", "t" }, "<A-o>", function()
   local bufnr = vim.api.nvim_get_current_buf()
   if vim.bo[bufnr].buftype == "terminal" then
@@ -732,3 +733,15 @@ map({ "n", "t" }, "<A-o>", function()
     vim.api.nvim_buf_delete(bufnr, { force = true })
   end
 end, { desc = "kill any floating terminal" })
+
+-- Cleanup: Kill tmux session when Neovim exits
+-- This prevents orphaned tmux sessions when closing wezterm tabs
+vim.api.nvim_create_autocmd("VimLeavePre", {
+  callback = function()
+    local nvim_pid = vim.fn.getpid()
+    local session_name = "nvim_" .. nvim_pid
+    -- Kill tmux session silently (ignore errors if session doesn't exist)
+    vim.fn.system("tmux kill-session -t " .. session_name .. " 2>/dev/null")
+  end,
+  desc = "Kill tmux session on Neovim exit"
+})
