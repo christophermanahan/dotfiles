@@ -54,6 +54,15 @@ function zvm_after_init() {
   # Alternative to ESC: Ctrl+J to enter normal mode
   # Home row key, easy to reach and won't falsely trigger with fast key polling
   bindkey -M viins '^J' vi-cmd-mode
+
+  # ALT+n to launch nvim
+  # Creates a widget that accepts the current line, runs nvim, and resets the prompt
+  launch-nvim() {
+    BUFFER="nvim"
+    zle accept-line
+  }
+  zle -N launch-nvim
+  bindkey '\en' launch-nvim  # ALT+n
 }
 # Enhanced file viewing
 alias cat="bat"
