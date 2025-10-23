@@ -13,8 +13,12 @@ map("n", "<C-j>", require("smart-splits").move_cursor_down)
 map("n", "<C-k>", require("smart-splits").move_cursor_up)
 map("n", "<C-l>", require("smart-splits").move_cursor_right)
 
--- Terminal mode: double ESC to enter normal mode
-map("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Enter terminal normal mode" })
+-- Terminal mode: Ctrl+q to enter normal mode (allows scrolling in floating terminals)
+-- Note: We don't use Ctrl+[ or ESC because:
+-- - Ctrl+[ is identical to ESC at terminal level, would break ZSH vi-mode ESC
+-- - ESC should pass through to the shell for vi-mode
+-- Ctrl+q is rarely used and doesn't conflict with terminal applications
+map("t", "<C-q>", "<C-\\><C-n>", { desc = "Enter terminal normal mode" })
 
 vim.keymap.del({ "n", "t" }, "<A-v>")
 
@@ -121,15 +125,6 @@ wk.add {
     ":BufOnly<CR>",
     desc = "close all other buffers",
     icon = "󰟢",
-  },
-  {
-    "<leader>gh",
-    ":Neogit<CR>",
-    desc = "git",
-    icon = {
-      icon = "",
-      color = "green",
-    },
   },
   {
     mode = { "n", "v" }, -- NORMAL and VISUAL mode
@@ -653,7 +648,7 @@ map({ "n", "t" }, "<A-i>", function()
   end
 end, { desc = "terminal toggle floating with tmux" })
 
--- ALT+j toggles the k9s terminal and starts k9s on first open
+-- ALT+j toggles the k9s terminal with cluster selection on first open
 map({ "n", "t" }, "<A-j>", function()
   local term = require "nvchad.term"
 
@@ -687,7 +682,13 @@ map({ "n", "t" }, "<A-j>", function()
         local success, job_id = pcall(vim.api.nvim_buf_get_var, bufnr, "terminal_job_id")
 
         if success and job_id then
-          vim.api.nvim_chan_send(job_id, "k9s\n")
+          -- Send command to select cluster with fzf, then launch k9s
+          -- Clear terminal first for a clean interface
+          -- If user cancels (ESC), just show the prompt without starting k9s
+          local cmd = [[
+clear && ctx=$(kubectl config get-contexts -o name | fzf --height=40% --reverse --border --prompt="Select K8s cluster: " --preview="kubectl config get-contexts {}" --preview-window=down:3:wrap) && k9s --context "$ctx" || echo "Cluster selection cancelled"
+]]
+          vim.api.nvim_chan_send(job_id, cmd)
           _G.k9s_started = true
         else
           vim.notify("Failed to get terminal job_id: " .. tostring(job_id), vim.log.levels.WARN)
@@ -697,9 +698,28 @@ map({ "n", "t" }, "<A-j>", function()
       end
     end, 200)
   end
-end, { desc = "terminal toggle k9s" })
+end, { desc = "terminal toggle k9s with cluster selection" })
 
--- ALT+o closes and kills any floating terminal (ALT+i/k/j)
+-- ALT+h toggles the lazygit terminal
+map({ "n", "t" }, "<A-h>", function()
+  local term = require "nvchad.term"
+
+  term.toggle {
+    pos = "float",
+    id = "lazygit_term",
+    cmd = "lazygit",
+    float_opts = {
+      row = 0.05,
+      col = 0.10,
+      width = 0.85,
+      height = 0.85,
+      title = "lazygit 🚀",
+      title_pos = "center",
+    }
+  }
+end, { desc = "terminal toggle lazygit" })
+
+-- ALT+o closes and kills any floating terminal (ALT+i/k/j/h)
 map({ "n", "t" }, "<A-o>", function()
   local bufnr = vim.api.nvim_get_current_buf()
   if vim.bo[bufnr].buftype == "terminal" then
@@ -719,3 +739,15 @@ map({ "n", "t" }, "<A-o>", function()
     vim.api.nvim_buf_delete(bufnr, { force = true })
   end
 end, { desc = "kill any floating terminal" })
+
+-- Cleanup: Kill tmux session when Neovim exits
+-- This prevents orphaned tmux sessions when closing wezterm tabs
+vim.api.nvim_create_autocmd("VimLeavePre", {
+  callback = function()
+    local nvim_pid = vim.fn.getpid()
+    local session_name = "nvim_" .. nvim_pid
+    -- Kill tmux session silently (ignore errors if session doesn't exist)
+    vim.fn.system("tmux kill-session -t " .. session_name .. " 2>/dev/null")
+  end,
+  desc = "Kill tmux session on Neovim exit"
+})

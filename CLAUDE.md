@@ -52,7 +52,8 @@ Built on NvChad v2.5 with Lazy.nvim plugin manager.
 - Formatting: conform.nvim with prettierd (JS/TS/CSS/HTML) and stylua (Lua), auto-format on save
 - Completion: nvim-cmp with Copilot integration, LSP signature help
 - Navigation: smart-splits.nvim for seamless pane navigation with wezterm, flash.nvim for quick jumps
-- Git: neogit with diffview integration (gitsigns disabled)
+- Git: lazygit (floating terminal via `ALT+h`) with diffview integration (gitsigns disabled)
+- Kubernetes: k9s (floating terminal via `ALT+j`) with cluster selection menu on first open
 - UI enhancements: noice.nvim, nvim-notify, trouble.nvim, rainbow-delimiters
 
 **Important notes:**
@@ -79,7 +80,7 @@ Built on NvChad v2.5 with Lazy.nvim plugin manager.
 - Ctrl+': Split vertical
 - Ctrl+b: Split horizontal
 - Ctrl+z: Zoom pane
-- Ctrl+x: Copy mode
+- Ctrl+x or Leader+[: Copy mode
 - CMD+w: Close current tab
 - Leader+hjkl: Resize panes
 - Leader+w: Tab navigator

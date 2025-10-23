@@ -7,10 +7,10 @@ Personal development environment configuration using GNU Stow.
 - **Git**: Version control with comprehensive aliases and modern defaults
 - **Wezterm**: Smart terminal with custom tab formatting, smart-splits integration, and per-directory tab colors
 - **Neovim**: NvChad v2.5 with extensive LSP, formatting, completion, and navigation plugins
-- **ZSH**: Vi-mode, autosuggestions, syntax highlighting, and enhanced directory navigation
+- **ZSH**: Vi-mode, autosuggestions, syntax highlighting, FZF integration, and enhanced directory navigation
 - **Starship**: Custom prompt with Catppuccin Mocha theme
 - **tmux**: Terminal multiplexer with floating terminal integration in Neovim
-- **k9s**: Kubernetes CLI manager with cross-platform config (~/.config/k9s/) and dedicated Neovim terminal
+- **k9s**: Kubernetes CLI manager with cross-platform config (~/.config/k9s/ via K9S_CONFIG_DIR) and dedicated Neovim terminal
 
 ## Screenshots
 
@@ -37,6 +37,9 @@ Personal development environment configuration using GNU Stow.
  - ripgrep
  - tmux
  - k9s
+ - fzf (fuzzy finder)
+ - fd (find alternative)
+ - bat (cat alternative with syntax highlighting)
  - zsh
  - zsh-vi-mode
  - zsh-autosuggestions
@@ -47,7 +50,7 @@ Personal development environment configuration using GNU Stow.
 ### 1. Install Homebrew dependencies
 
 ```bash
-brew install eza zoxide stow zsh zsh-vi-mode zsh-autosuggestions zsh-syntax-highlighting starship neovim ripgrep tmux k9s git-delta
+brew install eza zoxide stow zsh zsh-vi-mode zsh-autosuggestions zsh-syntax-highlighting starship neovim ripgrep tmux k9s git-delta fzf fd bat
 brew install --cask font-hack-nerd-font wezterm
 ```
 
@@ -71,7 +74,7 @@ stow zsh
 stow starship
 stow nvim
 stow tmux
-stow k9s      # Cross-platform: deploys to ~/.config/k9s/
+stow k9s      # Cross-platform: deploys to ~/.config/k9s/ (K9S_CONFIG_DIR enforces XDG)
 ```
 
 ### 4. Reload shell configuration
@@ -173,19 +176,19 @@ Wait for all installations to complete, then restart Neovim.
 | `gT` | Previous tab |
 | `<leader>X` | Close all other buffers |
 
-#### Git
-| Shortcut | Action |
-|----------|--------|
-| `<leader>gh` | Open Neogit |
-
 #### Terminal Management
 | Shortcut | Action |
 |----------|--------|
-| `ALT+i` | Toggle floating tmux terminal |
+| `ALT+i` | Toggle floating tmux terminal (auto-cleanup on exit) |
 | `ALT+k` | Toggle Claude Code terminal |
-| `ALT+j` | Toggle k9s terminal |
+| `ALT+j` | Toggle k9s terminal (cluster selection on first open) |
+| `ALT+h` | Toggle lazygit terminal |
 | `ALT+o` | Kill any floating terminal (restarts on reopen) |
-| `ESC ESC` | Exit terminal mode to normal mode |
+| `Ctrl+q` | Exit terminal mode to normal mode (allows scrolling) |
+
+**Note:**
+- Each Neovim instance creates a unique tmux session. The session is automatically killed when Neovim exits, preventing orphaned tmux sessions.
+- k9s terminal shows a cluster selection menu (via fzf) on first open, allowing you to choose from all configured kubectl contexts. Press ESC to cancel selection.
 
 #### Window & Display
 | Shortcut | Action |
@@ -235,6 +238,7 @@ Wait for all installations to complete, then restart Neovim.
 
 ### ZSH
 
+#### General Shell
 | Shortcut | Action |
 |----------|--------|
 | `Ctrl+Space` | Accept autosuggestion |
@@ -242,8 +246,25 @@ Wait for all installations to complete, then restart Neovim.
 | `Arrow keys` or `h/j/k/l` | Navigate completion menu |
 | `Enter` | Accept selected completion |
 | `Esc` | Cancel completion menu |
+| `ALT+n` | Launch nvim instantly |
 | `ls` | Enhanced tree view (eza) with git-ignore |
 | `cd` → `z` | Smart directory jumping (zoxide) |
+| `cat` | Enhanced file viewing with syntax highlighting (bat) |
+| `find` | Fast file searching (fd) |
+
+#### Vi Mode
+| Shortcut | Action |
+|----------|--------|
+| `ESC` | Enter normal mode (10ms delay) |
+| `i` | Enter insert mode |
+| `v` | Enter visual mode |
+
+#### FZF (Fuzzy Finder)
+| Shortcut | Action |
+|----------|--------|
+| `Ctrl+T` | Paste selected files/directories onto command line |
+| `Ctrl+R` | Search command history (fuzzy) |
+| `Alt+C` | cd into selected directory |
 
 #### Git Aliases (Shell)
 | Alias | Command |
@@ -282,6 +303,31 @@ Wait for all installations to complete, then restart Neovim.
 - Conflict style with common ancestor (diff3)
 - Delta integration for syntax-highlighted diffs with side-by-side view and line numbers
 
+### FZF Configuration
+
+**Managed via `.fzf.zsh` (stowed to `~/.fzf.zsh`)**
+
+**Search Commands:**
+- Uses `fd` (fast find alternative) for file searching
+- Includes hidden files and follows symlinks
+- Excludes .git directories automatically
+
+**Display Options:**
+- 40% screen height with reverse layout
+- Border around window
+- Live preview with `bat` (syntax-highlighted, 500 lines)
+
+**Key Bindings:**
+- `Ctrl+T`: Fuzzy find files and paste path
+- `Ctrl+R`: Fuzzy search command history
+- `Alt+C`: Fuzzy find and cd to directory
+
+**Integration:**
+- Works seamlessly with `fd`, `bat`, and `ripgrep`
+- Compatible with zsh-vi-mode (keybindings work in vi insert mode)
+- Completion and key bindings from homebrew installation
+- Custom preview window with syntax highlighting
+
 ### Neovim Plugins
 
 **LSP & Language Support:**
@@ -304,8 +350,9 @@ Wait for all installations to complete, then restart Neovim.
 - telescope.nvim with fzf extension
 
 **Git:**
-- neogit with diffview integration
-- gitsigns disabled (using neogit)
+- lazygit (via floating terminal with `ALT+h`)
+- diffview.nvim for enhanced diff viewing
+- gitsigns disabled (using lazygit)
 
 **UI Enhancements:**
 - noice.nvim (command line UI)

@@ -1,0 +1,6 @@
+# k9s runtime files - these are user-specific and created at runtime
+aliases.yaml
+benchmarks/
+clusters/
+screen-dumps/
+k9s.log
