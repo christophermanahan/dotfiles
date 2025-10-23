@@ -25,6 +25,17 @@ zmodload zsh/complist
 # This makes entering/exiting vi modes feel instant
 KEYTIMEOUT=1
 
+# Configure zsh-vi-mode BEFORE sourcing the plugin
+function zvm_config() {
+  # Use the better readkey engine (NEX) for improved performance
+  # This engine provides better handling of key sequences and text objects
+  ZVM_READKEY_ENGINE=$ZVM_READKEY_ENGINE_NEX
+
+  # Set key timeout for multi-key sequences (text objects like 'diw', 'ciw')
+  # Default is 0.4 seconds, keeping it low for responsiveness
+  ZVM_KEYTIMEOUT=0.4
+}
+
 # zsh-vi-mode - must load before other plugins that bind keys
 source $(brew --prefix)/opt/zsh-vi-mode/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh
 
