@@ -683,9 +683,10 @@ map({ "n", "t" }, "<A-j>", function()
 
         if success and job_id then
           -- Send command to select cluster with fzf, then launch k9s
+          -- Clear terminal first for a clean interface
           -- If user cancels (ESC), just show the prompt without starting k9s
           local cmd = [[
-ctx=$(kubectl config get-contexts -o name | fzf --height=40% --reverse --border --prompt="Select K8s cluster: " --preview="kubectl config get-contexts {}" --preview-window=down:3:wrap) && k9s --context "$ctx" || echo "Cluster selection cancelled"
+clear && ctx=$(kubectl config get-contexts -o name | fzf --height=40% --reverse --border --prompt="Select K8s cluster: " --preview="kubectl config get-contexts {}" --preview-window=down:3:wrap) && k9s --context "$ctx" || echo "Cluster selection cancelled"
 ]]
           vim.api.nvim_chan_send(job_id, cmd)
           _G.k9s_started = true
