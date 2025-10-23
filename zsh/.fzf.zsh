@@ -18,15 +18,10 @@ export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 # - --preview: show file preview using bat with syntax highlighting
 export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border --preview "bat --color=always --style=numbers --line-range=:500 {}"'
 
-# Load fzf key bindings and completion (installed via homebrew)
-# These provide:
-# - CTRL-T: Paste selected files/directories onto command line
-# - CTRL-R: Search command history
-# - ALT-C:  cd into selected directory
+# Load fzf completion (installed via homebrew)
 if [ -f /opt/homebrew/opt/fzf/shell/completion.zsh ]; then
   source /opt/homebrew/opt/fzf/shell/completion.zsh
 fi
 
-if [ -f /opt/homebrew/opt/fzf/shell/key-bindings.zsh ]; then
-  source /opt/homebrew/opt/fzf/shell/key-bindings.zsh
-fi
+# Note: FZF key bindings (CTRL-T, CTRL-R, ALT-C) are loaded in .zshrc's zvm_after_init()
+# to ensure they work properly with zsh-vi-mode in insert mode
