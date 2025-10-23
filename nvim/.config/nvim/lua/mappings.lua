@@ -574,6 +574,7 @@ map({ "n", "t" }, "<A-k>", function()
       height = 0.85,
       title = "Claude Code 🤖",
       title_pos = "center",
+      winblend = 15,
     }
   }
 
@@ -618,6 +619,7 @@ map({ "n", "t" }, "<A-i>", function()
       height = 0.85,
       title = "multiflexing 💪",
       title_pos = "center",
+      winblend = 15,
     }
   }
 
@@ -662,6 +664,7 @@ map({ "n", "t" }, "<A-j>", function()
       height = 0.85,
       title = "k9s 🚀",
       title_pos = "center",
+      winblend = 15,
     }
   }
 
@@ -740,6 +743,7 @@ map({ "n", "t" }, "<A-h>", function()
       height = 0.85,
       title = "lazygit 🚀",
       title_pos = "center",
+      winblend = 15,
     }
   }
 end, { desc = "terminal toggle lazygit" })
@@ -758,6 +762,7 @@ map({ "n", "t" }, "<A-o>", function()
       height = 0.85,
       title = "Codex CLI 🤖",
       title_pos = "center",
+      winblend = 15,
     }
   }
 
