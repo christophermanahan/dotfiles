@@ -8,9 +8,8 @@ export K9S_CONFIG_DIR="$HOME/.config/k9s"
 autoload -Uz compinit
 compinit
 
-# Starship
+# Starship config path (init happens in zvm_after_init to avoid conflicts)
 export STARSHIP_CONFIG="$HOME/.config/starship/starship.toml"
-eval "$(starship init zsh)"
 
 # zoxide - a better cd command
 eval "$(zoxide init zsh)"
@@ -31,16 +30,22 @@ source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zs
 # Activate autosuggestions
 source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
-# Bind ctrl-space to accept autosuggestion (after zsh-vi-mode loads)
+# Run after zsh-vi-mode loads (fixes conflicts with starship and other plugins)
 function zvm_after_init() {
+  # Initialize starship prompt AFTER zsh-vi-mode to avoid zle-keymap-select conflicts
+  eval "$(starship init zsh)"
+
+  # Bind ctrl-space to accept autosuggestion
   bindkey "^ " autosuggest-accept
+
   # Rebind Tab for completion (zsh-vi-mode overrides it)
   bindkey '^I' expand-or-complete
+
+  # Vi-style navigation in completion menu
   bindkey -M menuselect 'h' vi-backward-char
   bindkey -M menuselect 'j' vi-down-line-or-history
   bindkey -M menuselect 'k' vi-up-line-or-history
   bindkey -M menuselect 'l' vi-forward-char
-
 }
 # Enhanced file viewing
 alias cat="bat"
