@@ -193,6 +193,7 @@ Wait for all installations to complete, then restart Neovim.
 - Each Neovim instance creates a unique tmux session. The session is automatically killed when Neovim exits, preventing orphaned tmux sessions.
 - k9s terminal shows a two-step selection menu (via fzf) on first open: first select cluster, then select namespace (or "all"). Press ESC to cancel selection at either step.
 - Codex CLI terminal auto-starts the `codex` command on first open for quick access to OpenAI's Codex assistant.
+- **To kill a terminal with a running app (like k9s):** Press `Ctrl+q` first to exit terminal mode, then press `ALT+p`. Alternatively, quit the app first (e.g., press `q` in k9s), then `ALT+p` works directly.
 
 #### Window & Display
 | Shortcut | Action |
