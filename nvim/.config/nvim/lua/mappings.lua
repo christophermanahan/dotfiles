@@ -791,9 +791,18 @@ map({ "n", "t" }, "<A-o>", function()
 end, { desc = "terminal toggle openai cli" })
 
 -- ALT+p closes and kills any floating terminal (ALT+i/k/j/h/o)
+-- Note: When in terminal mode with apps like k9s running, press Ctrl+q first to exit terminal mode,
+-- then press ALT+p. Or use this mapping which attempts to kill the process first.
 map({ "n", "t" }, "<A-p>", function()
   local bufnr = vim.api.nvim_get_current_buf()
   if vim.bo[bufnr].buftype == "terminal" then
+    -- Try to get the terminal job_id and stop it gracefully first
+    local success, job_id = pcall(vim.api.nvim_buf_get_var, bufnr, "terminal_job_id")
+    if success and job_id then
+      -- Send SIGTERM to the process
+      vim.fn.jobstop(job_id)
+    end
+
     -- Reset all terminal session tracking so they restart on next toggle
     local nvim_pid = vim.fn.getpid()
     local term_id = "floatTerm_" .. nvim_pid
@@ -808,6 +817,7 @@ map({ "n", "t" }, "<A-p>", function()
     _G.k9s_started = false
     _G.openai_started = false
 
+    -- Delete the buffer (force = true to handle unsaved changes)
     vim.api.nvim_buf_delete(bufnr, { force = true })
   end
 end, { desc = "kill any floating terminal" })
