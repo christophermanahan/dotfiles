@@ -756,7 +756,7 @@ map({ "n", "t" }, "<A-o>", function()
       col = 0.08,
       width = 0.85,
       height = 0.85,
-      title = "OpenAI CLI 🤖",
+      title = "Codex CLI 🤖",
       title_pos = "center",
     }
   }
@@ -778,7 +778,7 @@ map({ "n", "t" }, "<A-o>", function()
         local success, job_id = pcall(vim.api.nvim_buf_get_var, bufnr, "terminal_job_id")
 
         if success and job_id then
-          vim.api.nvim_chan_send(job_id, "clear && openai\n")
+          vim.api.nvim_chan_send(job_id, "clear && codex\n")
           _G.openai_started = true
         else
           vim.notify("Failed to get terminal job_id: " .. tostring(job_id), vim.log.levels.WARN)
