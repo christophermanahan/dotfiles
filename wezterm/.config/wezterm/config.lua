@@ -341,6 +341,7 @@ config = {
 	adjust_window_size_when_changing_font_size = false,
 	window_decorations = "RESIZE",
 	check_for_updates = true,
+	window_background_opacity = 0.85, -- 15% transparency (1.0 = opaque, 0.0 = fully transparent)
 	show_tabs_in_tab_bar = true,
 	use_fancy_tab_bar = true,
 	tab_bar_at_bottom = false,
@@ -354,26 +355,28 @@ config = {
 		top = 0,
 		bottom = 0,
 	},
-	background = {
-		{
-			source = {
-				File = "/Users/" .. os.getenv("USER") .. "/.config/wezterm/apple-logo-terminal-bg.png",
-			},
-			hsb = {
-				hue = 1.0,
-				saturation = 1.02,
-				brightness = 0.25,
-			},
-		},
-		{
-			source = {
-				Color = "#282c35",
-			},
-			width = "100%",
-			height = "100%",
-			opacity = 0.3,
-		},
-	},
+	-- Removed background image to allow window_background_opacity to work
+	-- Background image layers prevent true window transparency
+	-- background = {
+	-- 	{
+	-- 		source = {
+	-- 			File = "/Users/" .. os.getenv("USER") .. "/.config/wezterm/apple-logo-terminal-bg.png",
+	-- 		},
+	-- 		hsb = {
+	-- 			hue = 1.0,
+	-- 			saturation = 1.02,
+	-- 			brightness = 0.25,
+	-- 		},
+	-- 	},
+	-- 	{
+	-- 		source = {
+	-- 			Color = "#282c35",
+	-- 		},
+	-- 		width = "100%",
+	-- 		height = "100%",
+	-- 		opacity = 0.3,
+	-- 	},
+	-- },
 	-- from: https://akos.ma/blog/adopting-wezterm/
 	hyperlink_rules = {
 		-- Matches: a URL in parens: (URL)
