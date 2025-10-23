@@ -21,6 +21,10 @@ alias ls="eza -T -L 1 --git-ignore -a"
 zstyle ':completion:*' menu select
 zmodload zsh/complist
 
+# Reduce ESC key delay for vi mode (default is 40 = 400ms, set to 1 = 10ms)
+# This makes entering/exiting vi modes feel instant
+export KEYTIMEOUT=1
+
 # zsh-vi-mode - must load before other plugins that bind keys
 source $(brew --prefix)/opt/zsh-vi-mode/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh
 
