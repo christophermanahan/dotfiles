@@ -51,9 +51,9 @@ function zvm_after_init() {
   bindkey -M menuselect 'k' vi-up-line-or-history
   bindkey -M menuselect 'l' vi-forward-char
 
-  # Alternative to ESC: 'jk' to enter normal mode
-  # Popular vim escape alternative, easy to type and rarely conflicts with normal text
-  bindkey -M viins 'jk' vi-cmd-mode
+  # Alternative to ESC: Ctrl+J to enter normal mode
+  # Home row key, easy to reach and won't falsely trigger with fast key polling
+  bindkey -M viins '^J' vi-cmd-mode
 }
 # Enhanced file viewing
 alias cat="bat"
