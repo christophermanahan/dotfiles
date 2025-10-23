@@ -568,7 +568,7 @@ map({ "n", "t" }, "<A-k>", function()
     pos = "float",
     id = "claude_term",
     float_opts = {
-      row = 0.05,
+      row = 0.04,
       col = 0.03,
       width = 0.85,
       height = 0.85,
@@ -612,8 +612,8 @@ map({ "n", "t" }, "<A-i>", function()
     pos = "float",
     id = term_id,
     float_opts = {
-      row = 0.05,
-      col = 0.08,
+      row = 0.06,
+      col = 0.09,
       width = 0.85,
       height = 0.85,
       title = "multiflexing 💪",
@@ -656,8 +656,8 @@ map({ "n", "t" }, "<A-j>", function()
     pos = "float",
     id = "k9s_term",
     float_opts = {
-      row = 0.05,
-      col = 0.13,
+      row = 0.08,
+      col = 0.15,
       width = 0.85,
       height = 0.85,
       title = "k9s 🚀",
@@ -734,8 +734,8 @@ map({ "n", "t" }, "<A-h>", function()
     id = "lazygit_term",
     cmd = "lazygit",
     float_opts = {
-      row = 0.05,
-      col = 0.10,
+      row = 0.07,
+      col = 0.12,
       width = 0.85,
       height = 0.85,
       title = "lazygit 🚀",
@@ -753,7 +753,7 @@ map({ "n", "t" }, "<A-o>", function()
     id = "openai_term",
     float_opts = {
       row = 0.05,
-      col = 0.08,
+      col = 0.06,
       width = 0.85,
       height = 0.85,
       title = "Codex CLI 🤖",
