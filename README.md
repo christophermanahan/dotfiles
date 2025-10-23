@@ -256,7 +256,7 @@ Wait for all installations to complete, then restart Neovim.
 | Shortcut | Action |
 |----------|--------|
 | `ESC` | Enter normal mode (10ms delay) |
-| `Ctrl+;` | Enter normal mode (alternative, works in tmux) |
+| `Ctrl+g` | Enter normal mode (alternative, works in all terminals) |
 | `i` | Enter insert mode |
 | `v` | Enter visual mode |
 
