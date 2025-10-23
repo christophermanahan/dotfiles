@@ -23,7 +23,7 @@ zmodload zsh/complist
 
 # Reduce ESC key delay for vi mode (default is 40 = 400ms, set to 1 = 10ms)
 # This makes entering/exiting vi modes feel instant
-export KEYTIMEOUT=1
+KEYTIMEOUT=1
 
 # zsh-vi-mode - must load before other plugins that bind keys
 source $(brew --prefix)/opt/zsh-vi-mode/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh
@@ -51,10 +51,9 @@ function zvm_after_init() {
   bindkey -M menuselect 'k' vi-up-line-or-history
   bindkey -M menuselect 'l' vi-forward-char
 
-  # Alternative to ESC: press 'jk' quickly to enter normal mode
-  # This works in Claude Code terminals without sending interrupt signals
-  # Leaves ESC+ESC available for terminal scrollback/copy mode
-  bindkey -M viins 'jk' vi-cmd-mode
+  # Alternative to ESC: CTRL-c to enter normal mode
+  # More reliable than multi-key sequences and doesn't depend on KEYTIMEOUT
+  bindkey -M viins '^C' vi-cmd-mode
 }
 # Enhanced file viewing
 alias cat="bat"
