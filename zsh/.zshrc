@@ -50,6 +50,11 @@ function zvm_after_init() {
   bindkey -M menuselect 'j' vi-down-line-or-history
   bindkey -M menuselect 'k' vi-up-line-or-history
   bindkey -M menuselect 'l' vi-forward-char
+
+  # Alternative to ESC: press 'jk' quickly to enter normal mode
+  # This works in Claude Code terminals without sending interrupt signals
+  # Leaves ESC+ESC available for terminal scrollback/copy mode
+  bindkey -M viins 'jk' vi-cmd-mode
 }
 # Enhanced file viewing
 alias cat="bat"

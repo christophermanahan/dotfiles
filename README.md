@@ -250,6 +250,14 @@ Wait for all installations to complete, then restart Neovim.
 | `cat` | Enhanced file viewing with syntax highlighting (bat) |
 | `find` | Fast file searching (fd) |
 
+#### Vi Mode
+| Shortcut | Action |
+|----------|--------|
+| `jk` | Enter normal mode (alternative to ESC) |
+| `ESC` | Enter normal mode (leaves ESC+ESC for terminal scrollback) |
+| `i` | Enter insert mode |
+| `v` | Enter visual mode |
+
 #### FZF (Fuzzy Finder)
 | Shortcut | Action |
 |----------|--------|
