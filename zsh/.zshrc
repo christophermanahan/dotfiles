@@ -51,9 +51,9 @@ function zvm_after_init() {
   bindkey -M menuselect 'k' vi-up-line-or-history
   bindkey -M menuselect 'l' vi-forward-char
 
-  # Alternative to ESC: CTRL-c to enter normal mode
-  # More reliable than multi-key sequences and doesn't depend on KEYTIMEOUT
-  bindkey -M viins '^C' vi-cmd-mode
+  # Alternative to ESC: 'jk' to enter normal mode
+  # Popular vim escape alternative, easy to type and rarely conflicts with normal text
+  bindkey -M viins 'jk' vi-cmd-mode
 }
 # Enhanced file viewing
 alias cat="bat"
