@@ -238,6 +238,7 @@ Wait for all installations to complete, then restart Neovim.
 
 ### ZSH
 
+#### General Shell
 | Shortcut | Action |
 |----------|--------|
 | `Ctrl+Space` | Accept autosuggestion |
@@ -245,6 +246,7 @@ Wait for all installations to complete, then restart Neovim.
 | `Arrow keys` or `h/j/k/l` | Navigate completion menu |
 | `Enter` | Accept selected completion |
 | `Esc` | Cancel completion menu |
+| `ALT+n` | Launch nvim instantly |
 | `ls` | Enhanced tree view (eza) with git-ignore |
 | `cd` → `z` | Smart directory jumping (zoxide) |
 | `cat` | Enhanced file viewing with syntax highlighting (bat) |
@@ -253,8 +255,8 @@ Wait for all installations to complete, then restart Neovim.
 #### Vi Mode
 | Shortcut | Action |
 |----------|--------|
-| `jk` | Enter normal mode (alternative to ESC) |
-| `ESC` | Enter normal mode (leaves ESC+ESC for terminal scrollback) |
+| `ESC` | Enter normal mode (10ms delay) |
+| `Ctrl+;` | Enter normal mode (alternative, works in tmux) |
 | `i` | Enter insert mode |
 | `v` | Enter visual mode |
 
