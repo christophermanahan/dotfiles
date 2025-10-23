@@ -648,7 +648,7 @@ map({ "n", "t" }, "<A-i>", function()
   end
 end, { desc = "terminal toggle floating with tmux" })
 
--- ALT+j toggles the k9s terminal and starts k9s on first open
+-- ALT+j toggles the k9s terminal with cluster selection on first open
 map({ "n", "t" }, "<A-j>", function()
   local term = require "nvchad.term"
 
@@ -682,7 +682,12 @@ map({ "n", "t" }, "<A-j>", function()
         local success, job_id = pcall(vim.api.nvim_buf_get_var, bufnr, "terminal_job_id")
 
         if success and job_id then
-          vim.api.nvim_chan_send(job_id, "k9s\n")
+          -- Send command to select cluster with fzf, then launch k9s
+          -- If user cancels (ESC), just show the prompt without starting k9s
+          local cmd = [[
+ctx=$(kubectl config get-contexts -o name | fzf --height=40% --reverse --border --prompt="Select K8s cluster: " --preview="kubectl config get-contexts {}" --preview-window=down:3:wrap) && k9s --context "$ctx" || echo "Cluster selection cancelled"
+]]
+          vim.api.nvim_chan_send(job_id, cmd)
           _G.k9s_started = true
         else
           vim.notify("Failed to get terminal job_id: " .. tostring(job_id), vim.log.levels.WARN)
@@ -692,7 +697,7 @@ map({ "n", "t" }, "<A-j>", function()
       end
     end, 200)
   end
-end, { desc = "terminal toggle k9s" })
+end, { desc = "terminal toggle k9s with cluster selection" })
 
 -- ALT+h toggles the lazygit terminal
 map({ "n", "t" }, "<A-h>", function()

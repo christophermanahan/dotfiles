@@ -181,12 +181,14 @@ Wait for all installations to complete, then restart Neovim.
 |----------|--------|
 | `ALT+i` | Toggle floating tmux terminal (auto-cleanup on exit) |
 | `ALT+k` | Toggle Claude Code terminal |
-| `ALT+j` | Toggle k9s terminal |
+| `ALT+j` | Toggle k9s terminal (cluster selection on first open) |
 | `ALT+h` | Toggle lazygit terminal |
 | `ALT+o` | Kill any floating terminal (restarts on reopen) |
 | `Ctrl+q` | Exit terminal mode to normal mode (allows scrolling) |
 
-**Note:** Each Neovim instance creates a unique tmux session. The session is automatically killed when Neovim exits, preventing orphaned tmux sessions.
+**Note:**
+- Each Neovim instance creates a unique tmux session. The session is automatically killed when Neovim exits, preventing orphaned tmux sessions.
+- k9s terminal shows a cluster selection menu (via fzf) on first open, allowing you to choose from all configured kubectl contexts. Press ESC to cancel selection.
 
 #### Window & Display
 | Shortcut | Action |
