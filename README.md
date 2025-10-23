@@ -385,9 +385,65 @@ Wait for all installations to complete, then restart Neovim.
 - Window zoom indicator
 - Catppuccin-inspired colors
 
+### ZSH Configuration Details
+
+**Performance Optimizations:**
+- `KEYTIMEOUT=1` - Reduces vi mode switching delay from 400ms to 10ms for instant ESC/jk response
+- Starship initialized in `zvm_after_init()` callback to avoid ZLE widget conflicts
+- Proper plugin loading order to prevent infinite recursion
+
+**Vi Mode Features:**
+- Instant mode switching with `jk` or `ESC` (10ms response)
+- Vi-style navigation in completion menu (h/j/k/l)
+- Works seamlessly in Claude Code terminals and floating terminals
+- ESC+ESC preserved for terminal scrollback mode
+
+**Shell Integrations:**
+- FZF with fd/bat for enhanced file finding and previews
+- Zoxide for smart directory jumping
+- Enhanced aliases: cat→bat, find→fd, ls→eza
+- Git aliases: lg (lazygit), gst, gco, gcb, gp, gpl, gcm, glog
+
+**Loading Order (Critical for stability):**
+1. Homebrew environment
+2. Environment variables (K9S_CONFIG_DIR, STARSHIP_CONFIG, KEYTIMEOUT)
+3. Completion system
+4. Zoxide
+5. zsh-vi-mode plugin
+6. Syntax highlighting & autosuggestions
+7. `zvm_after_init()` callback - Starship init & keybindings
+8. FZF configuration
+
+### Troubleshooting
+
+**Issue: "maximum nested function level reached" error**
+- **Cause:** Starship and zsh-vi-mode ZLE widget conflict
+- **Solution:** Already fixed - Starship initializes in `zvm_after_init()`
+- **Prevention:** Never initialize prompt themes before zsh-vi-mode
+
+**Issue: Slow vi mode switching (400ms delay)**
+- **Cause:** Default KEYTIMEOUT=40
+- **Solution:** Already fixed - KEYTIMEOUT=1 set before zsh-vi-mode
+- **Result:** Instant 10ms response for ESC and jk
+
+**Issue: k9s not loading custom skins**
+- **Cause:** MacOS defaults to ~/Library/Application Support/k9s/
+- **Solution:** Already fixed - K9S_CONFIG_DIR forces ~/.config/k9s/
+- **Verification:** Run `echo $K9S_CONFIG_DIR` should show ~/.config/k9s
+
+**Issue: FZF not working (Ctrl+T, Ctrl+R, Alt+C)**
+- **Solution:** Ensure fzf, fd, and bat are installed via homebrew
+- **Check:** `which fzf fd bat` should show homebrew paths
+- **Reload:** `source ~/.zshrc` after installing
+
+**Issue: ESC key interfering with Claude Code**
+- **Solution:** Use `jk` to enter vi normal mode instead
+- **Benefit:** No interrupt signals, preserves ESC+ESC for scrollback
+
 ### Deprecated
 
  - `kitty` (replaced by wezterm)
  - `ohmyzsh` (using minimal zsh config)
  - `powerlevel10k` (replaced by starship)
+ - `neogit` (replaced by lazygit)
 
