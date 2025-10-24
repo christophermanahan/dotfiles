@@ -396,7 +396,7 @@ return {
 
   {
     "williamboman/mason-lspconfig.nvim",
-    event = "BufEnter",
+    event = "User FilePost",
     dependencies = { "mason.nvim" },
     opts = {
       ensure_installed = {
@@ -599,7 +599,23 @@ return {
   {
     "stevearc/dressing.nvim",
     event = "BufEnter",
-    opts = {},
+    opts = {
+      input = {
+        -- Center the input box
+        relative = "editor",
+        prefer_width = 60,
+        max_width = { 140, 0.9 },
+        min_width = { 40, 0.3 },
+        win_options = {
+          winblend = 0,
+        },
+        override = function(conf)
+          conf.col = math.floor((vim.o.columns - conf.width) / 2)
+          conf.row = math.floor(vim.o.lines / 2) - 2
+          return conf
+        end,
+      },
+    },
   },
 
   {
