@@ -38,16 +38,9 @@ Beyond vanilla NvChad:
 - **Optimized for Transparency**: Custom line number colors (bright cyan active line) designed for see-through backgrounds
 - **Smart Terminal Management**: Auto-cleanup of background processes, visibility detection for terminal commands
 
-## Screenshots
+## Demo
 
-### Wezterm with Split Terminals
-![Wezterm Split Terminal](screenshots/wezterm-split-terminal-env.png)
-
-### Neovim with Split Editor
-![Neovim Split Editor](screenshots/nvim-split-editor.png)
-
-### Neovim with Ripgrep Search
-![Neovim Ripgrep Example](screenshots/nvim-ripgrep-example.png)
+*Demo video coming soon - showcasing transparency, integrated developer tools, terminal browsers, AI assistants, and more!*
 
 ## Requirements
 
