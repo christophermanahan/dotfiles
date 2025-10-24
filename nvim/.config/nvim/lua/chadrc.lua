@@ -71,11 +71,25 @@ M.ui = {
     NvimTreeGitIgnored = { fg = "white" },
     NvimTreeGitDirty = { fg = "pink" },
     NvimTreeGitDeleted = { fg = "red" },
-    Visual = { bg = "#383d42" },
     St_gitIcons = { fg = "green" },
     St_Lsp = { fg = "pink" },
+    -- Line numbers (brighter for transparency visibility)
+    LineNr = { fg = "#6c7086" }, -- Darker gray (Catppuccin overlay1)
+    CursorLineNr = { fg = "#74c7ec", bold = true }, -- Bright cyan (Catppuccin sapphire)
+    -- Telescope transparency
     TelescopeNormal = { bg = "NONE" },
     TelescopeBorder = { bg = "NONE" },
+    TelescopePromptNormal = { bg = "NONE" },
+    TelescopePromptBorder = { bg = "NONE" },
+    TelescopePromptTitle = { bg = "NONE" },
+    TelescopeResultsNormal = { bg = "NONE" },
+    TelescopeResultsBorder = { bg = "NONE" },
+    TelescopeResultsTitle = { bg = "NONE" },
+    TelescopePreviewNormal = { bg = "NONE" },
+    TelescopePreviewBorder = { bg = "NONE" },
+    TelescopePreviewTitle = { bg = "NONE" },
+    -- Visual mode highlight (bright for transparency visibility)
+    Visual = { bg = "#89b4fa", fg = "#1e1e2e", bold = true },
     StatusLine = { bg = "NONE" },
     StatusLineNC = { bg = "NONE" },
     TbLineBufOn = { bg = "NONE" },
