@@ -27,16 +27,20 @@ return {
   },
   opts = {
     ---@alias Provider "claude" | "openai" | "azure" | "gemini" | "cohere" | "copilot" | "ollama"
-    provider = "claude", -- Using Claude to match your existing AI setup
+    provider = "claude",
     auto_suggestions_provider = "claude",
 
-    -- Claude configuration
-    claude = {
-      endpoint = "https://api.anthropic.com",
-      model = "claude-sonnet-4-5-20250929", -- Latest: Claude Sonnet 4.5 (best coding model)
-      timeout = 30000,
-      temperature = 0,
-      max_tokens = 8000,
+    -- Provider configurations (new format)
+    providers = {
+      claude = {
+        endpoint = "https://api.anthropic.com",
+        model = "claude-sonnet-4-20250514", -- Claude Sonnet 4.5
+        timeout = 60000,
+        extra_request_body = {
+          temperature = 0,
+          max_tokens = 8192,
+        },
+      },
     },
 
     -- Behavior settings

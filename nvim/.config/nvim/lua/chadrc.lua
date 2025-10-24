@@ -60,6 +60,59 @@ end
 local M = {}
 local path_text = ""
 
+-- Cache git branch to avoid flickering from repeated shell calls
+local git_branch_cache = ""
+local function update_git_branch()
+  vim.schedule(function()
+    local branch = vim.fn.system("git branch --show-current 2>/dev/null"):gsub("\n", "")
+    git_branch_cache = branch
+  end)
+end
+
+-- Update git branch on relevant events
+vim.api.nvim_create_autocmd({ "BufEnter", "FocusGained", "DirChanged" }, {
+  callback = update_git_branch,
+})
+
+-- Initialize git branch on startup
+update_git_branch()
+
+-- Cache LSP clients to avoid repeated queries on statusline refresh
+local lsp_clients_cache = {}
+local function update_lsp_clients(bufnr)
+  if not bufnr then
+    bufnr = vim.api.nvim_get_current_buf()
+  end
+
+  local lsp_names = {}
+  if rawget(vim, "lsp") then
+    for _, client in ipairs(vim.lsp.get_clients { bufnr = bufnr }) do
+      -- Filter out Copilot from LSP status
+      if client.name ~= "copilot" then
+        table.insert(lsp_names, client.name)
+      end
+    end
+  end
+
+  lsp_clients_cache[bufnr] = lsp_names
+end
+
+-- Update LSP cache on attach/detach
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function(args)
+    update_lsp_clients(args.buf)
+  end,
+})
+
+vim.api.nvim_create_autocmd("LspDetach", {
+  callback = function(args)
+    update_lsp_clients(args.buf)
+  end,
+})
+
+-- Initialize LSP cache for current buffer
+update_lsp_clients()
+
 M.ui = {
   hl_override = {
     Normal = { bg = "NONE" },
@@ -102,16 +155,27 @@ M.ui = {
     TbLineThemeToggleBtn = { bg = "NONE" },
     TbLineCloseAllBufsBtn = { bg = "NONE" },
   },
-  hl_add = utils.merge_table(gen_highlights("path", "purple"), gen_highlights("file", "red")),
+  hl_add = utils.merge_table(
+    utils.merge_table(gen_highlights("path", "purple"), gen_highlights("file", "red")),
+    gen_highlights("gitbranch", "cyan")
+  ),
   transparency = true,
   statusline = {
     theme = "minimal",
     separator_style = "round",
-    order = { "cwd", "path", "file", "git", "%=", "lsp", "diagnostics", "cursor", "mode" },
+    order = { "gitbranch", "cwd", "path", "file", "%=", "lsp", "diagnostics", "cursor", "mode" },
     modules = {
+      gitbranch = function()
+        if git_branch_cache ~= "" then
+          return gen_block(git_branch_cache, "", "%#St_gitbranch_sep#", "%#St_gitbranch_bg#", "%#St_gitbranch_txt#")
+        end
+        return ""
+      end,
       path = function()
-        if vim.fn.expand "%" == "NvimTree_1" or vim.fn.expand("%"):sub(1, 4) == "term" or vim.fn.expand "%" == "" then
-          if vim.fn.expand "%" == "" then
+        -- Cache expand call to avoid multiple function calls per statusline refresh
+        local current_file = vim.fn.expand "%"
+        if current_file == "NvimTree_1" or current_file:sub(1, 4) == "term" or current_file == "" then
+          if current_file == "" then
             path_text = ""
             return " %#EmptySpace#"
           elseif #path_text == 0 then
@@ -120,7 +184,7 @@ M.ui = {
             return gen_block(path_text, "", "%#St_path_sep#", "%#St_path_bg#", "%#St_path_txt#")
           end
         else
-          path_text = vim.fn.fnamemodify(vim.fn.expand "%:h", ":p:~:."):sub(1, -2)
+          path_text = vim.fn.fnamemodify(current_file .. ":h", ":p:~:."):sub(1, -2)
           if #path_text == 0 then
             return " %#EmptySpace#"
           end
@@ -135,22 +199,15 @@ M.ui = {
         return gen_block(file_info[1], file_info[2], "%#St_file_sep#", "%#St_file_bg#", "%#St_file_txt#")
       end,
       lsp = function()
-        if rawget(vim, "lsp") then
-          local lsp_names = {}
-          -- Use new API: vim.lsp.get_clients() instead of deprecated get_active_clients()
-          for _, client in ipairs(vim.lsp.get_clients { bufnr = stbufnr() }) do
-            -- Filter out Copilot from LSP status
-            if client.name ~= "copilot" then
-              table.insert(lsp_names, client.name)
-            end
-          end
+        -- Use cached LSP clients to avoid repeated queries
+        local bufnr = stbufnr()
+        local lsp_names = lsp_clients_cache[bufnr] or {}
 
-          if #lsp_names == 0 then
-            return ""
-          end
-
-          return (vim.o.columns > 100 and ("%#St_Lsp#" .. "  " .. table.concat(lsp_names, ", "))) or "  LSP "
+        if #lsp_names == 0 then
+          return ""
         end
+
+        return (vim.o.columns > 100 and ("%#St_Lsp#" .. "  " .. table.concat(lsp_names, ", "))) or "  LSP "
       end,
     },
   },

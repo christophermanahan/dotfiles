@@ -2,6 +2,10 @@ return {
   { "gitsigns", enabled = false },
   { "FelipeLema/cmp-async-path", enabled = false },
   { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+  {
+    "L3MON4D3/LuaSnip",
+    build = "make install_jsregexp",
+  },
 
   {
     "nvim-telescope/telescope.nvim",
@@ -324,6 +328,10 @@ return {
         change_dir = {
           global = true,
         },
+        expand_all = {
+          max_folder_discovery = 1000, -- Increased from default 300 to handle large directories
+          exclude = { ".git", "node_modules", ".cache" },
+        },
       },
       view = {
         adaptive_size = true,
@@ -357,6 +365,10 @@ return {
       },
       update_focused_file = {
         enable = false,
+      },
+      filesystem_watchers = {
+        enable = true,
+        debounce_delay = 200, -- Increased from 50ms to reduce flickering during file operations
       },
     },
   },
@@ -492,7 +504,7 @@ return {
     "rcarriga/nvim-notify",
     lazy = false,
     opts = {
-      fps = 120,
+      fps = 30, -- Reduced from 120 to prevent cursor flickering
       render = "compact",
       stages = "static",
       timeout = 3000,
@@ -518,7 +530,26 @@ return {
       "MunifTanjim/nui.nvim",
       "rcarriga/nvim-notify",
     },
-    opts = {},
+    opts = {
+      lsp = {
+        progress = {
+          enabled = false, -- Disable LSP progress to prevent flickering
+        },
+        signature = {
+          enabled = true,
+          auto_open = {
+            enabled = true,
+            trigger = true,
+            throttle = 100, -- Throttle signature help updates
+          },
+        },
+      },
+      presets = {
+        bottom_search = true,
+        command_palette = true,
+        long_message_to_split = true,
+      },
+    },
   },
 
   {
@@ -543,6 +574,17 @@ return {
   {
     "RRethy/vim-illuminate",
     event = "BufEnter",
+    config = function()
+      require("illuminate").configure {
+        delay = 200, -- Increased from default 100ms to reduce flickering
+        under_cursor = false, -- Don't highlight word under cursor itself
+        filetypes_denylist = {
+          "NvimTree",
+          "trouble",
+          "TelescopePrompt",
+        },
+      }
+    end,
   },
 
   {

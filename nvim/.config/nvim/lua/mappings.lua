@@ -134,7 +134,26 @@ wk.add {
       require("telescope.builtin").find_files {
         prompt_title = " Change Working Directory",
         cwd = vim.fn.expand "~",
-        find_command = { "fd", "--type", "d", "--hidden", "--exclude", ".git", "--max-depth", "5" },
+        find_command = {
+          "fd",
+          "--type", "d",
+          "--hidden",
+          "--max-depth", "3",
+          "--exclude", ".git",
+          "--exclude", "node_modules",
+          "--exclude", ".cache",
+          "--exclude", ".npm",
+          "--exclude", ".cargo",
+          "--exclude", ".local",
+          "--exclude", "Library",
+          "--exclude", "Applications",
+          "--exclude", ".Trash",
+          "--exclude", "target",
+          "--exclude", "dist",
+          "--exclude", "build",
+          "--exclude", ".next",
+          "--exclude", ".venv",
+        },
         previewer = false,
         layout_strategy = "center",
         layout_config = {
@@ -495,6 +514,27 @@ wk.add {
     icon = {
       icon = "",
       color = "blue",
+    },
+  },
+  {
+    "<leader>rc",
+    function()
+      require("base46").compile()
+      vim.notify("Cache regenerated!", vim.log.levels.INFO)
+    end,
+    desc = "regenerate nvchad cache",
+    icon = {
+      icon = "󰑓",
+      color = "orange",
+    },
+  },
+  {
+    "<leader>lp",
+    ":Lazy profile<CR>",
+    desc = "lazy plugin profile",
+    icon = {
+      icon = "󰔚",
+      color = "purple",
     },
   },
   {
