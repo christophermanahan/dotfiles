@@ -4,35 +4,39 @@ Personal development environment configuration using GNU Stow.
 
 ## Features
 
-### Core Tools
-- **Git**: Version control with comprehensive aliases and modern defaults, git-delta integration for enhanced diffs
-- **Wezterm**: Smart terminal with 85% transparency, custom tab formatting, smart-splits integration, and per-directory unique tab colors
-- **Neovim**: NvChad v2.5 with full transparency support, extensive LSP, formatting, completion, and navigation plugins
-- **ZSH**: Vi-mode, autosuggestions, syntax highlighting, FZF integration, and enhanced directory navigation with zoxide
-- **Starship**: Custom prompt with Catppuccin Mocha theme
-- **tmux**: Terminal multiplexer with floating terminal integration in Neovim
+### Core Environment
+- **Git**: Enhanced with delta integration for beautiful side-by-side diffs and extensive time-saving aliases
+- **Wezterm**: Transparent terminal (85% opacity) with unique per-directory tab colors and seamless Neovim split navigation
+- **Neovim**: NvChad v2.5 extended with full transparency, AI assistants, and integrated developer tools
+- **ZSH**: Lightning-fast vi-mode (10ms ESC), smart directory jumping (zoxide), and FZF fuzzy finding
+- **Starship**: Minimal Catppuccin-themed prompt with git status and directory context
+- **tmux**: Floating terminal integration providing isolated shells within Neovim
 
-### Developer Tools (Floating Terminals)
-- **lazygit** (Alt+h): Full-featured Git TUI in floating terminal
-- **lazydocker** (Alt+d): Docker management TUI with container/image/volume control
-- **k9s** (Alt+j): Kubernetes CLI manager with cluster selection menu and 80% namespace picker
-- **Claude Code** (Alt+k): AI-powered development assistant terminal
-- **Codex CLI** (Alt+o): OpenAI Codex assistant for code generation
+### Integrated Developer Tools
+One-keystroke access to full-screen TUIs without leaving Neovim:
+- **lazygit** (Alt+h): Visual Git workflow with staging, commits, rebasing, and branch management
+- **lazydocker** (Alt+d): Complete Docker environment control - containers, images, volumes, logs
+- **k9s** (Alt+j): Kubernetes cluster management with **interactive cluster and namespace selection via FZF**
+- **Claude Code** (Alt+k): AI pair programming assistant in dedicated terminal
+- **Codex CLI** (Alt+o): OpenAI-powered code generation and explanation
 
-### Terminal Browsers
-- **w3m** (Alt+e to toggle, Alt+s to search): Lightweight browser with native vim keybindings, DuckDuckGo Lite integration
-- **Carbonyl** (Alt+c): Chromium-based browser with modern web support (WebGL, video, animations)
-- **Browsh** (Alt+b): Firefox-based browser with best rendering of modern websites
+### Terminal Web Browsers
+Research and browse documentation without leaving your terminal:
+- **w3m** (Alt+e/Alt+s): Lightweight with **native vim keybindings** (j/k/h/l) and **centered search prompts**
+- **Carbonyl** (Alt+c): Full Chromium engine - modern JavaScript, WebGL, video support
+- **Browsh** (Alt+b): Firefox-based rendering for visually complex modern websites
 
-### AI Assistants
-- **Avante.nvim** (Alt+a): Cursor-like AI coding assistant with Claude Sonnet 4.5 integration
-- **CopilotChat**: GitHub Copilot integration for code completion and chat
+### AI Coding Assistants
+- **Avante.nvim** (Alt+a): **Cursor-like inline AI** with sidebar chat, code editing, and Claude Sonnet 4.5 integration
+- **CopilotChat**: Conversational AI for code explanation, refactoring, and debugging
 
-### UI/UX Features
-- **Telescope Transparency**: Fully transparent fuzzy finder matching Wezterm window opacity
-- **Centered Input Prompts**: All vim.ui.input dialogs appear centered with 60-char width
-- **Fuzzy Directory Changer** (leader+cd): Quick directory navigation from home with centered picker
-- **Enhanced Line Numbers**: Optimized colors for visibility with transparency (bright cyan active line)
+### Enhanced UX Features
+Beyond vanilla NvChad:
+- **Full Window Transparency**: Telescope, file trees, floating windows, and status bar all transparent
+- **Centered Input Dialogs**: All prompts appear centered on screen (search, file operations, git commits)
+- **Fuzzy Directory Changer** (leader+cd): Navigate entire home directory with Telescope from anywhere
+- **Optimized for Transparency**: Custom line number colors (bright cyan active line) designed for see-through backgrounds
+- **Smart Terminal Management**: Auto-cleanup of background processes, visibility detection for terminal commands
 
 ## Screenshots
 
@@ -233,31 +237,31 @@ Wait for all installations to complete, then restart Neovim.
 | `<leader>X` | Close all other buffers |
 
 #### Terminal Management
+**One-keystroke access to developer tools and browsers:**
+
 | Shortcut | Action |
 |----------|--------|
-| `ALT+i` | Toggle floating tmux terminal (auto-cleanup on exit) |
-| `ALT+k` | Toggle Claude Code terminal |
-| `ALT+j` | Toggle k9s terminal (cluster + namespace selection on first open) |
-| `ALT+h` | Toggle lazygit terminal |
-| `ALT+d` | Toggle lazydocker terminal (Docker TUI) |
-| `ALT+o` | Toggle Codex CLI terminal (OpenAI Codex) |
-| `ALT+e` | Toggle w3m browser (lightweight, vim keys) |
-| `ALT+s` | Search in w3m (prompts for DuckDuckGo query) |
-| `ALT+c` | Toggle Carbonyl browser (Chromium-based, cutting edge) |
-| `ALT+b` | Toggle Browsh web browser (requires Firefox) |
-| `ALT+a` | Ask Avante AI assistant (Cursor-like AI coding) |
-| `ALT+p` | Kill any floating terminal (restarts on reopen) |
-| `Ctrl+q` | Exit terminal mode to normal mode (allows scrolling) |
+| `ALT+h` | lazygit - Visual Git workflow |
+| `ALT+d` | lazydocker - Docker container management |
+| `ALT+j` | k9s - Kubernetes with FZF cluster/namespace picker |
+| `ALT+k` | Claude Code - AI pair programming |
+| `ALT+o` | Codex CLI - OpenAI code generation |
+| `ALT+i` | tmux - Isolated shell session |
+| `ALT+e` | w3m - Lightweight browser with vim keys |
+| `ALT+s` | w3m search - Centered DuckDuckGo prompt |
+| `ALT+c` | Carbonyl - Full Chromium engine browser |
+| `ALT+b` | Browsh - Firefox-based browser |
+| `ALT+a` | Avante AI - Cursor-like inline assistant |
+| `ALT+p` | Kill terminal - Smart cleanup with process detection |
+| `Ctrl+q` | Exit terminal mode - Switch to normal mode for scrolling |
 
-**Note:**
-- Each Neovim instance creates a unique tmux session. The session is automatically killed when Neovim exits, preventing orphaned tmux sessions.
-- k9s terminal shows a two-step selection menu (via fzf) on first open: first select cluster, then select namespace (or "all"). Press ESC to cancel selection at either step.
-- Codex CLI terminal auto-starts the `codex` command on first open for quick access to OpenAI's Codex assistant.
-- **Browsers:**
-  - **w3m** (ALT+e to toggle, ALT+s to search): Lightweight, native vim keybindings (j/k/h/l), best for documentation and text-heavy sites
-  - **Carbonyl** (ALT+c): Chromium-based, supports modern web (WebGL, video, animations), auto-opens DuckDuckGo
-  - **Browsh** (ALT+b): Firefox-based, requires Firefox installation, best rendering of modern sites
-- **To kill a terminal with a running app (like k9s):** Press `Ctrl+q` first to exit terminal mode, then press `ALT+p`. Alternatively, quit the app first (e.g., press `q` in k9s), then `ALT+p` works directly.
+**Smart Features:**
+- **FZF Cluster Selection**: k9s prompts for cluster then namespace on first open (ESC to cancel either step)
+- **Auto-cleanup**: tmux sessions automatically killed when Neovim exits (no orphaned processes)
+- **Centered Search**: w3m search (ALT+s) opens centered dialog, works whether browser is open or closed
+- **Process Detection**: ALT+p intelligently detects running apps - press Ctrl+q first if app is active, or quit app then ALT+p
+- **Native Vim Keys**: w3m uses j/k/h/l for navigation, perfect for documentation browsing
+- **Modern Web Support**: Carbonyl renders JavaScript/WebGL, Browsh gives full Firefox rendering
 
 #### Window & Display
 | Shortcut | Action |
@@ -430,14 +434,14 @@ Wait for all installations to complete, then restart Neovim.
 - gitsigns disabled (using lazygit)
 
 **UI Enhancements:**
-- noice.nvim (command line UI)
-- nvim-notify (notifications)
-- trouble.nvim (diagnostics)
-- rainbow-delimiters (bracket colorization)
-- catppuccin theme (Mocha flavor, transparent background)
-- dressing.nvim (centered input prompts with 60-char width)
-- Full transparency support (Telescope, NvimTree, all floating windows)
-- Enhanced line numbers (optimized colors for transparent backgrounds)
+- **Full Transparency**: Telescope, file trees, floating windows all see-through (matches Wezterm)
+- **Centered Dialogs**: All input prompts auto-center on screen (dressing.nvim) for focused interaction
+- **Transparency-Optimized Colors**: Line numbers with bright cyan active line, visible through transparent background
+- noice.nvim (modern command line UI with LSP progress)
+- nvim-notify (beautiful notification popups)
+- trouble.nvim (diagnostic quickfix with LSP integration)
+- rainbow-delimiters (colorized bracket pairs for nested code)
+- catppuccin theme (Mocha flavor, customized for transparency)
 
 **Other:**
 - nvim-surround (surround text objects)
@@ -448,15 +452,14 @@ Wait for all installations to complete, then restart Neovim.
 
 ### Wezterm Features
 
-- **85% window transparency** (shows desktop wallpaper through all content)
-- Smart-splits integration for Ctrl+hjkl navigation between Neovim and Wezterm panes
-- Custom tab formatting: tab index, process icon, current directory
-- Per-directory unique tab colors (derived from cwd path hash)
-- Status bar with hostname, date/time, battery indicator
-- Quick launch menu for common tools (Leader+m: k9s, lazygit, lazydocker, btm, htop)
-- Catppuccin Mocha theme (background image commented out for transparency)
-- Process-aware tab icons (nvim, docker, git, k9s, etc.)
-- Diagonal cascade floating terminals for visual distinction
+Unique terminal experience beyond default Wezterm:
+- **Seamless Neovim Integration**: Ctrl+hjkl navigates between Neovim splits AND Wezterm panes (smart-splits)
+- **Visual Context at a Glance**: Each directory gets a unique tab color (deterministic from path), instant visual orientation
+- **Process-Aware Tabs**: Tab icons automatically change based on running process (nvim 󰈹, docker , git , etc.)
+- **Transparency Throughout**: 85% window opacity reveals desktop wallpaper, Catppuccin Mocha theme optimized for see-through design
+- **Quick Launch Productivity**: Leader+m instantly opens menu for k9s, lazygit, lazydocker, btm, htop
+- **Smart Tab Formatting**: Tab shows index + process + shortened directory path for efficient navigation
+- **Diagonal Cascade Pattern**: Floating terminals offset for easy visual distinction and layered appearance
 
 ### tmux Configuration
 
