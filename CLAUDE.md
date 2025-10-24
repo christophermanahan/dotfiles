@@ -40,7 +40,8 @@ Built on NvChad v2.5 with Lazy.nvim plugin manager.
 
 **Entry point:** `nvim/.config/nvim/init.lua`
 
-**Plugin management:**
+**Configuration:**
+- Theme & UI config: `nvim/.config/nvim/lua/nvconfig.lua` (NvChad v2.5 standard)
 - Primary plugins: `nvim/.config/nvim/lua/plugins/init.lua`
 - DAP configuration: `nvim/.config/nvim/lua/plugins/dap.lua`
 - Custom mappings: `nvim/.config/nvim/lua/mappings.lua`
