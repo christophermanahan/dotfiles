@@ -4,14 +4,35 @@ Personal development environment configuration using GNU Stow.
 
 ## Features
 
-- **Git**: Version control with comprehensive aliases and modern defaults
-- **Wezterm**: Smart terminal with custom tab formatting, smart-splits integration, and per-directory tab colors
-- **Neovim**: NvChad v2.5 with extensive LSP, formatting, completion, and navigation plugins
-- **ZSH**: Vi-mode, autosuggestions, syntax highlighting, FZF integration, and enhanced directory navigation
+### Core Tools
+- **Git**: Version control with comprehensive aliases and modern defaults, git-delta integration for enhanced diffs
+- **Wezterm**: Smart terminal with 85% transparency, custom tab formatting, smart-splits integration, and per-directory unique tab colors
+- **Neovim**: NvChad v2.5 with full transparency support, extensive LSP, formatting, completion, and navigation plugins
+- **ZSH**: Vi-mode, autosuggestions, syntax highlighting, FZF integration, and enhanced directory navigation with zoxide
 - **Starship**: Custom prompt with Catppuccin Mocha theme
 - **tmux**: Terminal multiplexer with floating terminal integration in Neovim
-- **k9s**: Kubernetes CLI manager with cross-platform config (~/.config/k9s/ via K9S_CONFIG_DIR) and dedicated Neovim terminal with cluster/namespace selection
-- **Codex CLI**: OpenAI Codex assistant with dedicated floating terminal in Neovim
+
+### Developer Tools (Floating Terminals)
+- **lazygit** (Alt+h): Full-featured Git TUI in floating terminal
+- **lazydocker** (Alt+d): Docker management TUI with container/image/volume control
+- **k9s** (Alt+j): Kubernetes CLI manager with cluster selection menu and 80% namespace picker
+- **Claude Code** (Alt+k): AI-powered development assistant terminal
+- **Codex CLI** (Alt+o): OpenAI Codex assistant for code generation
+
+### Terminal Browsers
+- **w3m** (Alt+e to toggle, Alt+s to search): Lightweight browser with native vim keybindings, DuckDuckGo Lite integration
+- **Carbonyl** (Alt+c): Chromium-based browser with modern web support (WebGL, video, animations)
+- **Browsh** (Alt+b): Firefox-based browser with best rendering of modern websites
+
+### AI Assistants
+- **Avante.nvim** (Alt+a): Cursor-like AI coding assistant with Claude Sonnet 4.5 integration
+- **CopilotChat**: GitHub Copilot integration for code completion and chat
+
+### UI/UX Features
+- **Telescope Transparency**: Fully transparent fuzzy finder matching Wezterm window opacity
+- **Centered Input Prompts**: All vim.ui.input dialogs appear centered with 60-char width
+- **Fuzzy Directory Changer** (leader+cd): Quick directory navigation from home with centered picker
+- **Enhanced Line Numbers**: Optimized colors for visibility with transparency (bright cyan active line)
 
 ## Screenshots
 
@@ -26,41 +47,67 @@ Personal development environment configuration using GNU Stow.
 
 ## Requirements
 
+### Essential Tools
  - git
  - git-delta (optional but recommended for enhanced diffs)
- - eza
- - zoxide
- - stow
- - wezterm
- - starship
- - neovim
+ - stow (GNU Stow for symlink management)
+ - neovim (0.9+)
  - font-hack-nerd-font
- - ripgrep
- - tmux
- - k9s
- - lazydocker (Docker TUI)
- - fzf (fuzzy finder)
- - fd (find alternative)
- - bat (cat alternative with syntax highlighting)
- - codex (OpenAI Codex CLI)
- - w3m (lightweight terminal browser with vim keys)
- - carbonyl (Chromium-based terminal browser, via npm)
- - browsh (terminal web browser, requires Firefox)
+
+### Shell & Terminal
  - zsh
  - zsh-vi-mode
  - zsh-autosuggestions
  - zsh-syntax-highlighting
+ - wezterm
+ - starship (prompt)
+ - tmux
+
+### CLI Utilities
+ - eza (modern ls replacement)
+ - zoxide (smart directory jumping)
+ - ripgrep (fast grep alternative)
+ - fzf (fuzzy finder)
+ - fd (find alternative)
+ - bat (cat with syntax highlighting)
+
+### Developer Tools
+ - lazygit (Git TUI)
+ - lazydocker (Docker TUI)
+ - k9s (Kubernetes TUI)
+ - codex (OpenAI Codex CLI)
+
+### Terminal Browsers
+ - w3m (lightweight, vim keys)
+ - carbonyl (Chromium-based, via npm)
+ - browsh (Firefox-based, requires Firefox)
 
 ## Installation
 
 ### 1. Install Homebrew dependencies
 
 ```bash
-brew install eza zoxide stow zsh zsh-vi-mode zsh-autosuggestions zsh-syntax-highlighting starship neovim ripgrep tmux k9s lazydocker git-delta fzf fd bat codex w3m
+# Essential CLI tools and shell
+brew install git git-delta stow neovim eza zoxide ripgrep fzf fd bat
+
+# Shell configuration
+brew install zsh zsh-vi-mode zsh-autosuggestions zsh-syntax-highlighting starship
+
+# Terminal and multiplexer
+brew install tmux
+brew install --cask wezterm firefox
+
+# Developer TUIs
+brew install lazygit lazydocker k9s codex
+
+# Terminal browsers
+brew install w3m
 brew tap browsh-org/homebrew-browsh
 brew install browsh
 npm install -g carbonyl
-brew install --cask font-hack-nerd-font wezterm firefox
+
+# Fonts
+brew install --cask font-hack-nerd-font
 ```
 
 ### 2. Clone dotfiles repository
@@ -388,6 +435,9 @@ Wait for all installations to complete, then restart Neovim.
 - trouble.nvim (diagnostics)
 - rainbow-delimiters (bracket colorization)
 - catppuccin theme (Mocha flavor, transparent background)
+- dressing.nvim (centered input prompts with 60-char width)
+- Full transparency support (Telescope, NvimTree, all floating windows)
+- Enhanced line numbers (optimized colors for transparent backgrounds)
 
 **Other:**
 - nvim-surround (surround text objects)
@@ -398,13 +448,15 @@ Wait for all installations to complete, then restart Neovim.
 
 ### Wezterm Features
 
-- Smart-splits integration for Ctrl+hjkl navigation
+- **85% window transparency** (shows desktop wallpaper through all content)
+- Smart-splits integration for Ctrl+hjkl navigation between Neovim and Wezterm panes
 - Custom tab formatting: tab index, process icon, current directory
-- Per-directory unique tab colors (derived from cwd path)
-- Status bar with hostname, date/time, battery
-- Quick launch menu for common tools (Leader+m)
-- Catppuccin Mocha theme with background image overlay
-- Process-aware tab icons (nvim, docker, git, etc.)
+- Per-directory unique tab colors (derived from cwd path hash)
+- Status bar with hostname, date/time, battery indicator
+- Quick launch menu for common tools (Leader+m: k9s, lazygit, lazydocker, btm, htop)
+- Catppuccin Mocha theme (background image commented out for transparency)
+- Process-aware tab icons (nvim, docker, git, k9s, etc.)
+- Diagonal cascade floating terminals for visual distinction
 
 ### tmux Configuration
 
