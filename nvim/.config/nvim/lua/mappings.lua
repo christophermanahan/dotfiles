@@ -127,6 +127,43 @@ wk.add {
     icon = "󰟢",
   },
   {
+    "<leader>cd",
+    function()
+      local actions = require "telescope.actions"
+      local action_state = require "telescope.actions.state"
+      require("telescope.builtin").find_files {
+        prompt_title = " Change Working Directory",
+        cwd = vim.fn.expand "~",
+        find_command = { "fd", "--type", "d", "--hidden", "--exclude", ".git", "--max-depth", "5" },
+        previewer = false,
+        layout_strategy = "center",
+        layout_config = {
+          height = 0.4,
+          width = 0.5,
+          preview_cutoff = 1,
+        },
+        sorting_strategy = "ascending",
+        attach_mappings = function(prompt_bufnr, map)
+          actions.select_default:replace(function()
+            actions.close(prompt_bufnr)
+            local selection = action_state.get_selected_entry()
+            if selection then
+              local dir = selection.path or selection[1]
+              vim.cmd("cd " .. vim.fn.fnameescape(dir))
+              print(" Changed to: " .. dir)
+            end
+          end)
+          return true
+        end,
+      }
+    end,
+    desc = "change directory (fuzzy)",
+    icon = {
+      icon = "",
+      color = "azure",
+    },
+  },
+  {
     mode = { "n", "v" }, -- NORMAL and VISUAL mode
     {
       "ga",
@@ -568,8 +605,8 @@ map({ "n", "t" }, "<A-k>", function()
     pos = "float",
     id = "claude_term",
     float_opts = {
-      row = 0.04,
-      col = 0.03,
+      row = 0.02, -- ALT+k: Claude Code (top-left)
+      col = 0.02,
       width = 0.85,
       height = 0.85,
       title = "Claude Code 🤖",
@@ -612,8 +649,8 @@ map({ "n", "t" }, "<A-i>", function()
     pos = "float",
     id = term_id,
     float_opts = {
-      row = 0.06,
-      col = 0.09,
+      row = 0.04, -- ALT+i: Tmux terminal
+      col = 0.04,
       width = 0.85,
       height = 0.85,
       title = "multiflexing 💪",
@@ -656,8 +693,8 @@ map({ "n", "t" }, "<A-j>", function()
     pos = "float",
     id = "k9s_term",
     float_opts = {
-      row = 0.08,
-      col = 0.15,
+      row = 0.06, -- ALT+j: k9s
+      col = 0.06,
       width = 0.85,
       height = 0.85,
       title = "k9s 🚀",
@@ -695,7 +732,7 @@ ctx=$(kubectl config get-contexts -o name | \
       --preview-window=down:3:wrap) && \
 if [ -n "$ctx" ]; then
   ns=$(echo -e "all\n$(kubectl --context "$ctx" get namespaces -o jsonpath='{.items[*].metadata.name}' | tr ' ' '\n')" | \
-    fzf --height=40% --reverse --border \
+    fzf --height=80% --reverse --border \
         --prompt="Select namespace ($ctx): " \
         --preview="if [ {} = 'all' ]; then echo 'View all namespaces'; else kubectl --context $ctx get pods -n {} 2>/dev/null | head -20; fi" \
         --preview-window=down:10:wrap)
@@ -734,8 +771,8 @@ map({ "n", "t" }, "<A-h>", function()
     id = "lazygit_term",
     cmd = "lazygit",
     float_opts = {
-      row = 0.07,
-      col = 0.12,
+      row = 0.08, -- ALT+h: Lazygit
+      col = 0.08,
       width = 0.85,
       height = 0.85,
       title = "lazygit 🚀",
@@ -752,8 +789,8 @@ map({ "n", "t" }, "<A-o>", function()
     pos = "float",
     id = "openai_term",
     float_opts = {
-      row = 0.05,
-      col = 0.06,
+      row = 0.10, -- ALT+o: OpenAI CLI
+      col = 0.10,
       width = 0.85,
       height = 0.85,
       title = "Codex CLI 🤖",
@@ -790,37 +827,264 @@ map({ "n", "t" }, "<A-o>", function()
   end
 end, { desc = "terminal toggle openai cli" })
 
--- ALT+p closes and kills any floating terminal (ALT+i/k/j/h/o)
+-- ALT+b: Toggle browsh (terminal web browser)
+map({ "n", "t" }, "<A-b>", function()
+  require("nvchad.term").toggle {
+    pos = "float",
+    id = "browshTerm",
+    float_opts = {
+      row = 0.12, -- ALT+b: Browsh browser (larger window)
+      col = 0.12,
+      width = 0.84,
+      height = 0.84,
+      border = "single",
+      title = " 󰖟 Browsh Browser ",
+      title_pos = "center",
+    },
+  }
+
+  -- Auto-start browsh on first open
+  if not _G.browsh_started then
+    vim.defer_fn(function()
+      _G.browsh_started = true
+      local bufnr = vim.api.nvim_get_current_buf()
+      if vim.bo[bufnr].buftype == "terminal" then
+        local chan = vim.b[bufnr].terminal_job_id
+        if chan then
+          vim.api.nvim_chan_send(chan, "browsh\n")
+        end
+      end
+    end, 200)
+  end
+end, { desc = "terminal toggle browsh browser" })
+
+-- ALT+d: Toggle lazydocker (Docker TUI)
+map({ "n", "t" }, "<A-d>", function()
+  require("nvchad.term").toggle {
+    pos = "float",
+    id = "lazydockerTerm",
+    float_opts = {
+      row = 0.03, -- ALT+d: Lazydocker (large window)
+      col = 0.03,
+      width = 0.9,
+      height = 0.9,
+      border = "single",
+      title = "  Lazydocker ",
+      title_pos = "center",
+    },
+  }
+
+  -- Auto-start lazydocker on first open
+  if not _G.lazydocker_started then
+    vim.defer_fn(function()
+      _G.lazydocker_started = true
+      local bufnr = vim.api.nvim_get_current_buf()
+      if vim.bo[bufnr].buftype == "terminal" then
+        local chan = vim.b[bufnr].terminal_job_id
+        if chan then
+          vim.api.nvim_chan_send(chan, "lazydocker\n")
+        end
+      end
+    end, 200)
+  end
+end, { desc = "terminal toggle lazydocker" })
+
+-- ALT+e: Toggle w3m terminal (opens DuckDuckGo Lite by default)
+map({ "n", "t" }, "<A-e>", function()
+  require("nvchad.term").toggle {
+    pos = "float",
+    id = "w3mTerm",
+    float_opts = {
+      row = 0.05,
+      col = 0.05,
+      width = 0.85,
+      height = 0.85,
+      border = "single",
+      title = " 󰖟 w3m Browser (vim keys) ",
+      title_pos = "center",
+    },
+  }
+
+  -- Auto-start w3m with DuckDuckGo Lite on first open
+  if not _G.w3m_started then
+    vim.defer_fn(function()
+      _G.w3m_started = true
+      local bufnr = vim.api.nvim_get_current_buf()
+      if vim.bo[bufnr].buftype == "terminal" then
+        local chan = vim.b[bufnr].terminal_job_id
+        if chan then
+          vim.api.nvim_chan_send(chan, "w3m 'https://lite.duckduckgo.com/lite/'\n")
+        end
+      end
+    end, 200)
+  end
+end, { desc = "terminal toggle w3m" })
+
+-- ALT+s: Search in w3m (prompts for query, opens or navigates w3m)
+map({ "n", "t" }, "<A-s>", function()
+  -- Use a centered input box with dressing.nvim styling
+  vim.ui.input({
+    prompt = "🔍 DuckDuckGo Search: ",
+    default = "",
+    -- Dressing.nvim will handle the centered layout based on config
+  }, function(query)
+    if not query or query == "" then
+      return -- User cancelled
+    end
+
+    -- Encode the search query for URL
+    local encoded_query = query:gsub(" ", "+")
+    local search_url = "https://lite.duckduckgo.com/lite/?q=" .. encoded_query
+
+    -- Find the w3m terminal buffer and check if it's visible
+    local w3m_bufnr = nil
+    local w3m_visible = false
+    for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+      if vim.api.nvim_buf_is_valid(buf) and vim.bo[buf].buftype == "terminal" then
+        local term_id = vim.b[buf].term_id
+        if term_id == "w3mTerm" then
+          w3m_bufnr = buf
+          -- Check if this buffer is visible in any window
+          for _, win in ipairs(vim.api.nvim_list_wins()) do
+            if vim.api.nvim_win_get_buf(win) == buf then
+              w3m_visible = true
+              break
+            end
+          end
+          break
+        end
+      end
+    end
+
+    if w3m_bufnr and w3m_visible then
+      -- w3m is open and visible, send new search
+      local chan = vim.b[w3m_bufnr].terminal_job_id
+      if chan then
+        vim.api.nvim_chan_send(chan, "w3m '" .. search_url .. "'\n")
+      end
+    else
+      -- w3m not visible, open it with the search
+      _G.w3m_started = true
+      require("nvchad.term").toggle {
+        pos = "float",
+        id = "w3mTerm",
+        float_opts = {
+          row = 0.05,
+          col = 0.05,
+          width = 0.85,
+          height = 0.85,
+          border = "single",
+          title = " 󰖟 w3m Browser (vim keys) ",
+          title_pos = "center",
+        },
+      }
+
+      -- Start w3m with the search query
+      vim.defer_fn(function()
+        local bufnr = vim.api.nvim_get_current_buf()
+        if vim.bo[bufnr].buftype == "terminal" then
+          local chan = vim.b[bufnr].terminal_job_id
+          if chan then
+            vim.api.nvim_chan_send(chan, "w3m '" .. search_url .. "'\n")
+          end
+        end
+      end, 200)
+    end
+  end)
+end, { desc = "w3m search" })
+
+-- ALT+c: Toggle carbonyl (cutting-edge Chromium browser)
+map({ "n", "t" }, "<A-c>", function()
+  require("nvchad.term").toggle {
+    pos = "float",
+    id = "carbonylTerm",
+    float_opts = {
+      row = 0.09, -- ALT+c: Carbonyl browser
+      col = 0.09,
+      width = 0.88,
+      height = 0.88,
+      border = "single",
+      title = " 󰈹 Carbonyl Browser (Chromium) ",
+      title_pos = "center",
+    },
+  }
+
+  -- Auto-start carbonyl on first open with ChatGPT
+  if not _G.carbonyl_started then
+    vim.defer_fn(function()
+      _G.carbonyl_started = true
+      local bufnr = vim.api.nvim_get_current_buf()
+      if vim.bo[bufnr].buftype == "terminal" then
+        local chan = vim.b[bufnr].terminal_job_id
+        if chan then
+          vim.api.nvim_chan_send(chan, "carbonyl https://chatgpt.com\n")
+        end
+      end
+    end, 200)
+  end
+end, { desc = "terminal toggle carbonyl browser" })
+
+-- ALT+p closes and kills any floating terminal (ALT+i/k/j/h/o/b/d/e/c)
 -- Note: When in terminal mode with apps like k9s running, press Ctrl+q first to exit terminal mode,
 -- then press ALT+p. Or use this mapping which attempts to kill the process first.
 map({ "n", "t" }, "<A-p>", function()
   local bufnr = vim.api.nvim_get_current_buf()
   if vim.bo[bufnr].buftype == "terminal" then
-    -- Try to get the terminal job_id and stop it gracefully first
-    local success, job_id = pcall(vim.api.nvim_buf_get_var, bufnr, "terminal_job_id")
-    if success and job_id then
-      -- Send SIGTERM to the process
-      vim.fn.jobstop(job_id)
-    end
-
-    -- Reset all terminal session tracking so they restart on next toggle
     local nvim_pid = vim.fn.getpid()
     local term_id = "floatTerm_" .. nvim_pid
 
-    -- Reset tmux session tracking
-    if _G.tmux_sessions then
+    -- Kill tmux session if this is a tmux terminal
+    if _G.tmux_sessions and _G.tmux_sessions[term_id] then
+      local session_name = "nvim_" .. nvim_pid
+      vim.fn.system("tmux kill-session -t " .. session_name .. " 2>/dev/null")
       _G.tmux_sessions[term_id] = nil
     end
 
-    -- Reset Claude, k9s, and OpenAI tracking
+    -- Try to stop the terminal job for other processes (k9s, openai, etc)
+    local success, job_id = pcall(vim.api.nvim_buf_get_var, bufnr, "terminal_job_id")
+    if success and job_id then
+      vim.fn.jobstop(job_id)
+    end
+
+    -- Reset all terminal session tracking
     _G.claude_started = false
     _G.k9s_started = false
     _G.openai_started = false
+    _G.browsh_started = false
+    _G.lazydocker_started = false
+    _G.w3m_started = false
+    _G.carbonyl_started = false
 
     -- Delete the buffer (force = true to handle unsaved changes)
     vim.api.nvim_buf_delete(bufnr, { force = true })
   end
 end, { desc = "kill any floating terminal" })
+
+-- Avante.nvim AI assistant keybindings
+-- Using ALT+a for "Avante" to match the pattern of other tools (ALT+h, ALT+j, ALT+k, etc)
+map({ "n", "v" }, "<A-a>", function()
+  require("avante.api").ask()
+end, { desc = "avante: ask" })
+
+map({ "n", "v" }, "<leader>aa", function()
+  require("avante.api").ask()
+end, { desc = "avante: ask" })
+
+map("n", "<leader>ar", function()
+  require("avante.api").refresh()
+end, { desc = "avante: refresh" })
+
+map("v", "<leader>ae", function()
+  require("avante.api").edit()
+end, { desc = "avante: edit selection" })
+
+map("n", "<leader>af", function()
+  require("avante.api").focus()
+end, { desc = "avante: focus sidebar" })
+
+map("n", "<leader>at", function()
+  require("avante").toggle()
+end, { desc = "avante: toggle sidebar" })
 
 -- Cleanup: Kill tmux session when Neovim exits
 -- This prevents orphaned tmux sessions when closing wezterm tabs
