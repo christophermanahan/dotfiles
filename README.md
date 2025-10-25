@@ -38,10 +38,14 @@ Personal development environment configuration using GNU Stow.
  - ripgrep
  - tmux
  - k9s
+ - lazydocker (Docker TUI)
  - fzf (fuzzy finder)
  - fd (find alternative)
  - bat (cat alternative with syntax highlighting)
  - codex (OpenAI Codex CLI)
+ - w3m (lightweight terminal browser with vim keys)
+ - carbonyl (Chromium-based terminal browser, via npm)
+ - browsh (terminal web browser, requires Firefox)
  - zsh
  - zsh-vi-mode
  - zsh-autosuggestions
@@ -52,8 +56,11 @@ Personal development environment configuration using GNU Stow.
 ### 1. Install Homebrew dependencies
 
 ```bash
-brew install eza zoxide stow zsh zsh-vi-mode zsh-autosuggestions zsh-syntax-highlighting starship neovim ripgrep tmux k9s git-delta fzf fd bat codex
-brew install --cask font-hack-nerd-font wezterm
+brew install eza zoxide stow zsh zsh-vi-mode zsh-autosuggestions zsh-syntax-highlighting starship neovim ripgrep tmux k9s lazydocker git-delta fzf fd bat codex w3m
+brew tap browsh-org/homebrew-browsh
+brew install browsh
+npm install -g carbonyl
+brew install --cask font-hack-nerd-font wezterm firefox
 ```
 
 ### 2. Clone dotfiles repository
@@ -185,7 +192,13 @@ Wait for all installations to complete, then restart Neovim.
 | `ALT+k` | Toggle Claude Code terminal |
 | `ALT+j` | Toggle k9s terminal (cluster + namespace selection on first open) |
 | `ALT+h` | Toggle lazygit terminal |
+| `ALT+d` | Toggle lazydocker terminal (Docker TUI) |
 | `ALT+o` | Toggle Codex CLI terminal (OpenAI Codex) |
+| `ALT+e` | Toggle w3m browser (lightweight, vim keys) |
+| `ALT+s` | Search in w3m (prompts for DuckDuckGo query) |
+| `ALT+c` | Toggle Carbonyl browser (Chromium-based, cutting edge) |
+| `ALT+b` | Toggle Browsh web browser (requires Firefox) |
+| `ALT+a` | Ask Avante AI assistant (Cursor-like AI coding) |
 | `ALT+p` | Kill any floating terminal (restarts on reopen) |
 | `Ctrl+q` | Exit terminal mode to normal mode (allows scrolling) |
 
@@ -193,6 +206,10 @@ Wait for all installations to complete, then restart Neovim.
 - Each Neovim instance creates a unique tmux session. The session is automatically killed when Neovim exits, preventing orphaned tmux sessions.
 - k9s terminal shows a two-step selection menu (via fzf) on first open: first select cluster, then select namespace (or "all"). Press ESC to cancel selection at either step.
 - Codex CLI terminal auto-starts the `codex` command on first open for quick access to OpenAI's Codex assistant.
+- **Browsers:**
+  - **w3m** (ALT+e to toggle, ALT+s to search): Lightweight, native vim keybindings (j/k/h/l), best for documentation and text-heavy sites
+  - **Carbonyl** (ALT+c): Chromium-based, supports modern web (WebGL, video, animations), auto-opens DuckDuckGo
+  - **Browsh** (ALT+b): Firefox-based, requires Firefox installation, best rendering of modern sites
 - **To kill a terminal with a running app (like k9s):** Press `Ctrl+q` first to exit terminal mode, then press `ALT+p`. Alternatively, quit the app first (e.g., press `q` in k9s), then `ALT+p` works directly.
 
 #### Window & Display
@@ -210,6 +227,7 @@ Wait for all installations to complete, then restart Neovim.
 | `<leader>w` | Write (save) |
 | `<leader>q` | Quit |
 | `<leader>Q` | Quit all |
+| `<leader>cd` | Change working directory (fuzzy finder) |
 
 ### tmux
 
@@ -348,6 +366,11 @@ Wait for all installations to complete, then restart Neovim.
 - nvim-cmp with Copilot integration
 - LSP prioritized over Copilot suggestions
 - Signature help enabled
+
+**AI Assistance:**
+- avante.nvim (Cursor-like AI coding assistant with Claude integration)
+- Keybindings: `ALT+a` to ask, `<leader>aa` to ask, `<leader>ae` to edit selection, `<leader>at` to toggle sidebar
+- CopilotChat.nvim for GitHub Copilot integration
 
 **Navigation:**
 - smart-splits.nvim (seamless pane navigation with wezterm)

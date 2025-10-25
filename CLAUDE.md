@@ -54,6 +54,7 @@ Built on NvChad v2.5 with Lazy.nvim plugin manager.
 - Navigation: smart-splits.nvim for seamless pane navigation with wezterm, flash.nvim for quick jumps
 - Git: lazygit (floating terminal via `ALT+h`) with diffview integration (gitsigns disabled)
 - Kubernetes: k9s (floating terminal via `ALT+j`) with cluster selection menu on first open
+- AI Assistant: avante.nvim (Cursor-like AI coding assistant) with Claude integration
 - UI enhancements: noice.nvim, nvim-notify, trouble.nvim, rainbow-delimiters
 
 **Important notes:**

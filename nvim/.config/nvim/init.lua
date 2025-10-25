@@ -32,8 +32,7 @@ require("lazy").setup({
 }, lazy_config)
 
 -- load theme
-dofile(vim.g.base46_cache .. "defaults")
-dofile(vim.g.base46_cache .. "statusline")
+pcall(dofile, vim.g.base46_cache .. "statusline")
 
 require "nvchad.autocmds"
 
@@ -47,17 +46,35 @@ vim.api.nvim_create_autocmd("ColorScheme", {
       "SignColumn",
       "NvimTreeNormal",
       "NvimTreeNormalNC",
-      "StatusLine",
-      "StatusLineNC",
       "TbLineBufOn",
       "TbLineBufOff",
       "TblineFill",
       "TelescopeNormal",
       "TelescopeBorder",
+      "TelescopePromptNormal",
+      "TelescopePromptBorder",
+      "TelescopePromptTitle",
+      "TelescopeResultsNormal",
+      "TelescopeResultsBorder",
+      "TelescopeResultsTitle",
+      "TelescopePreviewNormal",
+      "TelescopePreviewBorder",
+      "TelescopePreviewTitle",
     }
     for _, hl in ipairs(highlights) do
       vim.api.nvim_set_hl(0, hl, { bg = "NONE" })
     end
+
+    -- Set Visual highlight for better visibility with transparency
+    vim.api.nvim_set_hl(0, "Visual", {
+      bg = "#89b4fa", -- Catppuccin blue (bright for visibility)
+      fg = "#1e1e2e", -- Dark text for contrast
+      bold = true,
+    })
+
+    -- Set line numbers for better visibility with transparency
+    vim.api.nvim_set_hl(0, "LineNr", { fg = "#6c7086" })                    -- Darker gray (Catppuccin overlay1)
+    vim.api.nvim_set_hl(0, "CursorLineNr", { fg = "#74c7ec", bold = true }) -- Bright cyan (Catppuccin sapphire)
   end,
 })
 
@@ -69,16 +86,61 @@ vim.schedule(function()
     "SignColumn",
     "NvimTreeNormal",
     "NvimTreeNormalNC",
-    "StatusLine",
-    "StatusLineNC",
     "TbLineBufOn",
     "TbLineBufOff",
     "TblineFill",
     "TelescopeNormal",
     "TelescopeBorder",
+    "TelescopePromptNormal",
+    "TelescopePromptBorder",
+    "TelescopePromptTitle",
+    "TelescopeResultsNormal",
+    "TelescopeResultsBorder",
+    "TelescopeResultsTitle",
+    "TelescopePreviewNormal",
+    "TelescopePreviewBorder",
+    "TelescopePreviewTitle",
   }
   for _, hl in ipairs(highlights) do
     vim.api.nvim_set_hl(0, hl, { bg = "NONE" })
   end
+
+  -- Set Visual highlight for better visibility with transparency
+  vim.api.nvim_set_hl(0, "Visual", {
+    bg = "#89b4fa", -- Catppuccin blue (bright for visibility)
+    fg = "#1e1e2e", -- Dark text for contrast
+    bold = true,
+  })
+
+  -- Set line numbers for better visibility with transparency
+  vim.api.nvim_set_hl(0, "LineNr", { fg = "#6c7086" })                    -- Darker gray (Catppuccin overlay1)
+  vim.api.nvim_set_hl(0, "CursorLineNr", { fg = "#74c7ec", bold = true }) -- Bright cyan (Catppuccin sapphire)
+
   require "mappings"
 end)
+
+-- Force Telescope transparency when it opens
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "TelescopePrompt",
+  callback = function()
+    vim.schedule(function()
+      local telescope_highlights = {
+        "TelescopeNormal",
+        "TelescopeBorder",
+        "TelescopePromptNormal",
+        "TelescopePromptBorder",
+        "TelescopePromptTitle",
+        "TelescopePromptPrefix",
+        "TelescopeResultsNormal",
+        "TelescopeResultsBorder",
+        "TelescopeResultsTitle",
+        "TelescopePreviewNormal",
+        "TelescopePreviewBorder",
+        "TelescopePreviewTitle",
+      }
+      for _, hl in ipairs(telescope_highlights) do
+        vim.api.nvim_set_hl(0, hl, { bg = "NONE" })
+      end
+    end)
+  end,
+})
