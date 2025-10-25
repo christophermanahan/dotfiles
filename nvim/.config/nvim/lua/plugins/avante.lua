@@ -27,17 +27,12 @@ return {
   },
   opts = {
     ---@alias Provider "claude" | "openai" | "azure" | "gemini" | "cohere" | "copilot" | "ollama"
-    provider = "claude", -- Using Claude to match your existing AI setup
-    auto_suggestions_provider = "claude",
+    provider = "copilot", -- Using GitHub Copilot
+    auto_suggestions_provider = "copilot",
 
-    -- Claude configuration
-    claude = {
-      endpoint = "https://api.anthropic.com",
-      model = "claude-sonnet-4-5-20250929", -- Latest: Claude Sonnet 4.5 (best coding model)
-      timeout = 30000,
-      temperature = 0,
-      max_tokens = 8000,
-    },
+    -- Copilot will use your existing copilot.lua authentication
+    -- No additional configuration needed - avante will leverage
+    -- the copilot plugin already installed in your setup
 
     -- Behavior settings
     behaviour = {

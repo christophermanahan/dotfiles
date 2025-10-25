@@ -32,7 +32,6 @@ require("lazy").setup({
 }, lazy_config)
 
 -- load theme
-pcall(dofile, vim.g.base46_cache .. "defaults")
 pcall(dofile, vim.g.base46_cache .. "statusline")
 
 require "nvchad.autocmds"
@@ -47,8 +46,6 @@ vim.api.nvim_create_autocmd("ColorScheme", {
       "SignColumn",
       "NvimTreeNormal",
       "NvimTreeNormalNC",
-      "StatusLine",
-      "StatusLineNC",
       "TbLineBufOn",
       "TbLineBufOff",
       "TblineFill",
@@ -76,7 +73,7 @@ vim.api.nvim_create_autocmd("ColorScheme", {
     })
 
     -- Set line numbers for better visibility with transparency
-    vim.api.nvim_set_hl(0, "LineNr", { fg = "#6c7086" }) -- Darker gray (Catppuccin overlay1)
+    vim.api.nvim_set_hl(0, "LineNr", { fg = "#6c7086" })                    -- Darker gray (Catppuccin overlay1)
     vim.api.nvim_set_hl(0, "CursorLineNr", { fg = "#74c7ec", bold = true }) -- Bright cyan (Catppuccin sapphire)
   end,
 })
@@ -89,8 +86,6 @@ vim.schedule(function()
     "SignColumn",
     "NvimTreeNormal",
     "NvimTreeNormalNC",
-    "StatusLine",
-    "StatusLineNC",
     "TbLineBufOn",
     "TbLineBufOff",
     "TblineFill",
@@ -118,7 +113,7 @@ vim.schedule(function()
   })
 
   -- Set line numbers for better visibility with transparency
-  vim.api.nvim_set_hl(0, "LineNr", { fg = "#6c7086" }) -- Darker gray (Catppuccin overlay1)
+  vim.api.nvim_set_hl(0, "LineNr", { fg = "#6c7086" })                    -- Darker gray (Catppuccin overlay1)
   vim.api.nvim_set_hl(0, "CursorLineNr", { fg = "#74c7ec", bold = true }) -- Bright cyan (Catppuccin sapphire)
 
   require "mappings"

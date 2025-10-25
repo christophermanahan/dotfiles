@@ -134,7 +134,31 @@ wk.add {
       require("telescope.builtin").find_files {
         prompt_title = " Change Working Directory",
         cwd = vim.fn.expand "~",
-        find_command = { "fd", "--type", "d", "--hidden", "--exclude", ".git", "--max-depth", "5" },
+        find_command = {
+          "fd",
+          "--type", "d",
+          "--hidden",
+          "--max-depth", "5",
+          "--exclude", ".git",
+          "--exclude", "node_modules",
+          "--exclude", ".next",
+          "--exclude", "dist",
+          "--exclude", "build",
+          "--exclude", "out",
+          "--exclude", "target",
+          "--exclude", ".cache",
+          "--exclude", ".npm",
+          "--exclude", ".yarn",
+          "--exclude", "Library",
+          "--exclude", ".Trash",
+          "--exclude", ".cargo",
+          "--exclude", ".rustup",
+          "--exclude", "venv",
+          "--exclude", ".venv",
+          "--exclude", "env",
+          "--exclude", ".terraform",
+          "--exclude", "*.app",
+        },
         previewer = false,
         layout_strategy = "center",
         layout_config = {
@@ -167,176 +191,8 @@ wk.add {
     mode = { "n", "v" }, -- NORMAL and VISUAL mode
     {
       "ga",
-      function()
-        -- Unified code actions menu: LSP (prioritized) + AI
-        -- Requirements:
-        -- 1. LSP actions appear first with previews
-        -- 2. Copilot AI actions appear below
-        -- 3. Both types show meaningful previews
-        -- 4. All actions actually execute correctly
-
-        local telescope_actions = require "telescope.actions"
-        local action_state = require "telescope.actions.state"
-        local pickers = require "telescope.pickers"
-        local finders = require "telescope.finders"
-        local previewers = require "telescope.previewers"
-        local conf = require("telescope.config").values
-
-        -- Collect all actions
-        local function collect_actions()
-          local all_actions = {}
-
-          -- Get LSP code actions
-          local params = vim.lsp.util.make_range_params()
-          params.context = {
-            diagnostics = vim.diagnostic.get(0, { lnum = vim.fn.line "." - 1 }),
-          }
-
-          local lsp_results = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, 1000)
-
-          -- Add LSP actions (prioritized first)
-          if lsp_results then
-            for client_id, resp in pairs(lsp_results) do
-              if resp.result then
-                for _, action in ipairs(resp.result) do
-                  table.insert(all_actions, {
-                    type = "lsp",
-                    display = "[LSP] " .. action.title,
-                    title = action.title,
-                    kind = action.kind or "action",
-                    preview = string.format("Type: %s\n\nAction: %s", action.kind or "Code Action", action.title),
-                    lsp_action = action,
-                  })
-                end
-              end
-            end
-          end
-
-          -- Add separator if we have LSP actions
-          if #all_actions > 0 then
-            table.insert(all_actions, {
-              type = "separator",
-              display = "────────── AI Actions ──────────",
-              preview = "",
-            })
-          end
-
-          -- Add Copilot AI actions
-          local ai_actions = {
-            {
-              type = "copilot",
-              display = "[AI] Explain Code",
-              title = "Explain",
-              preview = "Ask Copilot to explain the selected code in detail",
-              command = "Explain",
-            },
-            {
-              type = "copilot",
-              display = "[AI] Review Code",
-              title = "Review",
-              preview = "Ask Copilot to review the selected code for issues and improvements",
-              command = "Review",
-            },
-            {
-              type = "copilot",
-              display = "[AI] Fix Code",
-              title = "Fix",
-              preview = "Ask Copilot to fix problems in the selected code",
-              command = "Fix",
-            },
-            {
-              type = "copilot",
-              display = "[AI] Optimize Code",
-              title = "Optimize",
-              preview = "Ask Copilot to optimize the selected code for performance and readability",
-              command = "Optimize",
-            },
-            {
-              type = "copilot",
-              display = "[AI] Add Documentation",
-              title = "Docs",
-              preview = "Ask Copilot to add documentation comments for the selection",
-              command = "Docs",
-            },
-            {
-              type = "copilot",
-              display = "[AI] Generate Tests",
-              title = "Tests",
-              preview = "Ask Copilot to generate tests for the selected code",
-              command = "Tests",
-            },
-          }
-
-          for _, ai_action in ipairs(ai_actions) do
-            table.insert(all_actions, ai_action)
-          end
-
-          return all_actions
-        end
-
-        local all_actions = collect_actions()
-
-        -- Show unified picker with preview
-        pickers
-          .new({}, {
-            prompt_title = "Code Actions (LSP + AI)",
-            finder = finders.new_table {
-              results = all_actions,
-              entry_maker = function(entry)
-                return {
-                  value = entry,
-                  display = entry.display,
-                  ordinal = entry.display,
-                }
-              end,
-            },
-            sorter = conf.generic_sorter {},
-            previewer = previewers.new_buffer_previewer {
-              define_preview = function(self, entry)
-                local lines = vim.split(entry.value.preview or "No preview available", "\n")
-                vim.api.nvim_buf_set_lines(self.state.bufnr, 0, -1, false, lines)
-              end,
-            },
-            attach_mappings = function(prompt_bufnr)
-              telescope_actions.select_default:replace(function()
-                local selection = action_state.get_selected_entry()
-                if not selection then
-                  return
-                end
-
-                telescope_actions.close(prompt_bufnr)
-
-                local entry = selection.value
-
-                -- Handle separator (do nothing)
-                if entry.type == "separator" then
-                  return
-                end
-
-                -- Execute LSP action
-                if entry.type == "lsp" then
-                  local action = entry.lsp_action
-                  if action.edit then
-                    vim.lsp.util.apply_workspace_edit(action.edit, "utf-8")
-                  end
-                  if action.command then
-                    local command = action.command
-                    local fn = vim.lsp.commands[command.command] or vim.lsp.buf.execute_command
-                    fn(command)
-                  end
-                end
-
-                -- Execute Copilot action
-                if entry.type == "copilot" then
-                  vim.cmd("CopilotChat" .. entry.command)
-                end
-              end)
-              return true
-            end,
-          })
-          :find()
-      end,
-      desc = "code actions (LSP + AI)",
+      vim.lsp.buf.code_action,
+      desc = "code actions (LSP)",
       icon = {
         icon = "",
         color = "orange",
@@ -495,100 +351,6 @@ wk.add {
     icon = {
       icon = "",
       color = "blue",
-    },
-  },
-  {
-    "<leader>cp",
-    function()
-      require("copilot.panel").open()
-    end,
-    desc = "open copilot panel",
-    icon = {
-      icon = "",
-      color = "cyan",
-    },
-  },
-  {
-    "<leader>cs",
-    ":Copilot status<CR>",
-    desc = "copilot status",
-    icon = {
-      icon = "",
-      color = "cyan",
-    },
-  },
-  {
-    "<leader>ca",
-    ":Copilot auth<CR>",
-    desc = "copilot authenticate",
-    icon = {
-      icon = "",
-      color = "cyan",
-    },
-  },
-  {
-    "<leader>cc",
-    function()
-      require("CopilotChat").toggle()
-    end,
-    desc = "toggle copilot chat",
-    icon = {
-      icon = "",
-      color = "cyan",
-    },
-  },
-  {
-    mode = { "n", "v" },
-    {
-      "<leader>ce",
-      function()
-        local actions = require "CopilotChat.actions"
-        require("CopilotChat.integrations.telescope").pick(actions.prompt_actions())
-      end,
-      desc = "copilot actions (telescope)",
-      icon = {
-        icon = "",
-        color = "cyan",
-      },
-    },
-  },
-  {
-    mode = "v",
-    {
-      "<leader>cf",
-      ":CopilotChatFix<CR>",
-      desc = "copilot fix",
-      icon = {
-        icon = "",
-        color = "red",
-      },
-    },
-    {
-      "<leader>co",
-      ":CopilotChatOptimize<CR>",
-      desc = "copilot optimize",
-      icon = {
-        icon = "",
-        color = "yellow",
-      },
-    },
-    {
-      "<leader>cd",
-      ":CopilotChatDocs<CR>",
-      desc = "copilot add docs",
-      icon = {
-        icon = "",
-        color = "green",
-      },
-    },
-    {
-      "<leader>ct",
-      ":CopilotChatTests<CR>",
-      desc = "copilot generate tests",
-      icon = {
-        icon = "",
-        color = "purple",
-      },
     },
   },
 }

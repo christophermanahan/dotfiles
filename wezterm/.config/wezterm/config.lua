@@ -2,6 +2,7 @@
 local wezterm = require("wezterm")
 local config = wezterm.config_builder()
 local mux = wezterm.mux
+local os = require("os")
 
 local process_icons = {
 	["docker"] = wezterm.nerdfonts.linux_docker,
@@ -34,22 +35,38 @@ local process_icons = {
 
 -- Return the Tab's current working directory
 local function get_cwd(tab)
-	local cwd = tab.active_pane and tab.active_pane.current_working_dir
-	if cwd and cwd.file_path then
-		return cwd.file_path
+  
+	local cwd_uri = tab.active_pane and tab.active_pane.current_working_dir
+
+	if cwd_uri then
+		-- current_working_dir returns a URL object, not a string
+		-- Access the file_path property to get the decoded path
+		if type(cwd_uri) == "userdata" then
+			-- It's a URL object, use the file_path property
+			cwd_uri = cwd_uri.file_path
+		end
+
+		if type(cwd_uri) == "string" then
+			return cwd_uri
+		end
 	end
+
 	return ""
 end
 
 -- Remove all path components and return only the last value
-local function remove_abs_path(path)
-	return path:gsub("(.*[/\\])(.*)", "%2")
+local function base_file_path(path)
+  -- Remove trailing slashes
+  path = path:gsub("/$", "")
+  -- Extract everything after the last slash
+  return path:match("([^/]+)$") or path
 end
 
 -- Return the pretty path of the tab's current working directory
 local function get_display_cwd(tab)
 	local current_dir = get_cwd(tab)
-	return current_dir == os.getenv("HOME") and "~" or remove_abs_path(current_dir)
+  print(base_file_path(current_dir))
+	return current_dir == os.getenv("HOME") and "~" or base_file_path(current_dir)
 end
 
 -- Return the concise name or icon of the running process for display
@@ -58,15 +75,17 @@ local function get_process(tab)
 		return "[?]"
 	end
 
-	local process_name = remove_abs_path(tab.active_pane.foreground_process_name)
+	local process_name = base_file_path(tab.active_pane.foreground_process_name)
 	if process_name:find("kubectl") then
 		process_name = "kubectl"
 	end
 
-	return wezterm.format({
-		{ Attribute = { Italic = true } },
-		{ Text = process_icons[process_name] },
-	}) or string.format("%s", process_name)
+	local icon = process_icons[process_name]
+	if icon then
+		return icon
+	else
+		return string.format("[%s]", process_name)
+	end
 end
 
 -- Pretty format the tab title
@@ -99,8 +118,9 @@ end
 
 -- Convert arbitrary strings to a unique hex color value
 local function string_to_color(str)
-	-- Convert the string to a unique integer
-	local hash = 0
+	-- Convert the string to a unique integer with the hash based on the current day
+  local day = tonumber(os.date("%d"))  -- Returns 15 (as a number)
+  local hash = day
 	for i = 1, #str do
 		hash = string.byte(str, i) + ((hash << 5) - hash)
 	end

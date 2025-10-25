@@ -23,16 +23,16 @@ end
 
 local function gen_block(txt, icon, sep_l_hlgroup, iconHl_group, txt_hl_group)
   return sep_l_hlgroup
-    .. ""
-    .. iconHl_group
-    .. icon
-    .. " "
-    .. txt_hl_group
-    .. " "
-    .. txt
-    .. "%#St_sep_r#"
-    .. ""
-    .. " %#ST_EmptySpace#"
+      .. ""
+      .. iconHl_group
+      .. icon
+      .. " "
+      .. txt_hl_group
+      .. " "
+      .. txt
+      .. "%#St_sep_r#"
+      .. ""
+      .. " %#ST_EmptySpace#"
 end
 
 local function stbufnr()
@@ -62,20 +62,27 @@ local path_text = ""
 
 M.ui = {
   hl_override = {
-    Normal = { bg = "NONE" },
+    -- Transparency
+    Normal = { bg = "NONE", fg = "#ffffff" }, -- Pure white text
     NormalFloat = { bg = "NONE" },
     SignColumn = { bg = "NONE" },
     NvimTreeNormal = { bg = "NONE" },
     NvimTreeNormalNC = { bg = "NONE" },
+
+    -- NvimTree git colors (theme-reactive keywords)
     NvimTreeGitNew = { fg = "yellow" },
     NvimTreeGitIgnored = { fg = "white" },
     NvimTreeGitDirty = { fg = "pink" },
     NvimTreeGitDeleted = { fg = "red" },
+
+    -- Statusline (hex codes for items that don't respond to keywords)
     St_gitIcons = { fg = "green" },
     St_Lsp = { fg = "pink" },
+
     -- Line numbers (brighter for transparency visibility)
-    LineNr = { fg = "#6c7086" }, -- Darker gray (Catppuccin overlay1)
+    LineNr = { fg = "#6c7086" },                    -- Darker gray (Catppuccin overlay1)
     CursorLineNr = { fg = "#74c7ec", bold = true }, -- Bright cyan (Catppuccin sapphire)
+
     -- Telescope transparency
     TelescopeNormal = { bg = "NONE" },
     TelescopeBorder = { bg = "NONE" },
@@ -88,8 +95,11 @@ M.ui = {
     TelescopePreviewNormal = { bg = "NONE" },
     TelescopePreviewBorder = { bg = "NONE" },
     TelescopePreviewTitle = { bg = "NONE" },
+
     -- Visual mode highlight (bright for transparency visibility)
     Visual = { bg = "#89b4fa", fg = "#1e1e2e", bold = true },
+
+    -- Statusline/tabline transparency
     StatusLine = { bg = "NONE" },
     StatusLineNC = { bg = "NONE" },
     TbLineBufOn = { bg = "NONE" },
@@ -160,7 +170,7 @@ M.ui = {
 }
 
 M.base46 = {
-  theme = "embark",
+  theme = "chadracula-evondev",
   integrations = {
     "codeactionmenu",
     "dap",
