@@ -411,8 +411,8 @@ map({ "n", "t" }, "<A-i>", function()
     pos = "float",
     id = term_id,
     float_opts = {
-      row = 0.04, -- ALT+i: Tmux terminal
-      col = 0.04,
+      row = 0.03, -- ALT+i: Tmux terminal
+      col = 0.03,
       width = 0.85,
       height = 0.85,
       title = "multiflexing 💪",
@@ -455,8 +455,8 @@ map({ "n", "t" }, "<A-j>", function()
     pos = "float",
     id = "k9s_term",
     float_opts = {
-      row = 0.06, -- ALT+j: k9s
-      col = 0.06,
+      row = 0.04, -- ALT+j: k9s
+      col = 0.04,
       width = 0.85,
       height = 0.85,
       title = "k9s 🚀",
@@ -533,8 +533,8 @@ map({ "n", "t" }, "<A-h>", function()
     id = "lazygit_term",
     cmd = "lazygit",
     float_opts = {
-      row = 0.08, -- ALT+h: Lazygit
-      col = 0.08,
+      row = 0.05, -- ALT+h: Lazygit
+      col = 0.05,
       width = 0.85,
       height = 0.85,
       title = "lazygit 🚀",
@@ -551,8 +551,8 @@ map({ "n", "t" }, "<A-o>", function()
     pos = "float",
     id = "openai_term",
     float_opts = {
-      row = 0.10, -- ALT+o: OpenAI CLI
-      col = 0.10,
+      row = 0.06, -- ALT+o: OpenAI CLI
+      col = 0.06,
       width = 0.85,
       height = 0.85,
       title = "Codex CLI 🤖",
@@ -595,8 +595,8 @@ map({ "n", "t" }, "<A-b>", function()
     pos = "float",
     id = "browshTerm",
     float_opts = {
-      row = 0.12, -- ALT+b: Browsh browser (larger window)
-      col = 0.12,
+      row = 0.07, -- ALT+b: Browsh browser (larger window)
+      col = 0.07,
       width = 0.84,
       height = 0.84,
       border = "single",
@@ -626,8 +626,8 @@ map({ "n", "t" }, "<A-d>", function()
     pos = "float",
     id = "lazydockerTerm",
     float_opts = {
-      row = 0.03, -- ALT+d: Lazydocker (large window)
-      col = 0.03,
+      row = 0.08, -- ALT+d: Lazydocker (large window)
+      col = 0.08,
       width = 0.9,
       height = 0.9,
       border = "single",
@@ -657,8 +657,8 @@ map({ "n", "t" }, "<A-e>", function()
     pos = "float",
     id = "w3mTerm",
     float_opts = {
-      row = 0.05,
-      col = 0.05,
+      row = 0.09,
+      col = 0.09,
       width = 0.85,
       height = 0.85,
       border = "single",
@@ -731,8 +731,8 @@ map({ "n", "t" }, "<A-s>", function()
         pos = "float",
         id = "w3mTerm",
         float_opts = {
-          row = 0.05,
-          col = 0.05,
+          row = 0.09,
+          col = 0.09,
           width = 0.85,
           height = 0.85,
           border = "single",
@@ -761,8 +761,8 @@ map({ "n", "t" }, "<A-c>", function()
     pos = "float",
     id = "carbonylTerm",
     float_opts = {
-      row = 0.09, -- ALT+c: Carbonyl browser
-      col = 0.09,
+      row = 0.10, -- ALT+c: Carbonyl browser
+      col = 0.10,
       width = 0.88,
       height = 0.88,
       border = "single",
@@ -786,7 +786,93 @@ map({ "n", "t" }, "<A-c>", function()
   end
 end, { desc = "terminal toggle carbonyl browser" })
 
--- ALT+p closes and kills any floating terminal (ALT+i/k/j/h/o/b/d/e/c)
+-- ALT+1: Toggle e1s (AWS ECS terminal UI) with profile/region selection
+map({ "n", "t" }, "<A-1>", function()
+  require("nvchad.term").toggle {
+    pos = "float",
+    id = "e1sTerm",
+    float_opts = {
+      row = 0.11, -- ALT+1: e1s (AWS ECS)
+      col = 0.11,
+      width = 0.9,
+      height = 0.9,
+      border = "single",
+      title = " 󰸏 e1s - AWS ECS ",
+      title_pos = "center",
+    },
+  }
+
+  -- Auto-start e1s with profile/region selection on first open
+  if not _G.e1s_started then
+    vim.defer_fn(function()
+      _G.e1s_started = true
+      local bufnr = vim.api.nvim_get_current_buf()
+      if vim.bo[bufnr].buftype == "terminal" then
+        local chan = vim.b[bufnr].terminal_job_id
+        if chan then
+          -- Two-step selection: AWS profile -> region
+          local cmd = [[
+clear && \
+profile=$(aws configure list-profiles | \
+  fzf --height=40% --reverse --border \
+      --prompt="Select AWS Profile: " \
+      --preview="aws configure list --profile {}" \
+      --preview-window=down:5:wrap) && \
+if [ -n "$profile" ]; then
+  region=$(echo -e "us-east-1\nus-east-2\nus-west-1\nus-west-2\neu-west-1\neu-west-2\neu-west-3\neu-central-1\nap-northeast-1\nap-northeast-2\nap-southeast-1\nap-southeast-2\nap-south-1\nsa-east-1\nca-central-1" | \
+    fzf --height=80% --reverse --border \
+        --prompt="Select AWS Region ($profile): " \
+        --preview="echo 'Profile: $profile\nRegion: {}'" \
+        --preview-window=down:3:wrap)
+  if [ -n "$region" ]; then
+    clear
+    AWS_PROFILE="$profile" AWS_REGION="$region" e1s
+  else
+    echo "Region selection cancelled"
+  fi
+else
+  echo "Profile selection cancelled"
+fi
+]]
+          vim.api.nvim_chan_send(chan, cmd)
+        end
+      end
+    end, 200)
+  end
+end, { desc = "terminal toggle e1s AWS ECS" })
+
+-- ALT+2: Toggle e2s (EC2 browser) with profile/region selection
+map({ "n", "t" }, "<A-2>", function()
+  require("nvchad.term").toggle {
+    pos = "float",
+    id = "e2sTerm",
+    float_opts = {
+      row = 0.12, -- ALT+2: e2s (EC2 Browser)
+      col = 0.12,
+      width = 0.9,
+      height = 0.9,
+      border = "single",
+      title = " 󰸏 e2s - EC2 Browser ",
+      title_pos = "center",
+    },
+  }
+
+  -- Auto-start e2s on first open
+  if not _G.e2s_started then
+    vim.defer_fn(function()
+      _G.e2s_started = true
+      local bufnr = vim.api.nvim_get_current_buf()
+      if vim.bo[bufnr].buftype == "terminal" then
+        local chan = vim.b[bufnr].terminal_job_id
+        if chan then
+          vim.api.nvim_chan_send(chan, "e2s\n")
+        end
+      end
+    end, 200)
+  end
+end, { desc = "terminal toggle e2s EC2 browser" })
+
+-- ALT+p closes and kills any floating terminal (ALT+i/k/j/h/o/b/d/e/c/1/2)
 -- Note: When in terminal mode with apps like k9s running, press Ctrl+q first to exit terminal mode,
 -- then press ALT+p. Or use this mapping which attempts to kill the process first.
 map({ "n", "t" }, "<A-p>", function()
@@ -816,6 +902,8 @@ map({ "n", "t" }, "<A-p>", function()
     _G.lazydocker_started = false
     _G.w3m_started = false
     _G.carbonyl_started = false
+    _G.e1s_started = false
+    _G.e2s_started = false
 
     -- Delete the buffer (force = true to handle unsaved changes)
     vim.api.nvim_buf_delete(bufnr, { force = true })

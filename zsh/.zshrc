@@ -1,6 +1,9 @@
 # Homebrew
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
+# Add local bin to PATH
+export PATH="$PATH:$HOME/.local/bin"
+
 # Force k9s to use XDG config directory (cross-platform)
 export K9S_CONFIG_DIR="$HOME/.config/k9s"
 
