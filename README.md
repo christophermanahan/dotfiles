@@ -2,6 +2,17 @@
 
 A CLI-first development environment where terminal tools are first-class citizens.
 
+## Why "Paradiddle"?
+
+A **paradiddle** is a fundamental drumming rudiment—a rhythmic pattern (RLRR LRLL) that drummers practice until it becomes second nature. The name captures the essence of this development environment:
+
+- **Rhythm and Flow**: Like a drum pattern, working with CLI tools should feel natural and rhythmic
+- **Muscle Memory**: The keybindings (ALT+k, ALT+i, ALT+j...) become instinctive through repetition
+- **Alternating Patterns**: Seamlessly switching between tools mirrors the alternating hand pattern of a paradiddle
+- **Foundation for Complexity**: Master the basics (terminal integration) to enable advanced workflows
+
+Just as drummers build speed and creativity on fundamental rudiments, developers achieve flow state through well-integrated CLI tools.
+
 ## Philosophy: CLI Tools as First-Class Citizens
 
 This isn't just NvChad with plugins. It's a complete development environment built around the idea that **CLI tools should be instantly accessible** without breaking your flow. Every tool you need—from Kubernetes dashboards to AI assistants to web browsers—is one keystroke away, launching with intelligent defaults and auto-configuration.
