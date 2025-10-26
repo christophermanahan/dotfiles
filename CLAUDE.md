@@ -4,9 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-This is a personal dotfiles repository managed with GNU Stow. It contains configuration files for:
+**Paradiddle** is a CLI-first IDE where terminal tools are first-class citizens. Built on NvChad v2.5, it integrates 11 CLI tools as floating terminals with intelligent auto-start behavior.
+
+Configuration files managed with GNU Stow:
+- **nvim**: CLI-first IDE with 11 integrated floating terminals (ALT+k/i/j/h/o/b/d/e/c/1/2)
 - **zsh**: Shell configuration with vi-mode, autosuggestions, and syntax highlighting
-- **nvim**: Neovim setup based on NvChad v2.5 with extensive plugin configuration
 - **starship**: Custom prompt with Catppuccin Mocha theme
 - **wezterm**: Terminal emulator with custom tab formatting and smart-splits integration
 
