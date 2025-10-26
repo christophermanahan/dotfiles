@@ -21,11 +21,6 @@ This isn't just NvChad with plugins. It's a complete development environment bui
 - **Claude Code** and **Codex** CLI ready immediately
 - **Browsers** (w3m, Carbonyl, Browsh) open to useful defaults
 
-**Seamless macOS Integration:**
-- Yank from Neovim → Paste in any macOS app
-- CMD+v in visual mode: paste & swap clipboard (workflow optimization)
-- True system clipboard integration via `clipboard=unnamedplus`
-
 The result: A development environment where CLI tools aren't separate apps—they're integrated, context-aware, and instantly available.
 
 ## Features
