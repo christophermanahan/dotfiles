@@ -821,6 +821,7 @@ profile=$(aws configure list-profiles | \
 if [ -n "$profile" ]; then
   region=$(echo -e "us-east-1\nus-east-2\nus-west-1\nus-west-2\neu-west-1\neu-west-2\neu-west-3\neu-central-1\nap-northeast-1\nap-northeast-2\nap-southeast-1\nap-southeast-2\nap-south-1\nsa-east-1\nca-central-1" | \
     fzf --height=80% --reverse --border \
+        --query="us-west-2" \
         --prompt="Select AWS Region ($profile): " \
         --preview="echo 'Profile: $profile\nRegion: {}'" \
         --preview-window=down:3:wrap)
@@ -935,6 +936,39 @@ end, { desc = "avante: focus sidebar" })
 map("n", "<leader>at", function()
   require("avante").toggle()
 end, { desc = "avante: toggle sidebar" })
+
+-- macOS clipboard integration: CMD+v in visual mode
+-- Pastes from clipboard and saves the replaced text back to clipboard
+map("v", "<D-v>", function()
+  -- Save what's currently in the clipboard (what we want to paste)
+  local clipboard_content = vim.fn.getreg('+')
+  -- Yank the visual selection to clipboard (temporarily)
+  vim.cmd('normal! "+y')
+  -- Save the selected text that we just yanked
+  local selected_text = vim.fn.getreg('+')
+  -- Restore the original clipboard content
+  vim.fn.setreg('+', clipboard_content)
+  -- Paste from clipboard (replaces the selection)
+  vim.cmd('normal! gv"+p')
+  -- Put the replaced text back into the clipboard
+  vim.fn.setreg('+', selected_text)
+end, { desc = "paste from clipboard, save replaced text to clipboard" })
+
+-- macOS clipboard integration: Yank operations
+-- Explicitly copy to system clipboard when yanking
+-- Note: With clipboard=unnamedplus, these work automatically, but explicit mappings ensure clarity
+
+-- Visual mode: yank to clipboard
+map("v", "y", '"+y', { desc = "yank to clipboard" })
+
+-- Normal mode: yank line to clipboard
+map("n", "yy", '"+yy', { desc = "yank line to clipboard" })
+
+-- Normal mode: yank motion to clipboard (e.g., yw, y$, yap)
+map("n", "y", '"+y', { desc = "yank motion to clipboard" })
+
+-- Visual mode: CMD+c to copy (macOS standard)
+map("v", "<D-c>", '"+y', { desc = "copy to clipboard" })
 
 -- Cleanup: Kill tmux session when Neovim exits
 -- This prevents orphaned tmux sessions when closing wezterm tabs
