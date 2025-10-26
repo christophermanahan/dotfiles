@@ -101,11 +101,11 @@ chmod +x install.sh
 
 This installs the `e2s` binary to `~/.local/bin/e2s` (PATH automatically configured in zsh config).
 
-### 2. Clone dotfiles repository
+### 2. Clone repository
 
 ```bash
-git clone https://github.com/christophermanahan/dotfiles.git ~/dotfiles
-cd ~/dotfiles
+git clone https://github.com/christophermanahan/paradiddle.git ~/paradiddle
+cd ~/paradiddle
 ```
 
 ### 3. Deploy configurations with Stow
