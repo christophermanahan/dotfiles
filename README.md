@@ -1,28 +1,54 @@
 # Dotfiles
 
-Personal development environment configuration using GNU Stow.
+A CLI-first development environment where terminal tools are first-class citizens.
+
+## Philosophy: CLI Tools as First-Class Citizens
+
+This isn't just NvChad with plugins. It's a complete development environment built around the idea that **CLI tools should be instantly accessible** without breaking your flow. Every tool you need—from Kubernetes dashboards to AI assistants to web browsers—is one keystroke away, launching with intelligent defaults and auto-configuration.
+
+### What Makes This Different from Stock NvChad?
+
+**11 Integrated Floating Terminals** with cascading window positions (ALT+k/i/j/h/o/b/d/e/c/1/2):
+- Each terminal auto-starts its tool with smart defaults
+- Seamless context switching without leaving your editor
+- Visual window stacking prevents disorientation
+- Kill and restart any terminal instantly (ALT+p)
+
+**Intelligent Auto-Start Behavior:**
+- **k9s** prompts for Kubernetes cluster → namespace selection
+- **e1s** prompts for AWS profile → region selection (ECS)
+- **e2s** launches with interactive AWS instance browser (EC2)
+- **Claude Code** and **Codex** CLI ready immediately
+- **Browsers** (w3m, Carbonyl, Browsh) open to useful defaults
+
+**Seamless macOS Integration:**
+- Yank from Neovim → Paste in any macOS app
+- CMD+v in visual mode: paste & swap clipboard (workflow optimization)
+- True system clipboard integration via `clipboard=unnamedplus`
+
+The result: A development environment where CLI tools aren't separate apps—they're integrated, context-aware, and instantly available.
 
 ## Features
 
-- **Git**: Version control with comprehensive aliases and modern defaults
+- **Neovim**: CLI-first IDE built on NvChad v2.5 with 11 integrated floating terminals
 - **Wezterm**: Smart terminal with custom tab formatting, smart-splits integration, and per-directory tab colors
-- **Neovim**: NvChad v2.5 with extensive LSP, formatting, completion, and navigation plugins
 - **ZSH**: Vi-mode, autosuggestions, syntax highlighting, FZF integration, and enhanced directory navigation
+- **Git**: Version control with comprehensive aliases and modern defaults
 - **Starship**: Custom prompt with Catppuccin Mocha theme
-- **tmux**: Terminal multiplexer with floating terminal integration in Neovim
-- **k9s**: Kubernetes CLI manager with cross-platform config (~/.config/k9s/ via K9S_CONFIG_DIR) and dedicated Neovim terminal with cluster/namespace selection
-- **Codex CLI**: OpenAI Codex assistant with dedicated floating terminal in Neovim
 
-## Screenshots
+### Integrated CLI Tools (First-Class Citizens)
 
-### Wezterm with Split Terminals
-![Wezterm Split Terminal](screenshots/wezterm-split-terminal-env.png)
-
-### Neovim with Split Editor
-![Neovim Split Editor](screenshots/nvim-split-editor.png)
-
-### Neovim with Ripgrep Search
-![Neovim Ripgrep Example](screenshots/nvim-ripgrep-example.png)
+- **Claude Code** (ALT+k): AI pair programmer with auto-launch
+- **Tmux** (ALT+i): Terminal multiplexer with unique session per nvim instance
+- **k9s** (ALT+j): Kubernetes manager with cluster/namespace selection
+- **Lazygit** (ALT+h): TUI for git operations
+- **Codex CLI** (ALT+o): OpenAI assistant with auto-launch
+- **Browsh** (ALT+b): Firefox-based terminal browser
+- **Lazydocker** (ALT+d): Docker TUI for container management
+- **w3m** (ALT+e): Lightweight browser with vim keys + search (ALT+s)
+- **Carbonyl** (ALT+c): Chromium-based terminal browser
+- **e1s** (ALT+1): AWS ECS cluster browser with profile/region selection
+- **e2s** (ALT+2): AWS EC2 instance browser with interactive fzf menus
 
 ## Requirements
 
@@ -46,6 +72,9 @@ Personal development environment configuration using GNU Stow.
  - w3m (lightweight terminal browser with vim keys)
  - carbonyl (Chromium-based terminal browser, via npm)
  - browsh (terminal web browser, requires Firefox)
+ - e1s (AWS ECS terminal UI)
+ - e2s (AWS EC2 browser, custom-built: https://github.com/christophermanahan/e2s)
+ - aws-cli (required for e1s/e2s)
  - zsh
  - zsh-vi-mode
  - zsh-autosuggestions
@@ -56,12 +85,26 @@ Personal development environment configuration using GNU Stow.
 ### 1. Install Homebrew dependencies
 
 ```bash
-brew install eza zoxide stow zsh zsh-vi-mode zsh-autosuggestions zsh-syntax-highlighting starship neovim ripgrep tmux k9s lazydocker git-delta fzf fd bat codex w3m
+brew install eza zoxide stow zsh zsh-vi-mode zsh-autosuggestions zsh-syntax-highlighting starship neovim ripgrep tmux k9s lazydocker git-delta fzf fd bat codex w3m awscli e1s
 brew tap browsh-org/homebrew-browsh
 brew install browsh
 npm install -g carbonyl
 brew install --cask font-hack-nerd-font wezterm firefox
 ```
+
+### 1a. Install e2s (AWS EC2 Browser)
+
+e2s is a custom-built tool for browsing AWS EC2 instances with interactive fzf menus:
+
+```bash
+# Clone and install e2s
+git clone https://github.com/christophermanahan/e2s.git
+cd e2s
+chmod +x install.sh
+./install.sh
+```
+
+This installs the `e2s` binary to `~/.local/bin/e2s` (PATH automatically configured in zsh config).
 
 ### 2. Clone dotfiles repository
 
@@ -185,32 +228,40 @@ Wait for all installations to complete, then restart Neovim.
 | `gT` | Previous tab |
 | `<leader>X` | Close all other buffers |
 
-#### Terminal Management
-| Shortcut | Action |
-|----------|--------|
-| `ALT+i` | Toggle floating tmux terminal (auto-cleanup on exit) |
-| `ALT+k` | Toggle Claude Code terminal |
-| `ALT+j` | Toggle k9s terminal (cluster + namespace selection on first open) |
-| `ALT+h` | Toggle lazygit terminal |
-| `ALT+d` | Toggle lazydocker terminal (Docker TUI) |
-| `ALT+o` | Toggle Codex CLI terminal (OpenAI Codex) |
-| `ALT+e` | Toggle w3m browser (lightweight, vim keys) |
-| `ALT+s` | Search in w3m (prompts for DuckDuckGo query) |
-| `ALT+c` | Toggle Carbonyl browser (Chromium-based, cutting edge) |
-| `ALT+b` | Toggle Browsh web browser (requires Firefox) |
-| `ALT+a` | Ask Avante AI assistant (Cursor-like AI coding) |
-| `ALT+p` | Kill any floating terminal (restarts on reopen) |
-| `Ctrl+q` | Exit terminal mode to normal mode (allows scrolling) |
+#### Terminal Management (11 Integrated Floating Terminals)
 
-**Note:**
-- Each Neovim instance creates a unique tmux session. The session is automatically killed when Neovim exits, preventing orphaned tmux sessions.
-- k9s terminal shows a two-step selection menu (via fzf) on first open: first select cluster, then select namespace (or "all"). Press ESC to cancel selection at either step.
-- Codex CLI terminal auto-starts the `codex` command on first open for quick access to OpenAI's Codex assistant.
-- **Browsers:**
-  - **w3m** (ALT+e to toggle, ALT+s to search): Lightweight, native vim keybindings (j/k/h/l), best for documentation and text-heavy sites
-  - **Carbonyl** (ALT+c): Chromium-based, supports modern web (WebGL, video, animations), auto-opens DuckDuckGo
-  - **Browsh** (ALT+b): Firefox-based, requires Firefox installation, best rendering of modern sites
-- **To kill a terminal with a running app (like k9s):** Press `Ctrl+q` first to exit terminal mode, then press `ALT+p`. Alternatively, quit the app first (e.g., press `q` in k9s), then `ALT+p` works directly.
+All terminals use cascading window positions (0.02 to 0.12 offset) for visual clarity:
+
+| Shortcut | Tool | Action |
+|----------|------|--------|
+| `ALT+k` | Claude Code | Toggle AI pair programmer (auto-starts) |
+| `ALT+i` | Tmux | Toggle terminal multiplexer (unique session per nvim) |
+| `ALT+j` | k9s | Toggle Kubernetes browser (cluster → namespace selection) |
+| `ALT+h` | Lazygit | Toggle Git TUI |
+| `ALT+o` | Codex | Toggle OpenAI CLI (auto-starts) |
+| `ALT+b` | Browsh | Toggle Firefox-based browser |
+| `ALT+d` | Lazydocker | Toggle Docker TUI |
+| `ALT+e` | w3m | Toggle lightweight browser (vim keys) |
+| `ALT+s` | w3m Search | Search DuckDuckGo in w3m |
+| `ALT+c` | Carbonyl | Toggle Chromium browser (opens ChatGPT) |
+| `ALT+1` | e1s | Toggle AWS ECS browser (profile → region selection) |
+| `ALT+2` | e2s | Toggle AWS EC2 browser (interactive instance selector) |
+| `ALT+a` | Avante | Ask AI assistant (Cursor-like AI coding) |
+| `ALT+p` | Kill Terminal | Kill any floating terminal (restarts on reopen) |
+| `Ctrl+q` | Normal Mode | Exit terminal mode (allows scrolling) |
+
+**Intelligent Auto-Start Features:**
+- **k9s**: Two-step fzf menu (cluster → namespace or "all")
+- **e1s**: Two-step fzf menu (AWS profile → region → ECS clusters)
+- **e2s**: Multi-step fzf menu (AWS profile → region → EC2 instance → actions)
+- **Claude Code** & **Codex**: Launch immediately on first open
+- **Browsers**: w3m opens DuckDuckGo Lite, Carbonyl opens ChatGPT
+
+**Terminal Session Management:**
+- Each Neovim instance creates a unique tmux session
+- Sessions auto-cleanup on Neovim exit (prevents orphans)
+- ALT+p resets all terminal start flags for clean restart
+- To kill a running app: Press `Ctrl+q` first, then `ALT+p`
 
 #### Window & Display
 | Shortcut | Action |
@@ -228,6 +279,29 @@ Wait for all installations to complete, then restart Neovim.
 | `<leader>q` | Quit |
 | `<leader>Q` | Quit all |
 | `<leader>cd` | Change working directory (fuzzy finder) |
+
+#### macOS Clipboard Integration
+
+Seamless integration between Neovim and the macOS system clipboard:
+
+| Shortcut | Mode | Action |
+|----------|------|--------|
+| `y` | Normal/Visual | Yank to macOS clipboard |
+| `yy` | Normal | Yank line to macOS clipboard |
+| `CMD+c` | Visual | Copy to macOS clipboard |
+| `CMD+v` | Visual | Paste from clipboard & save replaced text to clipboard |
+
+**How CMD+v Works:**
+1. Select text you want to replace
+2. Press CMD+v
+3. Clipboard content pastes over selection
+4. Replaced text is saved to clipboard (for swapping content)
+
+**System Clipboard Integration:**
+- All yank operations (`y`, `yy`, `yw`, etc.) copy to macOS clipboard
+- Paste in any macOS app with CMD+v or Ctrl+v
+- Copy from any app, paste in Neovim with `p` or CMD+v
+- Enabled via `clipboard=unnamedplus` setting
 
 ### tmux
 
@@ -351,7 +425,20 @@ Wait for all installations to complete, then restart Neovim.
 - Completion and key bindings from homebrew installation
 - Custom preview window with syntax highlighting
 
-### Neovim Plugins
+### Neovim Configuration Highlights
+
+**CLI Tool Integration (11 Floating Terminals):**
+- Each terminal with auto-start and intelligent defaults
+- Cascading window positions (0.02 to 0.12 offset) for visual clarity
+- Session management: unique tmux sessions per nvim instance, auto-cleanup on exit
+- Seamless context switching without leaving editor
+- Tools: Claude Code, Tmux, k9s, Lazygit, Codex, Browsh, Lazydocker, w3m, Carbonyl, e1s (AWS ECS), e2s (AWS EC2)
+
+**macOS System Integration:**
+- Full clipboard integration via `clipboard=unnamedplus`
+- All yank operations copy to system clipboard
+- CMD+c/CMD+v support in visual mode
+- CMD+v special behavior: paste & swap (replaced text → clipboard)
 
 **LSP & Language Support:**
 - mason-lspconfig (auto-installs: HTML, CSS, TypeScript, Python, Rust, Terraform, Docker, Prisma, Markdown)
@@ -369,18 +456,23 @@ Wait for all installations to complete, then restart Neovim.
 
 **AI Assistance:**
 - avante.nvim (Cursor-like AI coding assistant with Claude integration)
-- Keybindings: `ALT+a` to ask, `<leader>aa` to ask, `<leader>ae` to edit selection, `<leader>at` to toggle sidebar
+  - `ALT+a` or `<leader>aa`: Ask AI
+  - `<leader>ae`: Edit selection with AI
+  - `<leader>at`: Toggle sidebar
+  - `<leader>ar`: Refresh
+  - `<leader>af`: Focus sidebar
 - CopilotChat.nvim for GitHub Copilot integration
 
 **Navigation:**
 - smart-splits.nvim (seamless pane navigation with wezterm)
 - flash.nvim (quick jumps with `s` and `S`)
 - telescope.nvim with fzf extension
+- Custom `<leader>cd`: fuzzy directory change with live preview
 
 **Git:**
 - lazygit (via floating terminal with `ALT+h`)
 - diffview.nvim for enhanced diff viewing
-- gitsigns disabled (using lazygit)
+- gitsigns disabled (using lazygit for all git operations)
 
 **UI Enhancements:**
 - noice.nvim (command line UI)
@@ -388,11 +480,12 @@ Wait for all installations to complete, then restart Neovim.
 - trouble.nvim (diagnostics)
 - rainbow-delimiters (bracket colorization)
 - catppuccin theme (Mocha flavor, transparent background)
+- Transparent nvim-tree
 
 **Other:**
 - nvim-surround (surround text objects)
-- grug-far.nvim (search and replace)
-- goto-preview (preview definitions)
+- grug-far.nvim (search and replace with `<leader>S`)
+- goto-preview (preview definitions without jumping)
 - todo-comments (highlight TODO/FIXME/etc)
 - markdown-preview.nvim (live markdown preview in browser)
 
@@ -414,6 +507,52 @@ Wait for all installations to complete, then restart Neovim.
 - Custom right status: current directory, current command, PREFIX indicator
 - Window zoom indicator
 - Catppuccin-inspired colors
+
+## Workflow Philosophy
+
+### Why CLI Tools as First-Class Citizens?
+
+Traditional IDEs hide terminal tools in sidebars or require context switching to separate windows. This development environment takes a different approach:
+
+**Instant Access:** Every tool is one keystroke away (ALT+key), not buried in menus.
+
+**Smart Defaults:** Tools auto-start with intelligent configuration:
+- k9s knows to ask which cluster/namespace
+- e1s/e2s prompt for AWS profile/region
+- Browsers open to useful defaults
+- No repetitive setup on each launch
+
+**Visual Clarity:** 11 cascading windows (0.02–0.12 offset) prevent disorientation when toggling between tools.
+
+**Seamless Integration:**
+- Copy from Neovim → paste anywhere on macOS
+- Navigate between editor and terminal panes with the same keys
+- All context stays within one application
+
+**Zero Cleanup:** Terminal sessions auto-cleanup when you exit Neovim. No orphaned processes.
+
+### Example Workflows
+
+**Kubernetes Development:**
+1. Write code in Neovim
+2. `ALT+j` → select cluster/namespace → check pod status in k9s
+3. `ALT+h` → commit changes in lazygit
+4. `ALT+p` → kill terminals when done
+
+**AWS Infrastructure Work:**
+1. `ALT+1` → select AWS profile/region → browse ECS clusters in e1s
+2. `ALT+2` → browse EC2 instances in e2s
+3. `ALT+k` → ask Claude Code about infrastructure code
+4. Never leave your editor
+
+**Research & Documentation:**
+1. Select unfamiliar function in code
+2. `ALT+e` → look up documentation in w3m
+3. `ALT+s` → search for more details
+4. Yank example code → paste directly into editor
+5. `ALT+p` → close browser when done
+
+**The Result:** A development environment where context switching is measured in milliseconds, not seconds. Where terminals are not separate apps, but integrated tools at your fingertips.
 
 ### Deprecated
 
