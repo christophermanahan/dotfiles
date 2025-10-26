@@ -21,7 +21,7 @@ truncate_to_repo = false
 '~/Downloads' = '  Downloads'
 '~/Music' = '  Music'
 '~/Pictures' = '  Pictures'
-'~/dotfiles' = '  Dotfiles'
+'~/paradiddle' = '  Paradiddle'
 
 [git_branch]
 style = 'fg:green'

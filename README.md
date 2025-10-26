@@ -1,4 +1,4 @@
-# Dotfiles
+# Paradiddle
 
 A CLI-first development environment where terminal tools are first-class citizens.
 
@@ -8,7 +8,7 @@ This isn't just NvChad with plugins. It's a complete development environment bui
 
 ### What Makes This Different from Stock NvChad?
 
-**11 Integrated Floating Terminals** with cascading window positions (ALT+k/i/j/h/o/b/d/e/c/1/2):
+**10 Integrated Floating Terminals** with cascading window positions (ALT+k/i/j/h/o/d/e/c/1/2):
 - Each terminal auto-starts its tool with smart defaults
 - Seamless context switching without leaving your editor
 - Visual window stacking prevents disorientation
@@ -19,13 +19,13 @@ This isn't just NvChad with plugins. It's a complete development environment bui
 - **e1s** prompts for AWS profile → region selection (ECS)
 - **e2s** launches with interactive AWS instance browser (EC2)
 - **Claude Code** and **Codex** CLI ready immediately
-- **Browsers** (w3m, Carbonyl, Browsh) open to useful defaults
+- **Browsers** (w3m, Carbonyl) open to useful defaults
 
 The result: A development environment where CLI tools aren't separate apps—they're integrated, context-aware, and instantly available.
 
 ## Features
 
-- **Neovim**: CLI-first IDE built on NvChad v2.5 with 11 integrated floating terminals
+- **Neovim**: CLI-first IDE built on NvChad v2.5 with 10 integrated floating terminals
 - **Wezterm**: Smart terminal with custom tab formatting, smart-splits integration, and per-directory tab colors
 - **ZSH**: Vi-mode, autosuggestions, syntax highlighting, FZF integration, and enhanced directory navigation
 - **Git**: Version control with comprehensive aliases and modern defaults
@@ -38,7 +38,6 @@ The result: A development environment where CLI tools aren't separate apps—the
 - **k9s** (ALT+j): Kubernetes manager with cluster/namespace selection
 - **Lazygit** (ALT+h): TUI for git operations
 - **Codex CLI** (ALT+o): OpenAI assistant with auto-launch
-- **Browsh** (ALT+b): Firefox-based terminal browser
 - **Lazydocker** (ALT+d): Docker TUI for container management
 - **w3m** (ALT+e): Lightweight browser with vim keys + search (ALT+s)
 - **Carbonyl** (ALT+c): Chromium-based terminal browser
@@ -66,7 +65,6 @@ The result: A development environment where CLI tools aren't separate apps—the
  - codex (OpenAI Codex CLI)
  - w3m (lightweight terminal browser with vim keys)
  - carbonyl (Chromium-based terminal browser, via npm)
- - browsh (terminal web browser, requires Firefox)
  - e1s (AWS ECS terminal UI)
  - e2s (AWS EC2 browser, custom-built: https://github.com/christophermanahan/e2s)
  - aws-cli (required for e1s/e2s)
@@ -81,10 +79,8 @@ The result: A development environment where CLI tools aren't separate apps—the
 
 ```bash
 brew install eza zoxide stow zsh zsh-vi-mode zsh-autosuggestions zsh-syntax-highlighting starship neovim ripgrep tmux k9s lazydocker git-delta fzf fd bat codex w3m awscli e1s
-brew tap browsh-org/homebrew-browsh
-brew install browsh
 npm install -g carbonyl
-brew install --cask font-hack-nerd-font wezterm firefox
+brew install --cask font-hack-nerd-font wezterm
 ```
 
 ### 1a. Install e2s (AWS EC2 Browser)
@@ -101,11 +97,11 @@ chmod +x install.sh
 
 This installs the `e2s` binary to `~/.local/bin/e2s` (PATH automatically configured in zsh config).
 
-### 2. Clone dotfiles repository
+### 2. Clone repository
 
 ```bash
-git clone https://github.com/christophermanahan/dotfiles.git ~/dotfiles
-cd ~/dotfiles
+git clone https://github.com/christophermanahan/paradiddle.git ~/paradiddle
+cd ~/paradiddle
 ```
 
 ### 3. Deploy configurations with Stow
@@ -223,7 +219,7 @@ Wait for all installations to complete, then restart Neovim.
 | `gT` | Previous tab |
 | `<leader>X` | Close all other buffers |
 
-#### Terminal Management (11 Integrated Floating Terminals)
+#### Terminal Management (10 Integrated Floating Terminals)
 
 All terminals use cascading window positions (0.02 to 0.12 offset) for visual clarity:
 
@@ -234,7 +230,6 @@ All terminals use cascading window positions (0.02 to 0.12 offset) for visual cl
 | `ALT+j` | k9s | Toggle Kubernetes browser (cluster → namespace selection) |
 | `ALT+h` | Lazygit | Toggle Git TUI |
 | `ALT+o` | Codex | Toggle OpenAI CLI (auto-starts) |
-| `ALT+b` | Browsh | Toggle Firefox-based browser |
 | `ALT+d` | Lazydocker | Toggle Docker TUI |
 | `ALT+e` | w3m | Toggle lightweight browser (vim keys) |
 | `ALT+s` | w3m Search | Search DuckDuckGo in w3m |
@@ -422,12 +417,12 @@ Seamless integration between Neovim and the macOS system clipboard:
 
 ### Neovim Configuration Highlights
 
-**CLI Tool Integration (11 Floating Terminals):**
+**CLI Tool Integration (10 Floating Terminals):**
 - Each terminal with auto-start and intelligent defaults
 - Cascading window positions (0.02 to 0.12 offset) for visual clarity
 - Session management: unique tmux sessions per nvim instance, auto-cleanup on exit
 - Seamless context switching without leaving editor
-- Tools: Claude Code, Tmux, k9s, Lazygit, Codex, Browsh, Lazydocker, w3m, Carbonyl, e1s (AWS ECS), e2s (AWS EC2)
+- Tools: Claude Code, Tmux, k9s, Lazygit, Codex, Lazydocker, w3m, Carbonyl, e1s (AWS ECS), e2s (AWS EC2)
 
 **macOS System Integration:**
 - Full clipboard integration via `clipboard=unnamedplus`
