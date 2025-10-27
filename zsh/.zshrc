@@ -176,10 +176,33 @@ function zvm_after_init() {
 
     if [ -n "$cmd" ]; then
       if [ "$key" = "ctrl-e" ]; then
+        # Ctrl+E: Execute immediately (skip flag picker)
         BUFFER="$cmd"
         zle accept-line
       else
-        LBUFFER="${LBUFFER}${cmd}"
+        # Stage 2: Check if flags are available and auto-trigger picker
+        local flags_file="$HOME/.config/paradiddle/flags/${cmd// /_}.flags"
+
+        if [[ -f "$flags_file" ]]; then
+          # Flags available - trigger flag picker
+          echo ""
+          echo "📋 Flags available for: $cmd"
+          echo "   (Press Esc to skip flag selection)"
+          echo ""
+
+          local built_cmd=$(fzf-flag-picker "$cmd")
+
+          if [[ -n "$built_cmd" ]]; then
+            # Flags were selected, use built command
+            LBUFFER="${LBUFFER}${built_cmd} "
+          else
+            # Flag picker was cancelled, use base command
+            LBUFFER="${LBUFFER}${cmd} "
+          fi
+        else
+          # No flags available, insert base command
+          LBUFFER="${LBUFFER}${cmd} "
+        fi
       fi
     fi
 
@@ -345,6 +368,127 @@ function zvm_after_init() {
   }
   zle -N fzf-brew-widget
   bindkey '\eB' fzf-brew-widget  # Alt+Shift+B
+
+  # ============================================================================
+  # Flag Picker Function (Option A: Two-Stage Selection)
+  # ============================================================================
+
+  # Interactive flag picker for commands
+  # Usage: fzf-flag-picker "docker build"
+  fzf-flag-picker() {
+    local cmd="$1"
+    local flags_file="$HOME/.config/paradiddle/flags/${cmd// /_}.flags"
+
+    # Check if flags file exists
+    if [[ ! -f "$flags_file" ]]; then
+      echo "⚠️  No flags available for: $cmd"
+      echo "   Press Esc to insert base command"
+      read -k 1
+      return 1
+    fi
+
+    # Count total flags
+    local total_flags=$(grep -v '^#' "$flags_file" | grep -v '^$' | wc -l | tr -d ' ')
+    local common_flags=$(grep -v '^#' "$flags_file" | grep '|common|' | wc -l | tr -d ' ')
+
+    # Load flags and format for display
+    local flags_formatted=$(grep -v '^#' "$flags_file" | grep -v '^$' | awk -F'|' '
+      {
+        flag = $1
+        short = $2
+        type = $3
+        desc = $4
+        example = $5
+        category = $6
+
+        # Format display: show flag, short form, and description
+        if (short != "") {
+          display = sprintf("%-20s %-4s  %s", flag, short, desc)
+        } else {
+          display = sprintf("%-20s      %s", flag, desc)
+        }
+
+        # Add category indicator
+        if (category == "common") {
+          display = "⭐ " display
+        } else {
+          display = "   " display
+        }
+
+        # Store full line for later parsing
+        print display "|METADATA|" $0
+      }
+    ')
+
+    # Show fzf multi-select
+    local selected=$(echo "$flags_formatted" | \
+      fzf --multi \
+          --height=90% \
+          --reverse \
+          --border \
+          --prompt="🔧 $cmd flags ($common_flags common, $total_flags total): " \
+          --header="Space: Select | Tab: Show all | Enter: Confirm | Esc: Cancel" \
+          --preview='
+            # Extract metadata from selection
+            metadata=$(echo {} | sed "s/.*|METADATA|//")
+
+            # Parse flag details
+            flag=$(echo "$metadata" | cut -d"|" -f1)
+            short=$(echo "$metadata" | cut -d"|" -f2)
+            type=$(echo "$metadata" | cut -d"|" -f3)
+            desc=$(echo "$metadata" | cut -d"|" -f4)
+            example=$(echo "$metadata" | cut -d"|" -f5)
+            category=$(echo "$metadata" | cut -d"|" -f6)
+            repeatable=$(echo "$metadata" | cut -d"|" -f8)
+
+            # Display flag details
+            echo "Flag: $flag"
+            if [[ -n "$short" ]]; then
+              echo "Short: $short"
+            fi
+            echo "Type: $type"
+            echo "Category: $category"
+            if [[ "$repeatable" == "true" ]]; then
+              echo "Repeatable: Yes (can use multiple times)"
+            fi
+            echo ""
+            echo "Description:"
+            echo "  $desc"
+
+            if [[ -n "$example" && "$example" != "<none>" ]]; then
+              echo ""
+              echo "Example:"
+              echo "  '"$cmd"' $flag $example"
+            fi
+          ' \
+          --preview-window=right:50%:wrap \
+          --bind='ctrl-/:toggle-preview')
+
+    # If no selection, return empty
+    if [[ -z "$selected" ]]; then
+      return 1
+    fi
+
+    # Build command with selected flags
+    local built_cmd="$cmd"
+    while IFS='|' read -r display metadata rest; do
+      # Extract flag name from metadata
+      local flag=$(echo "$metadata" | cut -d'|' -f1)
+      local type=$(echo "$metadata" | cut -d'|' -f3)
+
+      # Add flag to command
+      if [[ "$type" == "boolean" ]]; then
+        # Boolean flags don't need values
+        built_cmd="$built_cmd $flag"
+      else
+        # Other flags need values - add placeholder
+        built_cmd="$built_cmd $flag <$type>"
+      fi
+    done <<< "$selected"
+
+    # Return the built command
+    echo "$built_cmd"
+  }
 }
 # Enhanced file viewing
 alias cat="bat"

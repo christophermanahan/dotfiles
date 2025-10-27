@@ -40,8 +40,10 @@ Stow creates symlinks from the repo to home directory following the directory st
   - **Fuzzy Command Search**: Comprehensive command discovery system with fzf integration
 
 **Fuzzy Command Search Keybindings:**
-- `Alt+X`: **Hierarchical command search** - searches executables AND subcommands
-  - Example: Type "docker build", "git stash pop", "kubectl get pods", "aws s3 ls"
+- `Alt+X`: **Two-stage command builder** - searches commands, then interactively select flags
+  - **Stage 1**: Select command (e.g., "docker build", "git commit", "kubectl apply")
+  - **Stage 2**: Auto-opens flag picker if flags available (21 flags for docker build, 21 for git commit, 21 for kubectl apply)
+  - Example: Type "docker build" → Select flags like `--tag`, `--file`, `--no-cache` → Get `docker build --tag <string> --file <string> --no-cache`
   - Searches ~500+ commands across 13 CLIs (git, docker, kubectl, aws, npm, cargo, terraform, helm, ssh, jq, sed, kill, docker-compose)
   - Auto-updates cache every 7 days
 - `Alt+Shift+G`: Filter to Git commands only (git, git-*)
