@@ -205,7 +205,7 @@ function zvm_after_init() {
       fi
     fi
 
-    zle reset-prompt
+    # Note: No zle reset-prompt needed - LBUFFER/BUFFER modification auto-redraws
   }
   zle -N fzf-command-widget
   bindkey '\ex' fzf-command-widget  # Alt+x
