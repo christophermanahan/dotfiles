@@ -184,12 +184,7 @@ function zvm_after_init() {
         local flags_file="$HOME/.config/paradiddle/flags/${cmd// /_}.flags"
 
         if [[ -f "$flags_file" ]]; then
-          # Flags available - trigger flag picker
-          echo ""
-          echo "📋 Flags available for: $cmd"
-          echo "   (Press Esc to skip flag selection)"
-          echo ""
-
+          # Flags available - trigger flag picker directly (no messages to avoid ZLE issues)
           local built_cmd=$(fzf-flag-picker "$cmd")
 
           if [[ -n "$built_cmd" ]]; then
@@ -379,11 +374,8 @@ function zvm_after_init() {
     local cmd="$1"
     local flags_file="$HOME/.config/paradiddle/flags/${cmd// /_}.flags"
 
-    # Check if flags file exists
+    # Check if flags file exists - silently return if not found
     if [[ ! -f "$flags_file" ]]; then
-      echo "⚠️  No flags available for: $cmd"
-      echo "   Press Esc to insert base command"
-      read -k 1
       return 1
     fi
 
@@ -427,7 +419,7 @@ function zvm_after_init() {
           --reverse \
           --border \
           --prompt="🔧 $cmd flags ($common_flags common, $total_flags total): " \
-          --header="Space: Select | Tab: Show all | Enter: Confirm | Esc: Cancel" \
+          --header="Space: Select | Enter: Confirm | Esc: Skip flag selection" \
           --preview='
             # Extract metadata from selection
             metadata=$(echo {} | sed "s/.*|METADATA|//")
