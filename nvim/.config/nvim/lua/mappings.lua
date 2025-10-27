@@ -355,6 +355,197 @@ wk.add {
   },
 }
 
+-- ============================================================================
+-- Fuzzy Command Search Mappings (Alt+X and variants)
+-- ============================================================================
+
+-- Alt+X: Fuzzy search all executables (floating terminal)
+map({ "n", "t" }, "<A-x>", function()
+  local term = require "nvchad.term"
+
+  term.toggle {
+    pos = "float",
+    id = "fzf_all_commands",
+    float_opts = {
+      row = 0.05,
+      col = 0.05,
+      width = 0.9,
+      height = 0.9,
+      title = " 🔍 Command Search ",
+      title_pos = "center",
+    }
+  }
+
+  -- Auto-start the search on first open
+  if not _G.fzf_all_started then
+    vim.defer_fn(function()
+      local bufnr = vim.api.nvim_get_current_buf()
+      if vim.bo[bufnr].buftype == "terminal" then
+        local chan = vim.b[bufnr].terminal_job_id
+        if chan then
+          vim.api.nvim_chan_send(chan, "fzf-command-widget\n")
+          _G.fzf_all_started = true
+        end
+      end
+    end, 200)
+  end
+end, { desc = "fuzzy search all commands" })
+
+-- Alt+Shift+G: Git commands (floating terminal)
+map({ "n", "t" }, "<A-G>", function()
+  local term = require "nvchad.term"
+
+  term.toggle {
+    pos = "float",
+    id = "fzf_git_commands",
+    float_opts = {
+      row = 0.06,
+      col = 0.06,
+      width = 0.9,
+      height = 0.9,
+      title = " 🔍 Git Commands ",
+      title_pos = "center",
+    }
+  }
+
+  if not _G.fzf_git_started then
+    vim.defer_fn(function()
+      local bufnr = vim.api.nvim_get_current_buf()
+      if vim.bo[bufnr].buftype == "terminal" then
+        local chan = vim.b[bufnr].terminal_job_id
+        if chan then
+          vim.api.nvim_chan_send(chan, "fzf-git-command-widget\n")
+          _G.fzf_git_started = true
+        end
+      end
+    end, 200)
+  end
+end, { desc = "fuzzy search git commands" })
+
+-- Alt+Shift+D: Docker/K8s commands (floating terminal)
+map({ "n", "t" }, "<A-D>", function()
+  local term = require "nvchad.term"
+
+  term.toggle {
+    pos = "float",
+    id = "fzf_docker_commands",
+    float_opts = {
+      row = 0.07,
+      col = 0.07,
+      width = 0.9,
+      height = 0.9,
+      title = " 🐳 Docker/K8s Commands ",
+      title_pos = "center",
+    }
+  }
+
+  if not _G.fzf_docker_started then
+    vim.defer_fn(function()
+      local bufnr = vim.api.nvim_get_current_buf()
+      if vim.bo[bufnr].buftype == "terminal" then
+        local chan = vim.b[bufnr].terminal_job_id
+        if chan then
+          vim.api.nvim_chan_send(chan, "fzf-docker-command-widget\n")
+          _G.fzf_docker_started = true
+        end
+      end
+    end, 200)
+  end
+end, { desc = "fuzzy search docker/k8s commands" })
+
+-- Alt+Shift+A: AWS commands (floating terminal)
+map({ "n", "t" }, "<A-A>", function()
+  local term = require "nvchad.term"
+
+  term.toggle {
+    pos = "float",
+    id = "fzf_aws_commands",
+    float_opts = {
+      row = 0.08,
+      col = 0.08,
+      width = 0.9,
+      height = 0.9,
+      title = " ☁️  AWS Commands ",
+      title_pos = "center",
+    }
+  }
+
+  if not _G.fzf_aws_started then
+    vim.defer_fn(function()
+      local bufnr = vim.api.nvim_get_current_buf()
+      if vim.bo[bufnr].buftype == "terminal" then
+        local chan = vim.b[bufnr].terminal_job_id
+        if chan then
+          vim.api.nvim_chan_send(chan, "fzf-aws-command-widget\n")
+          _G.fzf_aws_started = true
+        end
+      end
+    end, 200)
+  end
+end, { desc = "fuzzy search aws commands" })
+
+-- Alt+Shift+X: Aliases and functions (floating terminal)
+map({ "n", "t" }, "<A-X>", function()
+  local term = require "nvchad.term"
+
+  term.toggle {
+    pos = "float",
+    id = "fzf_aliases",
+    float_opts = {
+      row = 0.09,
+      col = 0.09,
+      width = 0.9,
+      height = 0.9,
+      title = " 🔧 Aliases & Functions ",
+      title_pos = "center",
+    }
+  }
+
+  if not _G.fzf_alias_started then
+    vim.defer_fn(function()
+      local bufnr = vim.api.nvim_get_current_buf()
+      if vim.bo[bufnr].buftype == "terminal" then
+        local chan = vim.b[bufnr].terminal_job_id
+        if chan then
+          vim.api.nvim_chan_send(chan, "fzf-alias-widget\n")
+          _G.fzf_alias_started = true
+        end
+      end
+    end, 200)
+  end
+end, { desc = "fuzzy search aliases and functions" })
+
+-- Alt+Shift+B: Homebrew packages (floating terminal)
+map({ "n", "t" }, "<A-B>", function()
+  local term = require "nvchad.term"
+
+  term.toggle {
+    pos = "float",
+    id = "fzf_brew",
+    float_opts = {
+      row = 0.10,
+      col = 0.10,
+      width = 0.9,
+      height = 0.9,
+      title = " 🍺 Homebrew Packages ",
+      title_pos = "center",
+    }
+  }
+
+  if not _G.fzf_brew_started then
+    vim.defer_fn(function()
+      local bufnr = vim.api.nvim_get_current_buf()
+      if vim.bo[bufnr].buftype == "terminal" then
+        local chan = vim.b[bufnr].terminal_job_id
+        if chan then
+          vim.api.nvim_chan_send(chan, "fzf-brew-widget\n")
+          _G.fzf_brew_started = true
+        end
+      end
+    end, 200)
+  end
+end, { desc = "fuzzy search homebrew packages" })
+
 -- Track if we've started Claude in the terminal
 _G.claude_started = false
 _G.tmux_started = false
@@ -905,6 +1096,12 @@ map({ "n", "t" }, "<A-p>", function()
     _G.carbonyl_started = false
     _G.e1s_started = false
     _G.e2s_started = false
+    _G.fzf_all_started = false
+    _G.fzf_git_started = false
+    _G.fzf_docker_started = false
+    _G.fzf_aws_started = false
+    _G.fzf_alias_started = false
+    _G.fzf_brew_started = false
 
     -- Delete the buffer (force = true to handle unsaved changes)
     vim.api.nvim_buf_delete(bufnr, { force = true })
