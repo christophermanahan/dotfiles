@@ -114,9 +114,6 @@ function zvm_after_init() {
   # Main command search widget (Alt+X)
   # Now supports hierarchical commands (e.g., "git commit", "docker build")
   fzf-command-widget() {
-    # Initialize terminal for interactive use from ZLE widget
-    zle -I
-
     local cache_file="$HOME/.cache/paradiddle/commands.db"
 
     # Generate cache if missing or older than 7 days
@@ -186,9 +183,11 @@ function zvm_after_init() {
       else
         # Stage 2: Check if flags are available and auto-trigger picker
         local flags_file="$HOME/.config/paradiddle/flags/${cmd// /_}.flags"
+        local used_flag_picker=false
 
         if [[ -f "$flags_file" ]]; then
           # Flags available - trigger flag picker directly (no messages to avoid ZLE issues)
+          used_flag_picker=true
           local built_cmd=$(fzf-flag-picker "$cmd")
 
           if [[ -n "$built_cmd" ]]; then
@@ -202,10 +201,14 @@ function zvm_after_init() {
           # No flags available, insert base command
           LBUFFER="${LBUFFER}${cmd} "
         fi
+
+        # Only call zle reset-prompt if we didn't use flag picker
+        # (flag picker's fzf already handles terminal state)
+        if [[ "$used_flag_picker" == "false" ]]; then
+          zle reset-prompt
+        fi
       fi
     fi
-
-    # Note: No zle reset-prompt needed - LBUFFER/BUFFER modification auto-redraws
   }
   zle -N fzf-command-widget
   bindkey '\ex' fzf-command-widget  # Alt+x
