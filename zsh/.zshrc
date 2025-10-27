@@ -114,6 +114,9 @@ function zvm_after_init() {
   # Main command search widget (Alt+X)
   # Now supports hierarchical commands (e.g., "git commit", "docker build")
   fzf-command-widget() {
+    # Initialize terminal for interactive use from ZLE widget
+    zle -I
+
     local cache_file="$HOME/.cache/paradiddle/commands.db"
 
     # Generate cache if missing or older than 7 days
@@ -142,10 +145,11 @@ function zvm_after_init() {
           --prompt="🔍 All Commands (with subcommands): " \
           --header="Alt+X: Search commands | Ctrl+/: Preview | Enter: Insert | Ctrl+E: Execute | Ctrl+U: Update cache" \
           --preview='
-            # Split command into parts
-            parts=(${=REPLY})
-            main_cmd=$parts[1]
-            sub_cmd=$parts[2]
+            # Split command into parts (use {} which is the fzf placeholder)
+            cmd_line="{}"
+            parts=($=cmd_line)
+            main_cmd=${parts[1]}
+            sub_cmd=${parts[2]}
 
             # Show different info based on structure
             if [[ -n "$sub_cmd" ]]; then
