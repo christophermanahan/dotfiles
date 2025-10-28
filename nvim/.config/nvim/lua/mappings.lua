@@ -18,7 +18,30 @@ map("n", "<C-l>", require("smart-splits").move_cursor_right)
 -- - Ctrl+[ is identical to ESC at terminal level, would break ZSH vi-mode ESC
 -- - ESC should pass through to the shell for vi-mode
 -- Ctrl+q is rarely used and doesn't conflict with terminal applications
-map("t", "<C-q>", "<C-\\><C-n>", { desc = "Enter terminal normal mode" })
+-- SMART BEHAVIOR: If tmux is running, send CTRL+q to tmux (it has bind -n C-q copy-mode)
+map("t", "<C-q>", function()
+  local bufnr = vim.api.nvim_get_current_buf()
+  local chan = vim.b[bufnr].terminal_job_id
+
+  if chan then
+    -- Check if tmux is running by looking at the global tracking variable
+    -- The tmux terminal is tracked as floatTerm_<nvim_pid>
+    local nvim_pid = vim.fn.getpid()
+    local term_id = "floatTerm_" .. nvim_pid
+    local is_tmux = _G.tmux_sessions and _G.tmux_sessions[term_id]
+
+    if is_tmux then
+      -- Send CTRL+q directly to tmux (tmux will catch it with bind -n C-q copy-mode)
+      vim.api.nvim_chan_send(chan, "\x11")  -- \x11 is CTRL+q
+    else
+      -- Regular terminal: enter Neovim normal mode
+      vim.cmd("stopinsert")
+    end
+  else
+    -- Fallback: enter normal mode
+    vim.cmd("stopinsert")
+  end
+end, { desc = "Enter terminal normal mode (or tmux copy mode)" })
 
 vim.keymap.del({ "n", "t" }, "<A-v>")
 
