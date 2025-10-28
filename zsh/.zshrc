@@ -111,7 +111,8 @@ function zvm_after_init() {
     rm -f "$freq_file"
   }
 
-  # Main command search widget (Alt+X)
+  # Main command search widget (Alt+Q)
+  # Note: Changed from Alt+X to avoid conflict with tmux's Alt+X (kill pane)
   # Now supports hierarchical commands (e.g., "git commit", "docker build")
   fzf-command-widget() {
     local cache_file="$HOME/.cache/paradiddle/commands.db"
@@ -140,7 +141,7 @@ function zvm_after_init() {
           --reverse \
           --border \
           --prompt="🔍 All Commands (with subcommands): " \
-          --header="Alt+X: Search commands | Ctrl+/: Preview | Enter: Insert | Ctrl+E: Execute | Ctrl+U: Update cache" \
+          --header="Alt+Q: Search commands | Ctrl+/: Preview | Enter: Insert | Ctrl+E: Execute | Ctrl+U: Update cache" \
           --preview='
             # Split command into parts (use {} which is the fzf placeholder)
             cmd_line="{}"
@@ -318,7 +319,7 @@ function zvm_after_init() {
           --reverse \
           --border \
           --prompt="🔧 Aliases & Functions: " \
-          --header="Alt+X: Aliases/Functions | Ctrl+/: Toggle preview | Enter: Insert | Ctrl+E: Execute" \
+          --header="Alt+Shift+X: Aliases/Functions | Ctrl+/: Toggle preview | Enter: Insert | Ctrl+E: Execute" \
           --preview='
             item=$(echo {} | sed "s/^\[.*\] //");
             type=$(echo {} | grep -oE "^\[.*\]");
@@ -505,3 +506,6 @@ alias gp="git push"
 alias gpl="git pull"
 alias gcm="git commit -m"
 alias glog="git log --oneline --graph --decorate --all"
+
+# Rust environment
+export PATH="$HOME/.cargo/bin:$PATH"

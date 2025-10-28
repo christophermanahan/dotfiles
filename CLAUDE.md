@@ -40,7 +40,8 @@ Stow creates symlinks from the repo to home directory following the directory st
   - **Fuzzy Command Search**: Comprehensive command discovery system with fzf integration
 
 **Fuzzy Command Search Keybindings:**
-- `Alt+X`: **Two-stage command builder** - searches commands, then interactively select flags
+- `Alt+Q`: **Two-stage command builder** - searches commands, then interactively select flags
+  - Note: Changed from `Alt+X` to avoid conflict with tmux's `Alt+X` (kill pane)
   - **Stage 1**: Select command (e.g., "docker build", "git commit", "kubectl apply")
   - **Stage 2**: Auto-opens flag picker if flags available (21 flags for docker build, 21 for git commit, 21 for kubectl apply)
   - Example: Type "docker build" → Select flags like `--tag`, `--file`, `--no-cache` → Get `docker build --tag <string> --file <string> --no-cache`
@@ -98,7 +99,7 @@ Built on NvChad v2.5 with Lazy.nvim plugin manager.
 - gitsigns explicitly disabled (line 2 of plugins/init.lua)
 - Telescope uses fzf extension for performance
 - TypeScript servers (tsserver, vtsls) and lua_ls have custom handler logic
-- Fuzzy command search available via `Alt+X` (and variants) opens floating terminals with fzf search
+- Fuzzy command search available via `Alt+Q` (and variants) opens floating terminals with fzf search
 
 ### Wezterm
 
