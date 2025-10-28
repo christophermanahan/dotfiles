@@ -4,10 +4,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-**Paradiddle** is a CLI-first IDE where terminal tools are first-class citizens. Built on NvChad v2.5, it integrates 11 CLI tools as floating terminals with intelligent auto-start behavior.
+**Paradiddle** is a CLI-first IDE where terminal tools are first-class citizens. Built on NvChad v2.5, it integrates 11 CLI tools as floating terminals with intelligent auto-start behavior, plus 6 fuzzy command search terminals for discovering executables.
 
 Configuration files managed with GNU Stow:
-- **nvim**: CLI-first IDE with 11 integrated floating terminals (ALT+k/i/j/h/o/b/d/e/c/1/2)
+- **nvim**: CLI-first IDE with 17 integrated floating terminals:
+  - 11 tool terminals (ALT+k/i/j/h/o/b/d/e/c/1/2)
+  - 6 command search terminals (ALT+x, ALT+Shift+G/D/A/X/B)
 - **zsh**: Shell configuration with vi-mode, autosuggestions, and syntax highlighting
 - **starship**: Custom prompt with Catppuccin Mocha theme
 - **wezterm**: Terminal emulator with custom tab formatting and smart-splits integration
@@ -35,6 +37,38 @@ Stow creates symlinks from the repo to home directory following the directory st
   - zoxide integration for enhanced cd
   - Vi mode with Ctrl+Space for autosuggestion acceptance
   - Starship prompt configured at `~/.config/starship/starship.toml`
+  - **Fuzzy Command Search**: Comprehensive command discovery system with fzf integration
+
+**Fuzzy Command Search Keybindings:**
+- `Alt+Q`: **Two-stage command builder** - searches commands, then interactively select flags
+  - Note: Changed from `Alt+X` to avoid conflict with tmux's `Alt+X` (kill pane)
+  - **Stage 1**: Select command (e.g., "docker build", "git commit", "kubectl apply")
+  - **Stage 2**: Auto-opens flag picker if flags available (21 flags for docker build, 21 for git commit, 21 for kubectl apply)
+  - Example: Type "docker build" → Select flags like `--tag`, `--file`, `--no-cache` → Get `docker build --tag <string> --file <string> --no-cache`
+  - Searches ~500+ commands across 13 CLIs (git, docker, kubectl, aws, npm, cargo, terraform, helm, ssh, jq, sed, kill, docker-compose)
+  - Auto-updates cache every 7 days
+- `Alt+Shift+G`: Filter to Git commands only (git, git-*)
+- `Alt+Shift+D`: Filter to Docker/K8s commands (docker, kubectl, k9s, lazydocker)
+- `Alt+Shift+A`: Filter to AWS/Cloud commands (aws, e1s, e2s, terraform, tf)
+- `Alt+Shift+X`: Search aliases and custom functions
+- `Alt+Shift+B`: Search installed Homebrew packages
+
+**Search features:**
+- **Hierarchical search**: Find subcommands (e.g., "git stash pop", "docker container ls")
+- Real-time fuzzy filtering as you type
+- Preview window showing command-specific help
+- `Ctrl+/`: Toggle preview window
+- `Enter`: Insert command at cursor (safe, doesn't execute)
+- `Ctrl+E`: Execute command immediately
+- `Ctrl+U`: Force update command cache
+- Works in both shell and Neovim terminal contexts
+
+**Command Cache System:**
+- Static database: 13 CLIs with 500+ subcommands (curated)
+- Discovery system: Auto-discovers additional commands from installed CLIs
+- Custom commands: Add your own via `~/.config/paradiddle/custom.yaml`
+- Cache location: `~/.cache/paradiddle/commands.db`
+- Helper scripts: `paradiddle-update-commands`, `paradiddle-add-command`
 
 ### Neovim
 
@@ -65,6 +99,7 @@ Built on NvChad v2.5 with Lazy.nvim plugin manager.
 - gitsigns explicitly disabled (line 2 of plugins/init.lua)
 - Telescope uses fzf extension for performance
 - TypeScript servers (tsserver, vtsls) and lua_ls have custom handler logic
+- Fuzzy command search available via `Alt+Q` (and variants) opens floating terminals with fzf search
 
 ### Wezterm
 

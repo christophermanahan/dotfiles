@@ -169,6 +169,14 @@ wezterm.on("gui-attached", function()
 	end
 end)
 
+-- Auto-start nvim when wezterm starts or new tab is created
+wezterm.on("gui-startup", function(cmd)
+	local _, _, window = mux.spawn_window(cmd or {
+		args = { "/bin/zsh", "-l", "-c", "nvim" },
+	})
+	window:gui_window():maximize()
+end)
+
 wezterm.on("update-status", function(window)
 	local cells = {}
 
@@ -217,6 +225,8 @@ config = {
 	set_environment_variables = {
 		PATH = "/opt/homebrew/bin:/usr/local/bin:/usr/bin",
 	},
+	-- Auto-start nvim in new tabs
+	default_prog = { "/bin/zsh", "-l", "-c", "nvim" },
 	enable_kitty_keyboard = false,
 	leader = { key = "a", mods = "CTRL" },
 	keys = {
