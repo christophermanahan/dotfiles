@@ -468,7 +468,7 @@ return {
     keys = {
       {
         "s",
-        mode = { "n", "x", "o" },
+        mode = { "n", "o" },  -- Removed "x" (visual mode) to allow nvim-surround to use S in visual
         function()
           require("flash").jump()
         end,
@@ -476,7 +476,7 @@ return {
       },
       {
         "S",
-        mode = { "n", "x", "o" },
+        mode = { "n", "o" },  -- Removed "x" (visual mode) to allow nvim-surround to use S in visual
         function()
           require("flash").treesitter()
         end,
