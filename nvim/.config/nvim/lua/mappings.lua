@@ -13,36 +13,33 @@ map("n", "<C-j>", require("smart-splits").move_cursor_down)
 map("n", "<C-k>", require("smart-splits").move_cursor_up)
 map("n", "<C-l>", require("smart-splits").move_cursor_right)
 
--- Terminal mode: Ctrl+q to enter normal mode (allows scrolling in floating terminals)
--- Note: We don't use Ctrl+[ or ESC because:
--- - Ctrl+[ is identical to ESC at terminal level, would break ZSH vi-mode ESC
--- - ESC should pass through to the shell for vi-mode
--- Ctrl+q is rarely used and doesn't conflict with terminal applications
--- SMART BEHAVIOR: If THIS specific terminal is tmux, send CTRL+q to tmux (it has bind -n C-q copy-mode)
+-- Terminal mode: CTRL+q for scrolling
+-- Non-tmux terminals: Enter Neovim normal mode (same as NvChad's CTRL+x behavior)
+-- Tmux terminal: Send CTRL+f [ to enter tmux copy-mode (native tmux scrolling)
 map("t", "<C-q>", function()
   local bufnr = vim.api.nvim_get_current_buf()
   local chan = vim.b[bufnr].terminal_job_id
 
-  if chan then
-    -- CRITICAL: Check if THIS SPECIFIC BUFFER is the tmux terminal
-    -- Each terminal has a term_id set by nvchad.term (e.g., "claude_term", "floatTerm_<pid>", "k9s_term")
-    -- We need to check if this buffer's term_id is registered as a tmux terminal
-    -- Only "floatTerm_<pid>" is the tmux terminal (ALT+i)
-    local current_term_id = vim.b[bufnr].term_id
-    local is_current_buffer_tmux = current_term_id and _G.tmux_sessions and _G.tmux_sessions[current_term_id]
-
-    if is_current_buffer_tmux then
-      -- This buffer IS the tmux terminal: send CTRL+q to tmux for copy-mode
-      vim.api.nvim_chan_send(chan, "\x11")  -- \x11 is CTRL+q
-    else
-      -- This buffer is NOT tmux (Claude, k9s, etc.): enter Neovim normal mode for scrolling
-      vim.cmd("stopinsert")
-    end
-  else
+  if not chan then
     -- Fallback: enter normal mode
     vim.cmd("stopinsert")
+    return
   end
-end, { desc = "Enter terminal normal mode (or tmux copy mode)" })
+
+  -- Check if THIS buffer is the tmux terminal
+  -- Each terminal has a term_id set by nvchad.term (e.g., "claude_term", "floatTerm_<pid>", "k9s_term")
+  local current_term_id = vim.b[bufnr].term_id
+  local is_tmux = current_term_id and _G.tmux_sessions and _G.tmux_sessions[current_term_id]
+
+  if is_tmux then
+    -- Tmux terminal: send CTRL+f [ (tmux's native copy-mode key sequence)
+    -- This provides full scrollback buffer access with all tmux keybindings
+    vim.api.nvim_chan_send(chan, "\x06[")  -- \x06 is CTRL+f, then literal [
+  else
+    -- Non-tmux terminal: enter Neovim normal mode for scrolling (NvChad default behavior)
+    vim.cmd("stopinsert")  -- Equivalent to <C-\><C-N>
+  end
+end, { desc = "Terminal scrolling (tmux copy-mode or nvim normal mode)" })
 
 vim.keymap.del({ "n", "t" }, "<A-v>")
 
