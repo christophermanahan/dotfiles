@@ -4,12 +4,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-**Paradiddle** is a CLI-first IDE where terminal tools are first-class citizens. Built on NvChad v2.5, it integrates 11 CLI tools as floating terminals with intelligent auto-start behavior, plus 6 fuzzy command search terminals for discovering executables.
+**Paradiddle** is a CLI-first IDE where terminal tools are first-class citizens. Built on NvChad v2.5, it integrates 10 CLI tools as floating terminals with intelligent auto-start behavior, plus 6 fuzzy command search terminals for discovering executables.
 
 Configuration files managed with GNU Stow:
-- **nvim**: CLI-first IDE with 17 integrated floating terminals:
-  - 11 tool terminals (ALT+k/i/j/h/o/b/d/e/c/1/2)
-  - 6 command search terminals (ALT+x, ALT+Shift+G/D/A/X/B)
+- **nvim**: CLI-first IDE with 16 integrated floating terminals:
+  - 10 tool terminals (ALT+k/i/j/h/o/b/d/e/c, ALT+Shift+J)
+  - 6 command search terminals (ALT+q, ALT+Shift+G/D/A/X/B)
 - **zsh**: Shell configuration with vi-mode, autosuggestions, and syntax highlighting
 - **starship**: Custom prompt with Catppuccin Mocha theme
 - **wezterm**: Terminal emulator with custom tab formatting and smart-splits integration
@@ -41,7 +41,6 @@ Stow creates symlinks from the repo to home directory following the directory st
 
 **Fuzzy Command Search Keybindings:**
 - `Alt+Q`: **Two-stage command builder** - searches commands, then interactively select flags
-  - Note: Changed from `Alt+X` to avoid conflict with tmux's `Alt+X` (kill pane)
   - **Stage 1**: Select command (e.g., "docker build", "git commit", "kubectl apply")
   - **Stage 2**: Auto-opens flag picker if flags available (21 flags for docker build, 21 for git commit, 21 for kubectl apply)
   - Example: Type "docker build" → Select flags like `--tag`, `--file`, `--no-cache` → Get `docker build --tag <string> --file <string> --no-cache`
@@ -49,7 +48,8 @@ Stow creates symlinks from the repo to home directory following the directory st
   - Auto-updates cache every 7 days
 - `Alt+Shift+G`: Filter to Git commands only (git, git-*)
 - `Alt+Shift+D`: Filter to Docker/K8s commands (docker, kubectl, k9s, lazydocker)
-- `Alt+Shift+A`: Filter to AWS/Cloud commands (aws, e1s, e2s, terraform, tf)
+- `Alt+Shift+A`: Filter to AWS/Cloud commands (aws, e1s, terraform, tf)
+- `Alt+Shift+J`: e1s AWS ECS cluster browser with interactive profile/region selection
 - `Alt+Shift+X`: Search aliases and custom functions
 - `Alt+Shift+B`: Search installed Homebrew packages
 

@@ -18,23 +18,24 @@ map("n", "<C-l>", require("smart-splits").move_cursor_right)
 -- - Ctrl+[ is identical to ESC at terminal level, would break ZSH vi-mode ESC
 -- - ESC should pass through to the shell for vi-mode
 -- Ctrl+q is rarely used and doesn't conflict with terminal applications
--- SMART BEHAVIOR: If tmux is running, send CTRL+q to tmux (it has bind -n C-q copy-mode)
+-- SMART BEHAVIOR: If THIS specific terminal is tmux, send CTRL+q to tmux (it has bind -n C-q copy-mode)
 map("t", "<C-q>", function()
   local bufnr = vim.api.nvim_get_current_buf()
   local chan = vim.b[bufnr].terminal_job_id
 
   if chan then
-    -- Check if tmux is running by looking at the global tracking variable
-    -- The tmux terminal is tracked as floatTerm_<nvim_pid>
-    local nvim_pid = vim.fn.getpid()
-    local term_id = "floatTerm_" .. nvim_pid
-    local is_tmux = _G.tmux_sessions and _G.tmux_sessions[term_id]
+    -- CRITICAL: Check if THIS SPECIFIC BUFFER is the tmux terminal
+    -- Each terminal has a term_id set by nvchad.term (e.g., "claude_term", "floatTerm_<pid>", "k9s_term")
+    -- We need to check if this buffer's term_id is registered as a tmux terminal
+    -- Only "floatTerm_<pid>" is the tmux terminal (ALT+i)
+    local current_term_id = vim.b[bufnr].term_id
+    local is_current_buffer_tmux = current_term_id and _G.tmux_sessions and _G.tmux_sessions[current_term_id]
 
-    if is_tmux then
-      -- Send CTRL+q directly to tmux (tmux will catch it with bind -n C-q copy-mode)
+    if is_current_buffer_tmux then
+      -- This buffer IS the tmux terminal: send CTRL+q to tmux for copy-mode
       vim.api.nvim_chan_send(chan, "\x11")  -- \x11 is CTRL+q
     else
-      -- Regular terminal: enter Neovim normal mode
+      -- This buffer is NOT tmux (Claude, k9s, etc.): enter Neovim normal mode for scrolling
       vim.cmd("stopinsert")
     end
   else
@@ -44,6 +45,112 @@ map("t", "<C-q>", function()
 end, { desc = "Enter terminal normal mode (or tmux copy mode)" })
 
 vim.keymap.del({ "n", "t" }, "<A-v>")
+
+-- ============================================================================
+-- Foreground Terminal Tracking System
+-- ============================================================================
+-- Track which floating terminal is currently in the foreground
+_G.foreground_terminal = nil
+-- Track which terminal buffers have been created (persists even when window closes)
+if not _G.terminal_buffers then
+  _G.terminal_buffers = {}
+end
+
+-- Find a terminal window by term_id
+-- Returns: window ID, buffer number (or nil, nil if not found)
+local function find_term_window(term_id)
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    local buf = vim.api.nvim_win_get_buf(win)
+    if vim.api.nvim_buf_is_valid(buf) and vim.bo[buf].buftype == "terminal" then
+      local buf_term_id = vim.b[buf].term_id
+      -- Match exact term_id or term_id pattern (for tmux which has unique per-nvim-instance IDs)
+      if buf_term_id == term_id or (buf_term_id and buf_term_id:match("^" .. term_id)) then
+        return win, buf
+      end
+    end
+  end
+  return nil, nil
+end
+
+-- Check if a terminal buffer exists (even if window is closed)
+-- Returns: buffer number or nil
+local function find_term_buffer(term_id)
+  -- First check if we have it tracked
+  if _G.terminal_buffers[term_id] then
+    local buf = _G.terminal_buffers[term_id]
+    if vim.api.nvim_buf_is_valid(buf) then
+      return buf
+    else
+      -- Buffer was deleted, clean up tracking
+      _G.terminal_buffers[term_id] = nil
+    end
+  end
+
+  -- Search all buffers as fallback
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    if vim.api.nvim_buf_is_valid(buf) and vim.bo[buf].buftype == "terminal" then
+      local buf_term_id = vim.b[buf].term_id
+      if buf_term_id == term_id or (buf_term_id and buf_term_id:match("^" .. term_id)) then
+        _G.terminal_buffers[term_id] = buf
+        return buf
+      end
+    end
+  end
+  return nil
+end
+
+-- Smart toggle: if target terminal exists but isn't foreground, hide foreground first
+-- Returns: true if should proceed with toggle, false if already handled
+local function prepare_toggle(term_id)
+  local target_win, target_buf = find_term_window(term_id)
+
+  -- If window doesn't exist, check if buffer exists
+  if not target_buf then
+    target_buf = find_term_buffer(term_id)
+  end
+
+  local current_buf = vim.api.nvim_get_current_buf()
+
+  -- Case 1: Target terminal doesn't exist (neither window nor buffer) → Will open it
+  if not target_win and not target_buf then
+    vim.notify("Case 1: Opening " .. term_id, vim.log.levels.INFO)
+    _G.foreground_terminal = term_id
+    return true  -- Proceed with toggle (opens it)
+  end
+
+  -- Case 2: Target terminal is already focused → Will close it
+  if current_buf == target_buf then
+    vim.notify("Case 2: Closing " .. term_id, vim.log.levels.INFO)
+    _G.foreground_terminal = nil
+    return true  -- Proceed with toggle (closes it)
+  end
+
+  -- Case 3: Target terminal exists but isn't focused (hidden behind another terminal)
+  -- Close the foreground terminal first to reveal the target
+  if _G.foreground_terminal and _G.foreground_terminal ~= term_id then
+    local fg_win, _ = find_term_window(_G.foreground_terminal)
+    if fg_win then
+      vim.notify("Case 3: Hiding " .. _G.foreground_terminal .. ", revealing " .. term_id, vim.log.levels.WARN)
+      -- Close the foreground terminal window (reveals target underneath)
+      vim.api.nvim_win_close(fg_win, false)
+      _G.foreground_terminal = term_id
+      -- Focus the now-visible target terminal after a brief delay
+      vim.defer_fn(function()
+        local tw, _ = find_term_window(term_id)
+        if tw then
+          vim.api.nvim_set_current_win(tw)
+          vim.cmd("startinsert")
+        end
+      end, 50)
+      return false  -- Don't toggle, we already handled it
+    end
+  end
+
+  -- Case 4: No foreground terminal conflict, proceed normally
+  vim.notify("Case 4: Normal toggle " .. term_id .. " (fg: " .. tostring(_G.foreground_terminal) .. ")", vim.log.levels.INFO)
+  _G.foreground_terminal = term_id
+  return true  -- Proceed with toggle
+end
 
 wk.add {
   {
@@ -382,8 +489,8 @@ wk.add {
 -- Fuzzy Command Search Mappings (Alt+X and variants)
 -- ============================================================================
 
--- Alt+X: Fuzzy search all executables (floating terminal)
-map({ "n", "t" }, "<A-x>", function()
+-- Alt+Q: Fuzzy search all executables (floating terminal)
+map({ "n", "t" }, "<A-q>", function()
   local term = require "nvchad.term"
 
   term.toggle {
@@ -577,21 +684,27 @@ _G.tmux_started = false
 map({ "n", "t" }, "<A-k>", function()
   local term = require "nvchad.term"
 
-  term.toggle {
-    pos = "float",
-    id = "claude_term",
-    float_opts = {
-      row = 0.02, -- ALT+k: Claude Code (top-left)
-      col = 0.02,
-      width = 0.85,
-      height = 0.85,
-      title = "Claude Code 🤖",
-      title_pos = "center",
+  -- Prepare: handle foreground terminal switching if needed
+  local should_toggle = prepare_toggle("claude_term")
+
+  -- Only toggle if prepare_toggle says we should (returns false if it already handled everything)
+  if should_toggle then
+    term.toggle {
+      pos = "float",
+      id = "claude_term",
+      float_opts = {
+        row = 0.02, -- ALT+k: Claude Code (top-left)
+        col = 0.02,
+        width = 0.85,
+        height = 0.85,
+        title = "Claude Code 🤖",
+        title_pos = "center",
+      }
     }
-  }
+  end
 
   -- If this is the first time opening and we haven't started Claude yet
-  if not _G.claude_started then
+  if should_toggle and not _G.claude_started then
     vim.defer_fn(function()
       -- After toggle, the terminal should be the current buffer
       local bufnr = vim.api.nvim_get_current_buf()
@@ -621,18 +734,24 @@ map({ "n", "t" }, "<A-i>", function()
   local nvim_pid = vim.fn.getpid()
   local term_id = "floatTerm_" .. nvim_pid
 
-  term.toggle {
-    pos = "float",
-    id = term_id,
-    float_opts = {
-      row = 0.03, -- ALT+i: Tmux terminal
-      col = 0.03,
-      width = 0.85,
-      height = 0.85,
-      title = "multiflexing 💪",
-      title_pos = "center",
+  -- Prepare: handle foreground terminal switching if needed
+  local should_toggle = prepare_toggle(term_id)
+
+  -- Only toggle if prepare_toggle says we should
+  if should_toggle then
+    term.toggle {
+      pos = "float",
+      id = term_id,
+      float_opts = {
+        row = 0.03, -- ALT+i: Tmux terminal
+        col = 0.03,
+        width = 0.85,
+        height = 0.85,
+        title = "multiflexing 💪",
+        title_pos = "center",
+      }
     }
-  }
+  end
 
   -- Track if tmux has been started for this specific terminal instance
   if not _G.tmux_sessions then
@@ -640,7 +759,7 @@ map({ "n", "t" }, "<A-i>", function()
   end
 
   -- If this is the first time opening and we haven't started tmux for this instance yet
-  if not _G.tmux_sessions[term_id] then
+  if should_toggle and not _G.tmux_sessions[term_id] then
     vim.defer_fn(function()
       -- After toggle, the terminal should be the current buffer
       local bufnr = vim.api.nvim_get_current_buf()
@@ -665,18 +784,24 @@ end, { desc = "terminal toggle floating with tmux" })
 map({ "n", "t" }, "<A-j>", function()
   local term = require "nvchad.term"
 
-  term.toggle {
-    pos = "float",
-    id = "k9s_term",
-    float_opts = {
-      row = 0.04, -- ALT+j: k9s
-      col = 0.04,
-      width = 0.85,
-      height = 0.85,
-      title = "k9s 🚀",
-      title_pos = "center",
+  -- Prepare: handle foreground terminal switching if needed
+  local should_toggle = prepare_toggle("k9s_term")
+
+  -- Only toggle if prepare_toggle says we should
+  if should_toggle then
+    term.toggle {
+      pos = "float",
+      id = "k9s_term",
+      float_opts = {
+        row = 0.04, -- ALT+j: k9s
+        col = 0.04,
+        width = 0.85,
+        height = 0.85,
+        title = "k9s 🚀",
+        title_pos = "center",
+      }
     }
-  }
+  end
 
   -- Track if k9s has been started
   if not _G.k9s_started then
@@ -684,7 +809,7 @@ map({ "n", "t" }, "<A-j>", function()
   end
 
   -- If this is the first time opening and we haven't started k9s yet
-  if not _G.k9s_started then
+  if should_toggle and not _G.k9s_started then
     vim.defer_fn(function()
       -- After toggle, the terminal should be the current buffer
       local bufnr = vim.api.nvim_get_current_buf()
@@ -742,37 +867,49 @@ end, { desc = "terminal toggle k9s with cluster selection" })
 map({ "n", "t" }, "<A-h>", function()
   local term = require "nvchad.term"
 
-  term.toggle {
-    pos = "float",
-    id = "lazygit_term",
-    cmd = "lazygit",
-    float_opts = {
-      row = 0.05, -- ALT+h: Lazygit
-      col = 0.05,
-      width = 0.85,
-      height = 0.85,
-      title = "lazygit 🚀",
-      title_pos = "center",
+  -- Prepare: handle foreground terminal switching if needed
+  local should_toggle = prepare_toggle("lazygit_term")
+
+  -- Only toggle if prepare_toggle says we should
+  if should_toggle then
+    term.toggle {
+      pos = "float",
+      id = "lazygit_term",
+      cmd = "lazygit",
+      float_opts = {
+        row = 0.05, -- ALT+h: Lazygit
+        col = 0.05,
+        width = 0.85,
+        height = 0.85,
+        title = "lazygit 🚀",
+        title_pos = "center",
+      }
     }
-  }
+  end
 end, { desc = "terminal toggle lazygit" })
 
 -- ALT+o toggles the OpenAI CLI terminal
 map({ "n", "t" }, "<A-o>", function()
   local term = require "nvchad.term"
 
-  term.toggle {
-    pos = "float",
-    id = "openai_term",
-    float_opts = {
-      row = 0.06, -- ALT+o: OpenAI CLI
-      col = 0.06,
-      width = 0.85,
-      height = 0.85,
-      title = "Codex CLI 🤖",
-      title_pos = "center",
+  -- Prepare: handle foreground terminal switching if needed
+  local should_toggle = prepare_toggle("openai_term")
+
+  -- Only toggle if prepare_toggle says we should
+  if should_toggle then
+    term.toggle {
+      pos = "float",
+      id = "openai_term",
+      float_opts = {
+        row = 0.06, -- ALT+o: OpenAI CLI
+        col = 0.06,
+        width = 0.85,
+        height = 0.85,
+        title = "Codex CLI 🤖",
+        title_pos = "center",
+      }
     }
-  }
+  end
 
   -- Track if OpenAI CLI has been started
   if not _G.openai_started then
@@ -780,7 +917,7 @@ map({ "n", "t" }, "<A-o>", function()
   end
 
   -- If this is the first time opening and we haven't started OpenAI yet
-  if not _G.openai_started then
+  if should_toggle and not _G.openai_started then
     vim.defer_fn(function()
       -- After toggle, the terminal should be the current buffer
       local bufnr = vim.api.nvim_get_current_buf()
@@ -1000,13 +1137,13 @@ map({ "n", "t" }, "<A-c>", function()
   end
 end, { desc = "terminal toggle carbonyl browser" })
 
--- ALT+1: Toggle e1s (AWS ECS terminal UI) with profile/region selection
-map({ "n", "t" }, "<A-1>", function()
+-- ALT+Shift+J: Toggle e1s (AWS ECS terminal UI) with profile/region selection
+map({ "n", "t" }, "<A-J>", function()
   require("nvchad.term").toggle {
     pos = "float",
     id = "e1sTerm",
     float_opts = {
-      row = 0.11, -- ALT+1: e1s (AWS ECS)
+      row = 0.11, -- ALT+Shift+J: e1s (AWS ECS)
       col = 0.11,
       width = 0.9,
       height = 0.9,
@@ -1056,38 +1193,7 @@ fi
   end
 end, { desc = "terminal toggle e1s AWS ECS" })
 
--- ALT+2: Toggle e2s (EC2 browser) with profile/region selection
-map({ "n", "t" }, "<A-2>", function()
-  require("nvchad.term").toggle {
-    pos = "float",
-    id = "e2sTerm",
-    float_opts = {
-      row = 0.12, -- ALT+2: e2s (EC2 Browser)
-      col = 0.12,
-      width = 0.9,
-      height = 0.9,
-      border = "single",
-      title = " 󰸏 e2s - EC2 Browser ",
-      title_pos = "center",
-    },
-  }
-
-  -- Auto-start e2s on first open
-  if not _G.e2s_started then
-    vim.defer_fn(function()
-      _G.e2s_started = true
-      local bufnr = vim.api.nvim_get_current_buf()
-      if vim.bo[bufnr].buftype == "terminal" then
-        local chan = vim.b[bufnr].terminal_job_id
-        if chan then
-          vim.api.nvim_chan_send(chan, "e2s\n")
-        end
-      end
-    end, 200)
-  end
-end, { desc = "terminal toggle e2s EC2 browser" })
-
--- ALT+p closes and kills any floating terminal (ALT+i/k/j/h/o/b/d/e/c/1/2)
+-- ALT+p closes and kills any floating terminal (ALT+i/k/j/h/o/b/d/e/c)
 -- Note: When in terminal mode with apps like k9s running, press Ctrl+q first to exit terminal mode,
 -- then press ALT+p. Or use this mapping which attempts to kill the process first.
 map({ "n", "t" }, "<A-p>", function()
