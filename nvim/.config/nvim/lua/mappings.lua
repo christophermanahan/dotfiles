@@ -13,6 +13,50 @@ map("n", "<C-j>", require("smart-splits").move_cursor_down)
 map("n", "<C-k>", require("smart-splits").move_cursor_up)
 map("n", "<C-l>", require("smart-splits").move_cursor_right)
 
+-- ============================================================================
+-- Terminal Scrolling: CTRL+q Handler
+-- ============================================================================
+-- Cache for tmux process checks (reduces system call overhead)
+_G.tmux_check_cache = _G.tmux_check_cache or {}
+
+-- Track the tmux terminal buffer number (since term_id isn't set reliably)
+_G.tmux_terminal_buffer = _G.tmux_terminal_buffer or nil
+
+-- Clean up tracking when tmux terminal buffer is deleted
+vim.api.nvim_create_autocmd("BufDelete", {
+  callback = function(args)
+    if _G.tmux_terminal_buffer and args.buf == _G.tmux_terminal_buffer then
+      _G.tmux_terminal_buffer = nil
+    end
+  end,
+})
+
+-- Check if tmux is actually running in this terminal job
+-- Uses 500ms cache to avoid repeated system calls
+local function is_tmux_alive(job_id)
+  local now = vim.loop.now()
+  local cache_entry = _G.tmux_check_cache[job_id]
+
+  -- Return cached result if less than 500ms old
+  if cache_entry and (now - cache_entry.time) < 500 then
+    return cache_entry.alive
+  end
+
+  -- Check if tmux process exists as child of terminal
+  local pid = vim.fn.jobpid(job_id)
+  if not pid or pid == -1 then
+    _G.tmux_check_cache[job_id] = { time = now, alive = false }
+    return false
+  end
+
+  -- Use pgrep to find child processes, then check if any are tmux
+  local output = vim.fn.system("pgrep -P " .. pid .. " | xargs ps -o comm= 2>/dev/null")
+  local alive = output and output:match("tmux") ~= nil
+
+  _G.tmux_check_cache[job_id] = { time = now, alive = alive }
+  return alive
+end
+
 -- Terminal mode: CTRL+q for scrolling
 -- Non-tmux terminals: Enter Neovim normal mode (same as NvChad's CTRL+x behavior)
 -- Tmux terminal: Send CTRL+f [ to enter tmux copy-mode (native tmux scrolling)
@@ -21,24 +65,26 @@ map("t", "<C-q>", function()
   local chan = vim.b[bufnr].terminal_job_id
 
   if not chan then
-    -- Fallback: enter normal mode
     vim.cmd("stopinsert")
     return
   end
 
-  -- Check if THIS buffer is the tmux terminal
-  -- Each terminal has a term_id set by nvchad.term (e.g., "claude_term", "floatTerm_<pid>", "k9s_term")
-  local current_term_id = vim.b[bufnr].term_id
-  local is_tmux = current_term_id and _G.tmux_sessions and _G.tmux_sessions[current_term_id]
+  -- Hybrid approach: Buffer match + process check
+  -- Step 1: Check if this buffer is the tracked tmux terminal buffer
+  local is_tmux_terminal = (_G.tmux_terminal_buffer and bufnr == _G.tmux_terminal_buffer)
 
-  if is_tmux then
-    -- Tmux terminal: send CTRL+f [ (tmux's native copy-mode key sequence)
-    -- This provides full scrollback buffer access with all tmux keybindings
-    vim.api.nvim_chan_send(chan, "\x06[")  -- \x06 is CTRL+f, then literal [
-  else
-    -- Non-tmux terminal: enter Neovim normal mode for scrolling (NvChad default behavior)
-    vim.cmd("stopinsert")  -- Equivalent to <C-\><C-N>
+  if is_tmux_terminal then
+    -- Step 2: Verify tmux is actually running (handles exit/crash/stale state)
+    if is_tmux_alive(chan) then
+      -- Tmux is alive: send CTRL+f [ (tmux's native copy-mode key sequence)
+      -- This provides full scrollback buffer access with all tmux keybindings
+      vim.api.nvim_chan_send(chan, "\x06[") -- \x06 is CTRL+f, then literal [
+      return
+    end
   end
+
+  -- Default: enter Neovim normal mode for scrolling (NvChad default behavior)
+  vim.cmd("stopinsert") -- Equivalent to <C-\><C-N>
 end, { desc = "Terminal scrolling (tmux copy-mode or nvim normal mode)" })
 
 vim.keymap.del({ "n", "t" }, "<A-v>")
@@ -110,14 +156,12 @@ local function prepare_toggle(term_id)
 
   -- Case 1: Target terminal doesn't exist (neither window nor buffer) → Will open it
   if not target_win and not target_buf then
-    vim.notify("Case 1: Opening " .. term_id, vim.log.levels.INFO)
     _G.foreground_terminal = term_id
     return true  -- Proceed with toggle (opens it)
   end
 
   -- Case 2: Target terminal is already focused → Will close it
   if current_buf == target_buf then
-    vim.notify("Case 2: Closing " .. term_id, vim.log.levels.INFO)
     _G.foreground_terminal = nil
     return true  -- Proceed with toggle (closes it)
   end
@@ -127,7 +171,6 @@ local function prepare_toggle(term_id)
   if _G.foreground_terminal and _G.foreground_terminal ~= term_id then
     local fg_win, _ = find_term_window(_G.foreground_terminal)
     if fg_win then
-      vim.notify("Case 3: Hiding " .. _G.foreground_terminal .. ", revealing " .. term_id, vim.log.levels.WARN)
       -- Close the foreground terminal window (reveals target underneath)
       vim.api.nvim_win_close(fg_win, false)
       _G.foreground_terminal = term_id
@@ -144,7 +187,6 @@ local function prepare_toggle(term_id)
   end
 
   -- Case 4: No foreground terminal conflict, proceed normally
-  vim.notify("Case 4: Normal toggle " .. term_id .. " (fg: " .. tostring(_G.foreground_terminal) .. ")", vim.log.levels.INFO)
   _G.foreground_terminal = term_id
   return true  -- Proceed with toggle
 end
@@ -750,27 +792,24 @@ map({ "n", "t" }, "<A-i>", function()
     }
   end
 
-  -- Track if tmux has been started for this specific terminal instance
-  if not _G.tmux_sessions then
-    _G.tmux_sessions = {}
-  end
-
-  -- If this is the first time opening and we haven't started tmux for this instance yet
-  if should_toggle and not _G.tmux_sessions[term_id] then
+  -- Auto-start tmux on first open and track the buffer number
+  if should_toggle then
     vim.defer_fn(function()
       -- After toggle, the terminal should be the current buffer
       local bufnr = vim.api.nvim_get_current_buf()
 
       -- Check if it's a terminal buffer
       if vim.bo[bufnr].buftype == "terminal" then
+        -- Track this buffer as the tmux terminal
+        _G.tmux_terminal_buffer = bufnr
+
         -- Get the job_id from the buffer
         local success, job_id = pcall(vim.api.nvim_buf_get_var, bufnr, "terminal_job_id")
 
         if success and job_id then
-          -- Use unique session name based on nvim PID
+          -- Use unique session name based on nvim PID (tmux -A creates or attaches)
           local session_name = "nvim_" .. nvim_pid
           vim.api.nvim_chan_send(job_id, "tmux new-session -A -s " .. session_name .. "\n")
-          _G.tmux_sessions[term_id] = true
         end
       end
     end, 200)
@@ -1197,13 +1236,12 @@ map({ "n", "t" }, "<A-p>", function()
   local bufnr = vim.api.nvim_get_current_buf()
   if vim.bo[bufnr].buftype == "terminal" then
     local nvim_pid = vim.fn.getpid()
-    local term_id = "floatTerm_" .. nvim_pid
 
-    -- Kill tmux session if this is a tmux terminal
-    if _G.tmux_sessions and _G.tmux_sessions[term_id] then
+    -- Kill tmux session if this is the tracked tmux terminal buffer
+    if _G.tmux_terminal_buffer and bufnr == _G.tmux_terminal_buffer then
       local session_name = "nvim_" .. nvim_pid
       vim.fn.system("tmux kill-session -t " .. session_name .. " 2>/dev/null")
-      _G.tmux_sessions[term_id] = nil
+      _G.tmux_terminal_buffer = nil -- Clear tracked buffer
     end
 
     -- Try to stop the terminal job for other processes (k9s, openai, etc)
