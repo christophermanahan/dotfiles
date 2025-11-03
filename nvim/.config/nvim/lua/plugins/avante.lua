@@ -103,7 +103,12 @@ return {
 
     -- Hints configuration
     hints = {
-      enabled = true,
+      enabled = false, -- Disable inline hints when selecting code
+    },
+
+    -- Selection configuration - disable hints when highlighting text
+    selection = {
+      enabled = false, -- Disable keyboard shortcut suggestions on text selection
     },
 
     -- System prompt customization

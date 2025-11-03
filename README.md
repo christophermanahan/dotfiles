@@ -150,6 +150,20 @@ nvim
 
 Wait for all installations to complete, then restart Neovim.
 
+## Getting Started
+
+Once you've installed Paradiddle, here's a quick workflow to get you coding:
+
+1. **Open Wezterm** - Your terminal will auto-launch Neovim
+2. **Navigate to a project** - Press `<leader>cd` (Space+cd) to fuzzy find and jump to any directory
+3. **Browse files** - Press `Ctrl+n` to open the file tree
+4. **Find code** - Press `<leader>fw` to fuzzy search for function calls or any text
+5. **Get AI help** - Press `ALT+k` to open Claude Code for pair programming
+6. **Context-aware assistance** - Highlight some code and press `<leader>aa` to bring up Avante (turns any LLM into Cursor)
+7. **Happy coding!** - All your CLI tools are one keystroke away (ALT+h for git, ALT+j for k8s, ALT+i for tmux, etc.)
+
+**Pro tip:** Use `ALT+p` to kill any floating terminal when you're done, and press the same key again to restart it fresh.
+
 ## Shortcuts
 
 ### Wezterm
