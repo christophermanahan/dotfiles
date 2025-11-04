@@ -548,8 +548,9 @@ map({ "n", "t" }, "<A-q>", function()
   -- Auto-start the search on first open
   if not _G.fzf_all_started then
     vim.defer_fn(function()
-      local bufnr = vim.api.nvim_get_current_buf()
-      if vim.bo[bufnr].buftype == "terminal" then
+      -- Find the terminal buffer by term_id to avoid race conditions
+      local bufnr = find_term_buffer("fzf_all_commands")
+      if bufnr and vim.bo[bufnr].buftype == "terminal" then
         local chan = vim.b[bufnr].terminal_job_id
         if chan then
           vim.api.nvim_chan_send(chan, "fzf-command-widget\n")
@@ -579,8 +580,9 @@ map({ "n", "t" }, "<A-G>", function()
 
   if not _G.fzf_git_started then
     vim.defer_fn(function()
-      local bufnr = vim.api.nvim_get_current_buf()
-      if vim.bo[bufnr].buftype == "terminal" then
+      -- Find the terminal buffer by term_id to avoid race conditions
+      local bufnr = find_term_buffer("fzf_git_commands")
+      if bufnr and vim.bo[bufnr].buftype == "terminal" then
         local chan = vim.b[bufnr].terminal_job_id
         if chan then
           vim.api.nvim_chan_send(chan, "fzf-git-command-widget\n")
@@ -610,8 +612,9 @@ map({ "n", "t" }, "<A-D>", function()
 
   if not _G.fzf_docker_started then
     vim.defer_fn(function()
-      local bufnr = vim.api.nvim_get_current_buf()
-      if vim.bo[bufnr].buftype == "terminal" then
+      -- Find the terminal buffer by term_id to avoid race conditions
+      local bufnr = find_term_buffer("fzf_docker_commands")
+      if bufnr and vim.bo[bufnr].buftype == "terminal" then
         local chan = vim.b[bufnr].terminal_job_id
         if chan then
           vim.api.nvim_chan_send(chan, "fzf-docker-command-widget\n")
@@ -641,8 +644,9 @@ map({ "n", "t" }, "<A-A>", function()
 
   if not _G.fzf_aws_started then
     vim.defer_fn(function()
-      local bufnr = vim.api.nvim_get_current_buf()
-      if vim.bo[bufnr].buftype == "terminal" then
+      -- Find the terminal buffer by term_id to avoid race conditions
+      local bufnr = find_term_buffer("fzf_aws_commands")
+      if bufnr and vim.bo[bufnr].buftype == "terminal" then
         local chan = vim.b[bufnr].terminal_job_id
         if chan then
           vim.api.nvim_chan_send(chan, "fzf-aws-command-widget\n")
@@ -672,8 +676,9 @@ map({ "n", "t" }, "<A-X>", function()
 
   if not _G.fzf_alias_started then
     vim.defer_fn(function()
-      local bufnr = vim.api.nvim_get_current_buf()
-      if vim.bo[bufnr].buftype == "terminal" then
+      -- Find the terminal buffer by term_id to avoid race conditions
+      local bufnr = find_term_buffer("fzf_aliases")
+      if bufnr and vim.bo[bufnr].buftype == "terminal" then
         local chan = vim.b[bufnr].terminal_job_id
         if chan then
           vim.api.nvim_chan_send(chan, "fzf-alias-widget\n")
@@ -703,8 +708,9 @@ map({ "n", "t" }, "<A-B>", function()
 
   if not _G.fzf_brew_started then
     vim.defer_fn(function()
-      local bufnr = vim.api.nvim_get_current_buf()
-      if vim.bo[bufnr].buftype == "terminal" then
+      -- Find the terminal buffer by term_id to avoid race conditions
+      local bufnr = find_term_buffer("fzf_brew")
+      if bufnr and vim.bo[bufnr].buftype == "terminal" then
         local chan = vim.b[bufnr].terminal_job_id
         if chan then
           vim.api.nvim_chan_send(chan, "fzf-brew-widget\n")
@@ -745,11 +751,11 @@ map({ "n", "t" }, "<A-k>", function()
   -- If this is the first time opening and we haven't started Claude yet
   if should_toggle and not _G.claude_started then
     vim.defer_fn(function()
-      -- After toggle, the terminal should be the current buffer
-      local bufnr = vim.api.nvim_get_current_buf()
+      -- Find the Claude terminal buffer by term_id to avoid race conditions
+      local bufnr = find_term_buffer("claude_term")
 
-      -- Check if it's a terminal buffer
-      if vim.bo[bufnr].buftype == "terminal" then
+      -- Check if we found the terminal buffer
+      if bufnr and vim.bo[bufnr].buftype == "terminal" then
         -- Get the job_id from the buffer
         local success, job_id = pcall(vim.api.nvim_buf_get_var, bufnr, "terminal_job_id")
 
@@ -842,12 +848,13 @@ map({ "n", "t" }, "<A-i>", function()
 
   -- Auto-start tmux on first open and track the buffer number
   if should_toggle then
+    local session_name = "nvim_" .. nvim_pid  -- Capture in closure
     vim.defer_fn(function()
-      -- After toggle, the terminal should be the current buffer
-      local bufnr = vim.api.nvim_get_current_buf()
+      -- Find the tmux terminal buffer by term_id to avoid race conditions
+      local bufnr = find_term_buffer(term_id)
 
-      -- Check if it's a terminal buffer
-      if vim.bo[bufnr].buftype == "terminal" then
+      -- Check if we found the terminal buffer
+      if bufnr and vim.bo[bufnr].buftype == "terminal" then
         -- Track this buffer as the tmux terminal
         _G.tmux_terminal_buffer = bufnr
 
@@ -856,7 +863,6 @@ map({ "n", "t" }, "<A-i>", function()
 
         if success and job_id then
           -- Use unique session name based on nvim PID (tmux -A creates or attaches)
-          local session_name = "nvim_" .. nvim_pid
           vim.api.nvim_chan_send(job_id, "tmux new-session -A -s " .. session_name .. "\n")
         end
       end
@@ -895,11 +901,11 @@ map({ "n", "t" }, "<A-j>", function()
   -- If this is the first time opening and we haven't started k9s yet
   if should_toggle and not _G.k9s_started then
     vim.defer_fn(function()
-      -- After toggle, the terminal should be the current buffer
-      local bufnr = vim.api.nvim_get_current_buf()
+      -- Find the k9s terminal buffer by term_id to avoid race conditions
+      local bufnr = find_term_buffer("k9s_term")
 
-      -- Check if it's a terminal buffer
-      if vim.bo[bufnr].buftype == "terminal" then
+      -- Check if we found the terminal buffer
+      if bufnr and vim.bo[bufnr].buftype == "terminal" then
         -- Get the job_id from the buffer
         local success, job_id = pcall(vim.api.nvim_buf_get_var, bufnr, "terminal_job_id")
 
@@ -1003,11 +1009,11 @@ map({ "n", "t" }, "<A-o>", function()
   -- If this is the first time opening and we haven't started OpenAI yet
   if should_toggle and not _G.openai_started then
     vim.defer_fn(function()
-      -- After toggle, the terminal should be the current buffer
-      local bufnr = vim.api.nvim_get_current_buf()
+      -- Find the OpenAI terminal buffer by term_id to avoid race conditions
+      local bufnr = find_term_buffer("openai_term")
 
-      -- Check if it's a terminal buffer
-      if vim.bo[bufnr].buftype == "terminal" then
+      -- Check if we found the terminal buffer
+      if bufnr and vim.bo[bufnr].buftype == "terminal" then
         -- Get the job_id from the buffer
         local success, job_id = pcall(vim.api.nvim_buf_get_var, bufnr, "terminal_job_id")
 
@@ -1044,8 +1050,9 @@ map({ "n", "t" }, "<A-d>", function()
   if not _G.lazydocker_started then
     vim.defer_fn(function()
       _G.lazydocker_started = true
-      local bufnr = vim.api.nvim_get_current_buf()
-      if vim.bo[bufnr].buftype == "terminal" then
+      -- Find the lazydocker terminal buffer by term_id to avoid race conditions
+      local bufnr = find_term_buffer("lazydockerTerm")
+      if bufnr and vim.bo[bufnr].buftype == "terminal" then
         local chan = vim.b[bufnr].terminal_job_id
         if chan then
           vim.api.nvim_chan_send(chan, "lazydocker\n")
@@ -1075,8 +1082,9 @@ map({ "n", "t" }, "<A-e>", function()
   if not _G.e1s_started then
     vim.defer_fn(function()
       _G.e1s_started = true
-      local bufnr = vim.api.nvim_get_current_buf()
-      if vim.bo[bufnr].buftype == "terminal" then
+      -- Find the e1s terminal buffer by term_id to avoid race conditions
+      local bufnr = find_term_buffer("e1sTerm")
+      if bufnr and vim.bo[bufnr].buftype == "terminal" then
         local chan = vim.b[bufnr].terminal_job_id
         if chan then
           -- Two-step selection: AWS profile -> region
