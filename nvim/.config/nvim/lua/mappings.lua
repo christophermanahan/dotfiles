@@ -754,7 +754,55 @@ map({ "n", "t" }, "<A-k>", function()
         local success, job_id = pcall(vim.api.nvim_buf_get_var, bufnr, "terminal_job_id")
 
         if success and job_id then
-          vim.api.nvim_chan_send(job_id, "clear && claude\n")
+          -- Interactive prompt: ask user whether to continue previous session or start fresh
+          -- Write script to temp file, then execute it to ensure proper stdin/tty access
+          local start_cmd = [[bash -c '
+# Create a temp script with proper stdin access
+cat > /tmp/claude_session_prompt_$$.sh << "SCRIPT_END"
+#!/bin/bash
+
+# Reopen stdin from the controlling terminal
+exec < /dev/tty
+
+if [ -d .claude ] && [ "$(ls -A .claude 2>/dev/null)" ]; then
+  echo "📂 Previous Claude session detected in this directory"
+  echo ""
+  echo "Would you like to:"
+  echo "  [c] Continue previous session"
+  echo "  [f] Start fresh"
+  echo ""
+
+  # Read with proper terminal input
+  read -r -p "Your choice (c/f): " choice
+  echo ""
+
+  case "$choice" in
+    c|C)
+      echo "▶ Continuing previous session..."
+      sleep 0.2
+      exec claude -c
+      ;;
+    f|F)
+      echo "▶ Starting fresh session..."
+      sleep 0.2
+      exec claude
+      ;;
+    *)
+      echo "▶ Invalid choice, starting fresh session..."
+      sleep 0.2
+      exec claude
+      ;;
+  esac
+else
+  clear
+  exec claude
+fi
+SCRIPT_END
+
+chmod +x /tmp/claude_session_prompt_$$.sh
+exec /tmp/claude_session_prompt_$$.sh
+']]
+          vim.api.nvim_chan_send(job_id, "clear && " .. start_cmd .. "\n")
           _G.claude_started = true
         else
           vim.notify("Failed to get terminal job_id: " .. tostring(job_id), vim.log.levels.WARN)
