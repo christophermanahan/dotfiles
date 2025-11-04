@@ -1024,45 +1024,14 @@ map({ "n", "t" }, "<A-o>", function()
   end
 end, { desc = "terminal toggle openai cli" })
 
--- ALT+b: Toggle browsh (terminal web browser)
-map({ "n", "t" }, "<A-b>", function()
-  require("nvchad.term").toggle {
-    pos = "float",
-    id = "browshTerm",
-    float_opts = {
-      row = 0.07, -- ALT+b: Browsh browser (larger window)
-      col = 0.07,
-      width = 0.84,
-      height = 0.84,
-      border = "single",
-      title = " 󰖟 Browsh Browser ",
-      title_pos = "center",
-    },
-  }
-
-  -- Auto-start browsh on first open
-  if not _G.browsh_started then
-    vim.defer_fn(function()
-      _G.browsh_started = true
-      local bufnr = vim.api.nvim_get_current_buf()
-      if vim.bo[bufnr].buftype == "terminal" then
-        local chan = vim.b[bufnr].terminal_job_id
-        if chan then
-          vim.api.nvim_chan_send(chan, "browsh\n")
-        end
-      end
-    end, 200)
-  end
-end, { desc = "terminal toggle browsh browser" })
-
 -- ALT+d: Toggle lazydocker (Docker TUI)
 map({ "n", "t" }, "<A-d>", function()
   require("nvchad.term").toggle {
     pos = "float",
     id = "lazydockerTerm",
     float_opts = {
-      row = 0.08, -- ALT+d: Lazydocker (large window)
-      col = 0.08,
+      row = 0.07, -- ALT+d: Lazydocker
+      col = 0.07,
       width = 0.9,
       height = 0.9,
       border = "single",
@@ -1086,149 +1055,14 @@ map({ "n", "t" }, "<A-d>", function()
   end
 end, { desc = "terminal toggle lazydocker" })
 
--- ALT+e: Toggle w3m terminal (opens DuckDuckGo Lite by default)
+-- ALT+e: Toggle e1s (AWS ECS terminal UI) with profile/region selection
 map({ "n", "t" }, "<A-e>", function()
-  require("nvchad.term").toggle {
-    pos = "float",
-    id = "w3mTerm",
-    float_opts = {
-      row = 0.09,
-      col = 0.09,
-      width = 0.85,
-      height = 0.85,
-      border = "single",
-      title = " 󰖟 w3m Browser (vim keys) ",
-      title_pos = "center",
-    },
-  }
-
-  -- Auto-start w3m with DuckDuckGo Lite on first open
-  if not _G.w3m_started then
-    vim.defer_fn(function()
-      _G.w3m_started = true
-      local bufnr = vim.api.nvim_get_current_buf()
-      if vim.bo[bufnr].buftype == "terminal" then
-        local chan = vim.b[bufnr].terminal_job_id
-        if chan then
-          vim.api.nvim_chan_send(chan, "w3m 'https://lite.duckduckgo.com/lite/'\n")
-        end
-      end
-    end, 200)
-  end
-end, { desc = "terminal toggle w3m" })
-
--- ALT+s: Search in w3m (prompts for query, opens or navigates w3m)
-map({ "n", "t" }, "<A-s>", function()
-  -- Use a centered input box with dressing.nvim styling
-  vim.ui.input({
-    prompt = "🔍 DuckDuckGo Search: ",
-    default = "",
-    -- Dressing.nvim will handle the centered layout based on config
-  }, function(query)
-    if not query or query == "" then
-      return -- User cancelled
-    end
-
-    -- Encode the search query for URL
-    local encoded_query = query:gsub(" ", "+")
-    local search_url = "https://lite.duckduckgo.com/lite/?q=" .. encoded_query
-
-    -- Find the w3m terminal buffer and check if it's visible
-    local w3m_bufnr = nil
-    local w3m_visible = false
-    for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-      if vim.api.nvim_buf_is_valid(buf) and vim.bo[buf].buftype == "terminal" then
-        local term_id = vim.b[buf].term_id
-        if term_id == "w3mTerm" then
-          w3m_bufnr = buf
-          -- Check if this buffer is visible in any window
-          for _, win in ipairs(vim.api.nvim_list_wins()) do
-            if vim.api.nvim_win_get_buf(win) == buf then
-              w3m_visible = true
-              break
-            end
-          end
-          break
-        end
-      end
-    end
-
-    if w3m_bufnr and w3m_visible then
-      -- w3m is open and visible, send new search
-      local chan = vim.b[w3m_bufnr].terminal_job_id
-      if chan then
-        vim.api.nvim_chan_send(chan, "w3m '" .. search_url .. "'\n")
-      end
-    else
-      -- w3m not visible, open it with the search
-      _G.w3m_started = true
-      require("nvchad.term").toggle {
-        pos = "float",
-        id = "w3mTerm",
-        float_opts = {
-          row = 0.09,
-          col = 0.09,
-          width = 0.85,
-          height = 0.85,
-          border = "single",
-          title = " 󰖟 w3m Browser (vim keys) ",
-          title_pos = "center",
-        },
-      }
-
-      -- Start w3m with the search query
-      vim.defer_fn(function()
-        local bufnr = vim.api.nvim_get_current_buf()
-        if vim.bo[bufnr].buftype == "terminal" then
-          local chan = vim.b[bufnr].terminal_job_id
-          if chan then
-            vim.api.nvim_chan_send(chan, "w3m '" .. search_url .. "'\n")
-          end
-        end
-      end, 200)
-    end
-  end)
-end, { desc = "w3m search" })
-
--- ALT+c: Toggle carbonyl (cutting-edge Chromium browser)
-map({ "n", "t" }, "<A-c>", function()
-  require("nvchad.term").toggle {
-    pos = "float",
-    id = "carbonylTerm",
-    float_opts = {
-      row = 0.10, -- ALT+c: Carbonyl browser
-      col = 0.10,
-      width = 0.88,
-      height = 0.88,
-      border = "single",
-      title = " 󰈹 Carbonyl Browser (Chromium) ",
-      title_pos = "center",
-    },
-  }
-
-  -- Auto-start carbonyl on first open with ChatGPT
-  if not _G.carbonyl_started then
-    vim.defer_fn(function()
-      _G.carbonyl_started = true
-      local bufnr = vim.api.nvim_get_current_buf()
-      if vim.bo[bufnr].buftype == "terminal" then
-        local chan = vim.b[bufnr].terminal_job_id
-        if chan then
-          vim.api.nvim_chan_send(chan, "carbonyl https://chatgpt.com\n")
-        end
-      end
-    end, 200)
-  end
-end, { desc = "terminal toggle carbonyl browser" })
-
--- ALT+Shift+J: Toggle e1s (AWS ECS terminal UI) with profile/region selection
-map({ "n", "t" }, "<A-J>", function()
   require("nvchad.term").toggle {
     pos = "float",
     id = "e1sTerm",
     float_opts = {
-      row = 0.11, -- ALT+Shift+J: e1s (AWS ECS)
-      col = 0.11,
+      row = 0.09, -- ALT+e: e1s (AWS ECS)
+      col = 0.09,
       width = 0.9,
       height = 0.9,
       border = "single",
@@ -1291,8 +1125,8 @@ map({ "n", "t" }, "<A-u>", function()
       id = "posting_term",
       cmd = "posting",
       float_opts = {
-        row = 0.12, -- ALT+u: Posting API client
-        col = 0.12,
+        row = 0.08, -- ALT+u: Posting API client
+        col = 0.08,
         width = 0.85,
         height = 0.85,
         title = "Posting 📮",
@@ -1302,7 +1136,7 @@ map({ "n", "t" }, "<A-u>", function()
   end
 end, { desc = "terminal toggle posting API client" })
 
--- ALT+p closes and kills any floating terminal (ALT+i/k/j/h/o/b/d/e/c/u)
+-- ALT+p closes and kills any floating terminal (ALT+i/k/j/h/o/d/e/u)
 -- Note: When in terminal mode with apps like k9s running, press Ctrl+q first to exit terminal mode,
 -- then press ALT+p. Or use this mapping which attempts to kill the process first.
 map({ "n", "t" }, "<A-p>", function()
@@ -1327,10 +1161,7 @@ map({ "n", "t" }, "<A-p>", function()
     _G.claude_started = false
     _G.k9s_started = false
     _G.openai_started = false
-    _G.browsh_started = false
     _G.lazydocker_started = false
-    _G.w3m_started = false
-    _G.carbonyl_started = false
     _G.e1s_started = false
     _G.e2s_started = false
     _G.fzf_all_started = false
