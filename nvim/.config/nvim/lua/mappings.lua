@@ -1277,7 +1277,32 @@ fi
   end
 end, { desc = "terminal toggle e1s AWS ECS" })
 
--- ALT+p closes and kills any floating terminal (ALT+i/k/j/h/o/b/d/e/c)
+-- ALT+u toggles the posting terminal (API client)
+map({ "n", "t" }, "<A-u>", function()
+  local term = require "nvchad.term"
+
+  -- Prepare: handle foreground terminal switching if needed
+  local should_toggle = prepare_toggle("posting_term")
+
+  -- Only toggle if prepare_toggle says we should
+  if should_toggle then
+    term.toggle {
+      pos = "float",
+      id = "posting_term",
+      cmd = "posting",
+      float_opts = {
+        row = 0.12, -- ALT+u: Posting API client
+        col = 0.12,
+        width = 0.85,
+        height = 0.85,
+        title = "Posting 📮",
+        title_pos = "center",
+      }
+    }
+  end
+end, { desc = "terminal toggle posting API client" })
+
+-- ALT+p closes and kills any floating terminal (ALT+i/k/j/h/o/b/d/e/c/u)
 -- Note: When in terminal mode with apps like k9s running, press Ctrl+q first to exit terminal mode,
 -- then press ALT+p. Or use this mapping which attempts to kill the process first.
 map({ "n", "t" }, "<A-p>", function()
