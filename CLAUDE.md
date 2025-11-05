@@ -4,11 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-**Paradiddle** is a CLI-first IDE where terminal tools are first-class citizens. Built on NvChad v2.5, it integrates 10 CLI tools as floating terminals with intelligent auto-start behavior, plus 6 fuzzy command search terminals for discovering executables.
+**Paradiddle** is a CLI-first IDE where terminal tools are first-class citizens. Built on NvChad v2.5, it integrates 8 CLI tools as floating terminals with intelligent auto-start behavior, plus 6 fuzzy command search terminals for discovering executables. All keybindings are optimized for left-hand access to work seamlessly with tiling window managers.
 
 Configuration files managed with GNU Stow:
-- **nvim**: CLI-first IDE with 16 integrated floating terminals:
-  - 10 tool terminals (ALT+k/i/j/h/o/b/d/e/c, ALT+Shift+J)
+- **nvim**: CLI-first IDE with 14 integrated floating terminals:
+  - 8 tool terminals (ALT+a/s/d/f/g/w/e/r) - left-hand optimized
   - 6 command search terminals (ALT+q, ALT+Shift+G/D/A/X/B)
 - **zsh**: Shell configuration with vi-mode, autosuggestions, and syntax highlighting
 - **starship**: Custom prompt with Catppuccin Mocha theme
@@ -88,8 +88,8 @@ Built on NvChad v2.5 with Lazy.nvim plugin manager.
 - Formatting: conform.nvim with prettierd (JS/TS/CSS/HTML) and stylua (Lua), auto-format on save
 - Completion: nvim-cmp with Copilot integration, LSP signature help
 - Navigation: smart-splits.nvim for seamless pane navigation with wezterm, flash.nvim for quick jumps
-- Git: lazygit (floating terminal via `ALT+h`) with diffview integration (gitsigns disabled)
-- Kubernetes: k9s (floating terminal via `ALT+j`) with cluster selection menu on first open
+- Git: lazygit (floating terminal via `ALT+f`) with diffview integration (gitsigns disabled)
+- Kubernetes: k9s (floating terminal via `ALT+g`) with cluster selection menu on first open
 - AI Assistant: avante.nvim (Cursor-like AI coding assistant) with Claude integration
 - UI enhancements: noice.nvim, nvim-notify, trouble.nvim, rainbow-delimiters
 
@@ -100,6 +100,33 @@ Built on NvChad v2.5 with Lazy.nvim plugin manager.
 - Telescope uses fzf extension for performance
 - TypeScript servers (tsserver, vtsls) and lua_ls have custom handler logic
 - Fuzzy command search available via `Alt+Q` (and variants) opens floating terminals with fzf search
+
+**Floating Terminal Keybindings (Left-Hand Optimized):**
+
+All terminal shortcuts use the left hand for easy access with tiling window managers:
+
+*Home Row (Most Used):*
+- `ALT+a`: Claude Code AI assistant
+- `ALT+s`: Tmux multiplexer terminal
+- `ALT+d`: Lazydocker (Docker TUI)
+- `ALT+f`: Lazygit (Git TUI)
+- `ALT+g`: k9s (Kubernetes browser)
+
+*Top Row (Secondary Tools):*
+- `ALT+w`: OpenAI Codex CLI
+- `ALT+e`: e1s (AWS ECS browser)
+- `ALT+r`: Posting (HTTP API client)
+
+*Bottom Row:*
+- `ALT+z`: Kill/close current floating terminal
+
+*Command Search (Unchanged):*
+- `ALT+q`: Search all commands
+- `ALT+Shift+G`: Git commands
+- `ALT+Shift+D`: Docker/K8s commands
+- `ALT+Shift+A`: AWS commands
+- `ALT+Shift+X`: Aliases/functions
+- `ALT+Shift+B`: Homebrew packages
 
 ### Wezterm
 

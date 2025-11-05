@@ -725,8 +725,8 @@ end, { desc = "fuzzy search homebrew packages" })
 _G.claude_started = false
 _G.tmux_started = false
 
--- ALT+k toggles the Claude terminal and starts Claude on first open
-map({ "n", "t" }, "<A-k>", function()
+-- ALT+a toggles the Claude terminal and starts Claude on first open
+map({ "n", "t" }, "<A-a>", function()
   local term = require "nvchad.term"
 
   -- Prepare: handle foreground terminal switching if needed
@@ -738,7 +738,7 @@ map({ "n", "t" }, "<A-k>", function()
       pos = "float",
       id = "claude_term",
       float_opts = {
-        row = 0.02, -- ALT+k: Claude Code (top-left)
+        row = 0.02, -- ALT+a: Claude Code
         col = 0.02,
         width = 0.85,
         height = 0.85,
@@ -821,9 +821,9 @@ exec /tmp/claude_session_prompt_$$.sh
   end
 end, { desc = "terminal toggle claude code" })
 
--- ALT+i toggles the floating terminal and starts tmux on first open
+-- ALT+s toggles the floating terminal and starts tmux on first open
 -- Each nvim instance gets its own unique tmux session based on nvim PID
-map({ "n", "t" }, "<A-i>", function()
+map({ "n", "t" }, "<A-s>", function()
   local term = require "nvchad.term"
   local nvim_pid = vim.fn.getpid()
   local term_id = "floatTerm_" .. nvim_pid
@@ -837,7 +837,7 @@ map({ "n", "t" }, "<A-i>", function()
       pos = "float",
       id = term_id,
       float_opts = {
-        row = 0.03, -- ALT+i: Tmux terminal
+        row = 0.03, -- ALT+s: Tmux terminal
         col = 0.03,
         width = 0.85,
         height = 0.85,
@@ -872,8 +872,8 @@ map({ "n", "t" }, "<A-i>", function()
   end
 end, { desc = "terminal toggle floating with tmux" })
 
--- ALT+j toggles the k9s terminal with cluster selection on first open
-map({ "n", "t" }, "<A-j>", function()
+-- ALT+g toggles the k9s terminal with cluster selection on first open
+map({ "n", "t" }, "<A-g>", function()
   local term = require "nvchad.term"
 
   -- Prepare: handle foreground terminal switching if needed
@@ -885,7 +885,7 @@ map({ "n", "t" }, "<A-j>", function()
       pos = "float",
       id = "k9s_term",
       float_opts = {
-        row = 0.04, -- ALT+j: k9s
+        row = 0.04, -- ALT+g: k9s
         col = 0.04,
         width = 0.85,
         height = 0.85,
@@ -955,8 +955,8 @@ fi
   end
 end, { desc = "terminal toggle k9s with cluster selection" })
 
--- ALT+h toggles the lazygit terminal
-map({ "n", "t" }, "<A-h>", function()
+-- ALT+f toggles the lazygit terminal
+map({ "n", "t" }, "<A-f>", function()
   local term = require "nvchad.term"
 
   -- Prepare: handle foreground terminal switching if needed
@@ -969,7 +969,7 @@ map({ "n", "t" }, "<A-h>", function()
       id = "lazygit_term",
       cmd = "lazygit",
       float_opts = {
-        row = 0.05, -- ALT+h: Lazygit
+        row = 0.05, -- ALT+f: Lazygit
         col = 0.05,
         width = 0.85,
         height = 0.85,
@@ -980,8 +980,8 @@ map({ "n", "t" }, "<A-h>", function()
   end
 end, { desc = "terminal toggle lazygit" })
 
--- ALT+o toggles the OpenAI CLI terminal
-map({ "n", "t" }, "<A-o>", function()
+-- ALT+w toggles the OpenAI CLI terminal
+map({ "n", "t" }, "<A-w>", function()
   local term = require "nvchad.term"
 
   -- Prepare: handle foreground terminal switching if needed
@@ -993,7 +993,7 @@ map({ "n", "t" }, "<A-o>", function()
       pos = "float",
       id = "openai_term",
       float_opts = {
-        row = 0.06, -- ALT+o: OpenAI CLI
+        row = 0.06, -- ALT+w: OpenAI CLI
         col = 0.06,
         width = 0.85,
         height = 0.85,
@@ -1121,8 +1121,8 @@ fi
   end
 end, { desc = "terminal toggle e1s AWS ECS" })
 
--- ALT+u toggles the posting terminal (API client)
-map({ "n", "t" }, "<A-u>", function()
+-- ALT+r toggles the posting terminal (API client)
+map({ "n", "t" }, "<A-r>", function()
   local term = require "nvchad.term"
 
   -- Prepare: handle foreground terminal switching if needed
@@ -1135,7 +1135,7 @@ map({ "n", "t" }, "<A-u>", function()
       id = "posting_term",
       cmd = "posting",
       float_opts = {
-        row = 0.08, -- ALT+u: Posting API client
+        row = 0.08, -- ALT+r: Posting API client
         col = 0.08,
         width = 0.85,
         height = 0.85,
@@ -1146,10 +1146,10 @@ map({ "n", "t" }, "<A-u>", function()
   end
 end, { desc = "terminal toggle posting API client" })
 
--- ALT+p closes and kills any floating terminal (ALT+i/k/j/h/o/d/e/u)
+-- ALT+z closes and kills any floating terminal
 -- Note: When in terminal mode with apps like k9s running, press Ctrl+q first to exit terminal mode,
--- then press ALT+p. Or use this mapping which attempts to kill the process first.
-map({ "n", "t" }, "<A-p>", function()
+-- then press ALT+z. Or use this mapping which attempts to kill the process first.
+map({ "n", "t" }, "<A-z>", function()
   local bufnr = vim.api.nvim_get_current_buf()
   if vim.bo[bufnr].buftype == "terminal" then
     local nvim_pid = vim.fn.getpid()
