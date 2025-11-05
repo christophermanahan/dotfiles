@@ -1251,9 +1251,12 @@ map({ "n", "t" }, "<A-?>", function()
     title_pos = "center",
   })
 
-  -- Set window options
-  vim.wo[win].winblend = 30
-  vim.wo[win].cursorline = false
+  -- Set window options for transparency
+  vim.api.nvim_set_option_value("winblend", 30, { win = win })
+  vim.api.nvim_set_option_value("cursorline", false, { win = win })
+
+  -- Set highlight to enable transparency
+  vim.api.nvim_set_option_value("winhighlight", "Normal:Normal,FloatBorder:FloatBorder", { win = win })
 
   -- Close on any key press
   vim.keymap.set("n", "<Esc>", "<cmd>close<CR>", { buffer = buf, nowait = true })
