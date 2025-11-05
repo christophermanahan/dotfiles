@@ -848,7 +848,7 @@ map({ "n", "t" }, "<A-i>", function()
   end
 
   -- Auto-start tmux on first open and track the buffer number
-  if should_toggle then
+  if should_toggle and not _G.tmux_started then
     local session_name = "nvim_" .. nvim_pid  -- Capture in closure
     local bufnr = vim.api.nvim_get_current_buf()  -- Capture buffer immediately
     vim.defer_fn(function()
@@ -865,6 +865,7 @@ map({ "n", "t" }, "<A-i>", function()
         if success and job_id then
           -- Use unique session name based on nvim PID (tmux -A creates or attaches)
           vim.api.nvim_chan_send(job_id, "tmux new-session -A -s " .. session_name .. "\n")
+          _G.tmux_started = true
         end
       end
     end, 200)
