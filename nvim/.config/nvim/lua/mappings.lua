@@ -1187,11 +1187,7 @@ map({ "n", "t" }, "<A-z>", function()
 end, { desc = "kill any floating terminal" })
 
 -- Avante.nvim AI assistant keybindings
--- Using ALT+a for "Avante" to match the pattern of other tools (ALT+h, ALT+j, ALT+k, etc)
-map({ "n", "v" }, "<A-a>", function()
-  require("avante.api").ask()
-end, { desc = "avante: ask" })
-
+-- Note: ALT+a is used by Claude terminal, use <leader>aa for avante
 map({ "n", "v" }, "<leader>aa", function()
   require("avante.api").ask()
 end, { desc = "avante: ask" })
