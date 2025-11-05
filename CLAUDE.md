@@ -113,11 +113,11 @@ All terminal shortcuts use the left hand for easy access with tiling window mana
 - `ALT+g`: k9s (Kubernetes browser)
 
 *Top Row (Secondary Tools):*
-- `ALT+w`: OpenAI Codex CLI
 - `ALT+e`: e1s (AWS ECS browser)
 - `ALT+r`: Posting (HTTP API client)
 
 *Bottom Row:*
+- `ALT+x`: OpenAI Codex CLI
 - `ALT+z`: Kill/close current floating terminal
 
 *Help:*

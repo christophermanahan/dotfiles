@@ -88,6 +88,8 @@ map("t", "<C-q>", function()
 end, { desc = "Terminal scrolling (tmux copy-mode or nvim normal mode)" })
 
 vim.keymap.del({ "n", "t" }, "<A-v>")
+vim.keymap.del({ "n", "t" }, "<A-i>")
+vim.keymap.del({ "n", "t" }, "<A-h>")
 
 -- ============================================================================
 -- Foreground Terminal Tracking System
@@ -980,8 +982,8 @@ map({ "n", "t" }, "<A-f>", function()
   end
 end, { desc = "terminal toggle lazygit" })
 
--- ALT+w toggles the OpenAI CLI terminal
-map({ "n", "t" }, "<A-w>", function()
+-- ALT+x toggles the OpenAI CLI terminal
+map({ "n", "t" }, "<A-x>", function()
   local term = require "nvchad.term"
 
   -- Prepare: handle foreground terminal switching if needed
@@ -993,7 +995,7 @@ map({ "n", "t" }, "<A-w>", function()
       pos = "float",
       id = "openai_term",
       float_opts = {
-        row = 0.06, -- ALT+w: OpenAI CLI
+        row = 0.06, -- ALT+x: OpenAI CLI
         col = 0.06,
         width = 0.85,
         height = 0.85,
@@ -1206,12 +1208,12 @@ map({ "n", "t" }, "<A-?>", function()
     "",
     "  Top Row (Secondary Tools)",
     "  ─────────────────────────",
-    "  ALT+w  →  OpenAI Codex CLI",
     "  ALT+e  →  e1s (AWS ECS browser)",
     "  ALT+r  →  Posting (HTTP API client)",
     "",
     "  Bottom Row",
     "  ──────────",
+    "  ALT+x  →  OpenAI Codex CLI",
     "  ALT+z  →  Kill/close current terminal",
     "",
     "  Command Search",
@@ -1249,9 +1251,12 @@ map({ "n", "t" }, "<A-?>", function()
     title_pos = "center",
   })
 
-  -- Set window options
-  vim.wo[win].winblend = 30
-  vim.wo[win].cursorline = false
+  -- Set window options for transparency
+  vim.api.nvim_set_option_value("winblend", 30, { win = win })
+  vim.api.nvim_set_option_value("cursorline", false, { win = win })
+
+  -- Set highlight to enable transparency
+  vim.api.nvim_set_option_value("winhighlight", "Normal:Normal,FloatBorder:FloatBorder", { win = win })
 
   -- Close on any key press
   vim.keymap.set("n", "<Esc>", "<cmd>close<CR>", { buffer = buf, nowait = true })
@@ -1259,7 +1264,7 @@ map({ "n", "t" }, "<A-?>", function()
   vim.keymap.set("n", "<CR>", "<cmd>close<CR>", { buffer = buf, nowait = true })
 
   -- Auto-close after any character key
-  for _, key in ipairs({"a", "s", "d", "f", "g", "w", "e", "r", "z", "h", "j", "k", "l"}) do
+  for _, key in ipairs({"a", "s", "d", "f", "g", "x", "e", "r", "z", "h", "j", "k", "l"}) do
     vim.keymap.set("n", key, "<cmd>close<CR>", { buffer = buf, nowait = true })
   end
 end, { desc = "show terminal shortcuts cheatsheet" })
