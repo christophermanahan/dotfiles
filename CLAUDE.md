@@ -120,6 +120,9 @@ All terminal shortcuts use the left hand for easy access with tiling window mana
 *Bottom Row:*
 - `ALT+z`: Kill/close current floating terminal
 
+*Help:*
+- `ALT+Shift+?`: Show terminal shortcuts cheatsheet
+
 *Command Search (Unchanged):*
 - `ALT+q`: Search all commands
 - `ALT+Shift+G`: Git commands

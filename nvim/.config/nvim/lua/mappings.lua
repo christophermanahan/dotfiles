@@ -1186,6 +1186,84 @@ map({ "n", "t" }, "<A-z>", function()
   end
 end, { desc = "kill any floating terminal" })
 
+-- ALT+Shift+? shows floating terminal shortcuts cheatsheet
+map({ "n", "t" }, "<A-?>", function()
+  -- Create buffer with shortcut information
+  local buf = vim.api.nvim_create_buf(false, true)
+
+  local shortcuts = {
+    "╭─────────────────────────────────────────────────────╮",
+    "│     Floating Terminal Shortcuts (Left-Hand)        │",
+    "╰─────────────────────────────────────────────────────╯",
+    "",
+    "  Home Row (Most Used)",
+    "  ────────────────────",
+    "  ALT+a  →  Claude Code AI assistant",
+    "  ALT+s  →  Tmux multiplexer terminal",
+    "  ALT+d  →  Lazydocker (Docker TUI)",
+    "  ALT+f  →  Lazygit (Git TUI)",
+    "  ALT+g  →  k9s (Kubernetes browser)",
+    "",
+    "  Top Row (Secondary Tools)",
+    "  ─────────────────────────",
+    "  ALT+w  →  OpenAI Codex CLI",
+    "  ALT+e  →  e1s (AWS ECS browser)",
+    "  ALT+r  →  Posting (HTTP API client)",
+    "",
+    "  Bottom Row",
+    "  ──────────",
+    "  ALT+z  →  Kill/close current terminal",
+    "",
+    "  Command Search",
+    "  ──────────────",
+    "  ALT+q        →  Search all commands",
+    "  ALT+Shift+G  →  Git commands",
+    "  ALT+Shift+D  →  Docker/K8s commands",
+    "  ALT+Shift+A  →  AWS commands",
+    "  ALT+Shift+X  →  Aliases/functions",
+    "  ALT+Shift+B  →  Homebrew packages",
+    "",
+    "  Press any key to close",
+  }
+
+  vim.api.nvim_buf_set_lines(buf, 0, -1, false, shortcuts)
+  vim.bo[buf].modifiable = false
+  vim.bo[buf].bufhidden = "wipe"
+
+  -- Calculate centered position
+  local width = 57
+  local height = #shortcuts
+  local row = math.floor((vim.o.lines - height) / 2)
+  local col = math.floor((vim.o.columns - width) / 2)
+
+  -- Open floating window
+  local win = vim.api.nvim_open_win(buf, true, {
+    relative = "editor",
+    width = width,
+    height = height,
+    row = row,
+    col = col,
+    style = "minimal",
+    border = "rounded",
+    title = " Terminal Shortcuts ",
+    title_pos = "center",
+  })
+
+  -- Set window options
+  vim.wo[win].winblend = 10
+  vim.wo[win].cursorline = false
+
+  -- Close on any key press
+  vim.keymap.set("n", "<Esc>", "<cmd>close<CR>", { buffer = buf, nowait = true })
+  vim.keymap.set("n", "q", "<cmd>close<CR>", { buffer = buf, nowait = true })
+  vim.keymap.set("n", "<CR>", "<cmd>close<CR>", { buffer = buf, nowait = true })
+
+  -- Auto-close after any character key
+  for _, key in ipairs({"a", "s", "d", "f", "g", "w", "e", "r", "z", "h", "j", "k", "l"}) do
+    vim.keymap.set("n", key, "<cmd>close<CR>", { buffer = buf, nowait = true })
+  end
+end, { desc = "show terminal shortcuts cheatsheet" })
+
 -- Avante.nvim AI assistant keybindings
 -- Note: ALT+a is used by Claude terminal, use <leader>aa for avante
 map({ "n", "v" }, "<leader>aa", function()
