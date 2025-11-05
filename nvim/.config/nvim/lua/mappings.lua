@@ -1250,7 +1250,7 @@ map({ "n", "t" }, "<A-?>", function()
   })
 
   -- Set window options
-  vim.wo[win].winblend = 10
+  vim.wo[win].winblend = 30
   vim.wo[win].cursorline = false
 
   -- Close on any key press
