@@ -88,6 +88,8 @@ map("t", "<C-q>", function()
 end, { desc = "Terminal scrolling (tmux copy-mode or nvim normal mode)" })
 
 vim.keymap.del({ "n", "t" }, "<A-v>")
+vim.keymap.del({ "n", "t" }, "<A-i>")
+vim.keymap.del({ "n", "t" }, "<A-h>")
 
 -- ============================================================================
 -- Foreground Terminal Tracking System
