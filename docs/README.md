@@ -32,12 +32,14 @@ Forward-looking architecture documents and design plans for future development.
 | Document | Description |
 |----------|-------------|
 | [Core Architecture](architecture/architecture.md) | Foundation architecture (v1.0) - Problem statement, system context, component design, security architecture, performance requirements, and 12-week roadmap |
-| [Enhanced Architecture](architecture/architecture_enhanced.md) | Enhanced architecture (v2.0) - VS Code patterns, Cursor AI integration, AI-assisted development workflow, additional implementation details |
+| [Enhanced Architecture](architecture/architecture-enhanced.md) | Enhanced architecture (v2.0) - VS Code patterns, Cursor AI integration, AI-assisted development workflow, additional implementation details |
 | [Tiling Window Manager](architecture/tiling-window-manager.md) | Vision for integrated tiling WM with i3/sway-inspired layouts, workspaces, and aesthetic design inspired by Omarchy |
 | [Rust IDE Plans](architecture/rust-ide-plans.md) | Architecture context document summarizing the three-tier architecture plan (base, enhanced, tiling) |
-| [Workflow Enhancement Plan](architecture/workflow_enhancement_plan.md) | Workflow improvements - smart suggestions, keyboard shortcuts, AI-assisted code reviews |
-| [Command Flags UX Plan](architecture/command_flags_ux_plan.md) | Two-stage command builder UX - hierarchical command search with interactive flag selection |
+| [Workflow Enhancement Plan](architecture/workflow-enhancement-plan.md) | Workflow improvements - smart suggestions, keyboard shortcuts, AI-assisted code reviews |
+| [Command Flags UX Plan](architecture/command-flags-ux-plan.md) | Two-stage command builder UX - hierarchical command search with interactive flag selection |
 | [Demo Script](architecture/demo-script.md) | Demonstration scenarios showing the IDE in action |
+| [CLI Integration Plan](cli-integration-plan.md) | Plan for integrating additional CLI tools into the IDE |
+| [Video Showcase Plan](video-showcase-plan.md) | Plan for creating demonstration videos of the IDE features |
 
 **Key Concepts:**
 - **Shared LLM Context**: Persistent AI context across all tools with SQLite + sqlcipher storage

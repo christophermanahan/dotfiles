@@ -25,6 +25,8 @@ All technical documentation is organized in the `docs/` directory:
   - [floating-terminal-focus.md](docs/implementation/floating-terminal-focus.md) - Smart terminal switching system
   - [command-creator-log.md](docs/implementation/command-creator-log.md) - Command search development log
 - **[docs/architecture/](docs/architecture/)** - Architecture and design plans
+  - [architecture.md](docs/architecture/architecture.md) - Core architecture (v1.0)
+  - [architecture-enhanced.md](docs/architecture/architecture-enhanced.md) - Enhanced architecture (v2.0)
   - [tiling-window-manager.md](docs/architecture/tiling-window-manager.md) - Future tiling WM vision
   - [rust-ide-plans.md](docs/architecture/rust-ide-plans.md) - Rust rewrite architecture
 - **[docs/notes.md](docs/notes.md)** - Feature ideas and quick notes
