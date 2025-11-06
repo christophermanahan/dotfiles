@@ -29,7 +29,7 @@ All technical documentation is organized in the `docs/` directory:
   - [architecture-enhanced.md](docs/architecture/architecture-enhanced.md) - Enhanced architecture (v2.0)
   - [tiling-window-manager.md](docs/architecture/tiling-window-manager.md) - Future tiling WM vision
   - [rust-ide-plans.md](docs/architecture/rust-ide-plans.md) - Rust rewrite architecture
-- **[docs/notes.md](docs/notes.md)** - Feature ideas and quick notes
+- **[docs/feature-extension-ideas.md](docs/feature-extension-ideas.md)** - Feature ideas and quick notes
 
 ## Setup and Installation
 

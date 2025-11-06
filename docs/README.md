@@ -53,7 +53,7 @@ Forward-looking architecture documents and design plans for future development.
 
 | Document | Description |
 |----------|-------------|
-| [Feature Ideas](notes.md) | Quick notes and feature ideas for future development |
+| [Feature Extension Ideas](feature-extension-ideas.md) | Quick notes and feature ideas for future development |
 
 ## Current Implementation Status
 
