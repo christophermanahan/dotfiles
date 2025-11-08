@@ -16,6 +16,21 @@ Configuration files managed with GNU Stow:
 
 Deprecated configurations (kitty, tmux, ohmyzsh, powerlevel10k) are retained but no longer maintained.
 
+## Documentation
+
+All technical documentation is organized in the `docs/` directory:
+
+- **[docs/README.md](docs/README.md)** - Documentation index and navigation guide
+- **[docs/implementation/](docs/implementation/)** - Technical docs for implemented features
+  - [floating-terminal-focus.md](docs/implementation/floating-terminal-focus.md) - Smart terminal switching system
+  - [command-creator-log.md](docs/implementation/command-creator-log.md) - Command search development log
+- **[docs/architecture/](docs/architecture/)** - Architecture and design plans
+  - [architecture.md](docs/architecture/architecture.md) - Core architecture (v1.0)
+  - [architecture-enhanced.md](docs/architecture/architecture-enhanced.md) - Enhanced architecture (v2.0)
+  - [tiling-window-manager.md](docs/architecture/tiling-window-manager.md) - Future tiling WM vision
+  - [rust-ide-plans.md](docs/architecture/rust-ide-plans.md) - Rust rewrite architecture
+- **[docs/feature-extension-ideas.md](docs/feature-extension-ideas.md)** - Feature ideas and quick notes
+
 ## Setup and Installation
 
 All dependencies are installed via Homebrew. Required packages are listed in README.md:1-15.
