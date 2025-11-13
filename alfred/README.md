@@ -1,6 +1,6 @@
 # Alfred Configuration
 
-This directory contains Alfred preferences that can be deployed using GNU Stow.
+This directory contains **only custom Alfred configurations** - default settings are excluded.
 
 ## Structure
 
@@ -10,109 +10,96 @@ alfred/
     └── Application Support/
         └── Alfred/
             └── Alfred.alfredpreferences/
-                ├── preferences/    # Alfred settings
-                ├── remote/         # Alfred Remote configuration
-                └── resources/      # Themes, snippets, workflows
+                ├── resources/      # Custom web search icons (4 files)
+                └── remote/         # Alfred Remote custom pages & images
 ```
+
+## What's Included
+
+**Only custom/personalized configurations** - Default Alfred settings are excluded to keep the repo minimal.
+
+- **4 custom web searches** with custom icons
+- **Alfred Remote configuration**: Custom pages, layouts, and images for Alfred Remote iOS app
+
+**What's NOT included:**
+- Default web searches (Google, Amazon, YouTube, etc.)
+- Default feature preferences (calculator, contacts, etc.)
+- Default appearance settings
+- Workflows (none created yet)
 
 ## Installation
 
 ### Prerequisites
 
-- [Alfred](https://www.alfredapp.com/) installed (requires Powerpack for sync)
-- GNU Stow (install via: `brew install stow`)
+- [Alfred](https://www.alfredapp.com/) with Powerpack
+- GNU Stow (`brew install stow`)
 
 ### Deploy Configuration
 
-**Important:** This will replace your existing Alfred preferences. Backup first if needed!
-
 ```bash
-# 1. Remove existing Alfred preferences (if present)
+# Remove existing preferences (if present)
 rm -rf ~/Library/Application\ Support/Alfred/Alfred.alfredpreferences
 
-# 2. Deploy Alfred configuration with stow
+# Deploy with stow
 cd ~/paradiddle
 stow alfred
-
-# 3. Restart Alfred (or quit and reopen)
 ```
 
-This creates a symlink:
+Symlink created:
 ```
 ~/Library/Application Support/Alfred/Alfred.alfredpreferences
   → ~/paradiddle/alfred/Library/Application Support/Alfred/Alfred.alfredpreferences
 ```
 
-## What's Included
-
-- **Appearance settings**: Theme, fonts, colors
-- **Feature preferences**: Calculator, contacts, clipboard, snippets
-- **Web searches**: Custom search engines and keywords
-- **Workflows**: Custom automation workflows (if any)
-- **Remote settings**: Alfred Remote app configuration
-- **Resources**: Themes and other resources
-
-## What's NOT Included
-
-These files are in the parent Alfred directory but excluded to avoid syncing sensitive data:
-
-- `powerpack.*.dat` - License file (keep local)
-- `prefs.json` - Machine-specific preferences
-- `usage.data` - Usage statistics
-- `Databases/` - Search index (rebuilt by Alfred)
+**Note:** Alfred will use its defaults for everything except your custom searches and Remote config.
 
 ## Updating Configuration
 
-After making changes in Alfred:
-
 ```bash
-# Changes are automatically reflected in the repo (symlinked)
+# Changes are automatically reflected (symlinked)
 cd ~/paradiddle
 git add alfred/
-git commit -m "chore: update Alfred configuration"
+git commit -m "chore: update Alfred custom searches"
 git push
 ```
 
 ## New Mac Setup
 
-On a new Mac, after cloning the paradiddle repo:
-
 ```bash
-# Install Alfred first
+# Install Alfred
 brew install --cask alfred
 
 # Deploy configuration
 cd ~/paradiddle
 stow alfred
 
-# Open Alfred and enter your Powerpack license
-# Your preferences will be loaded automatically
+# Open Alfred and enter Powerpack license
+# Custom searches and Remote pages will be available immediately
 ```
 
 ## Troubleshooting
 
 ### Stow Conflicts
 
-If stow reports conflicts:
-
 ```bash
-# Check what's conflicting
-stow -n alfred  # Dry run
+# Check for conflicts (dry run)
+stow -n alfred
 
-# Remove conflicting files manually, then stow
+# Remove existing config if needed
 rm -rf ~/Library/Application\ Support/Alfred/Alfred.alfredpreferences
 stow alfred
 ```
 
-### Alfred Not Recognizing Preferences
+### Alfred Not Loading Custom Searches
 
 1. Quit Alfred completely
-2. Verify symlink exists: `ls -la ~/Library/Application\ Support/Alfred/`
+2. Verify symlink: `ls -la ~/Library/Application\ Support/Alfred/`
 3. Reopen Alfred
-4. Check Alfred Preferences to confirm settings loaded
+4. Check Preferences → Features → Web Search for custom searches
 
 ## Notes
 
-- Alfred preferences are stored as binary `.plist` files
-- Total size: ~2MB (128 files)
-- Works with Alfred 5.x (current version as of 2025)
+- Total size: ~1.8MB (79 files)
+- Only custom configurations included
+- Alfred will apply default settings on first launch
+- Works with Alfred 5.x
