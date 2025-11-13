@@ -37,6 +37,8 @@ return {
       timeout = 30000,
       temperature = 0,
       max_tokens = 4096,
+      -- Read API key from command (more reliable than env var)
+      api_key_name = "cmd:bash -c 'source ~/.zshrc.secrets && echo $ANTHROPIC_API_KEY'",
     },
 
     -- API Key Configuration
