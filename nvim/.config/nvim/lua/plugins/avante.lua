@@ -60,6 +60,9 @@ return {
         align = "center",
         rounded = true,
       },
+      selected_files = {
+        height = 12, -- Increased from default 6 for better code visibility
+      },
     },
 
     -- Mappings (using your existing keybinding patterns)
