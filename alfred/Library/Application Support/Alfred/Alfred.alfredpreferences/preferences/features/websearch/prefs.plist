@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>customSites</key>
+	<dict>
+		<key>01C74E40-40B4-4987-9C24-C60825C43DDC</key>
+		<dict>
+			<key>enabled</key>
+			<true/>
+			<key>keyword</key>
+			<string>w</string>
+			<key>text</key>
+			<string>Weather</string>
+			<key>url</key>
+			<string>https://www.google.com/search?q=weather+{query}</string>
+		</dict>
+		<key>2AF2FB1A-90CE-4FCE-AE98-1DCACD8A5F2E</key>
+		<dict>
+			<key>enabled</key>
+			<true/>
+			<key>keyword</key>
+			<string>d</string>
+			<key>text</key>
+			<string>Search docs</string>
+			<key>url</key>
+			<string>https://docs.google.com/document/u/0/?tgif=d&amp;q={query}</string>
+		</dict>
+		<key>61F61CAD-FB37-4758-AEC2-A527438A6A70</key>
+		<dict>
+			<key>enabled</key>
+			<true/>
+			<key>keyword</key>
+			<string>cal</string>
+			<key>text</key>
+			<string>Open calendar</string>
+			<key>url</key>
+			<string>https://calendar.google.com/</string>
+		</dict>
+		<key>7D4BBE8C-2A11-4C63-9E3C-230B292DF59D</key>
+		<dict>
+			<key>enabled</key>
+			<true/>
+			<key>keyword</key>
+			<string>t</string>
+			<key>text</key>
+			<string>Open twitch</string>
+			<key>url</key>
+			<string>https://www.twitch.tv/{query}</string>
+		</dict>
+	</dict>
+	<key>onlyShowEnabledInPrefs</key>
+	<true/>
+</dict>
+</plist>
