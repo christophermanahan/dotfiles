@@ -38,6 +38,7 @@ The result: A development environment where CLI tools aren't separate apps—the
 
 - **Neovim**: CLI-first IDE built on NvChad v2.5 with 8 integrated floating terminals
 - **AeroSpace**: Tiling window manager for macOS with i3-inspired keybindings
+- **Alfred**: Productivity app with custom preferences and workflows
 - **Wezterm**: Smart terminal with custom tab formatting, smart-splits integration, and per-directory tab colors
 - **ZSH**: Vi-mode, autosuggestions, syntax highlighting, FZF integration, and secure secrets management
 - **Git**: Version control with comprehensive aliases and modern defaults
@@ -63,6 +64,7 @@ The result: A development environment where CLI tools aren't separate apps—the
  - zoxide
  - stow
  - aerospace (tiling window manager)
+ - alfred (productivity app with Powerpack)
  - wezterm
  - starship
  - neovim
@@ -89,7 +91,7 @@ The result: A development environment where CLI tools aren't separate apps—the
 
 ```bash
 brew install eza zoxide stow zsh zsh-vi-mode zsh-autosuggestions zsh-syntax-highlighting starship neovim ripgrep tmux k9s lazydocker git-delta fzf fd bat codex posting awscli e1s
-brew install --cask font-hack-nerd-font wezterm nikitabobko/tap/aerospace
+brew install --cask font-hack-nerd-font wezterm nikitabobko/tap/aerospace alfred
 ```
 
 ### 2. Clone repository
@@ -108,6 +110,7 @@ rm -f ~/.zshrc
 # Stow configurations (creates symlinks from repo to home directory)
 stow git      # Deploys to ~/.gitconfig
 stow aerospace
+stow alfred   # Important: Backup existing Alfred preferences first!
 stow wezterm
 stow zsh
 stow starship
