@@ -16,15 +16,17 @@ alfred/
 
 ## What's Included
 
-**Only custom/personalized configurations** - Default Alfred settings are excluded to keep the repo minimal.
+**Only custom/personalized configurations** - 16 files, 232KB total.
 
-- **4 custom web searches** with custom icons
-- **Alfred Remote configuration**: Custom pages, layouts, and images for Alfred Remote iOS app
+- **4 custom web search icons** (resources/)
+- **5 Alfred Remote page layouts** (remote/pages/)
+- **5 custom Remote page background images** (remote/images/pages/)
 
 **What's NOT included:**
 - Default web searches (Google, Amazon, YouTube, etc.)
 - Default feature preferences (calculator, contacts, etc.)
 - Default appearance settings
+- Default Alfred Remote item icons (64 default app/system icons)
 - Workflows (none created yet)
 
 ## Installation
@@ -99,7 +101,8 @@ stow alfred
 
 ## Notes
 
-- Total size: ~1.8MB (79 files)
-- Only custom configurations included
+- Total size: 232KB (16 files)
+- **Only truly custom configurations** - no defaults
+- Alfred Remote will use default item icons automatically
 - Alfred will apply default settings on first launch
 - Works with Alfred 5.x
