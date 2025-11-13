@@ -31,8 +31,18 @@ return {
     auto_suggestions_provider = "claude",
 
     -- Claude configuration
-    -- Requires ANTHROPIC_API_KEY environment variable to be set
-    -- Get your API key from: https://console.anthropic.com/
+    claude = {
+      endpoint = "https://api.anthropic.com",
+      model = "claude-sonnet-4-20250514",
+      timeout = 30000,
+      temperature = 0,
+      max_tokens = 4096,
+    },
+
+    -- API Key Configuration
+    -- Set ANTHROPIC_API_KEY in your ~/.zshrc:
+    --   export ANTHROPIC_API_KEY="sk-ant-your-api-key-here"
+    -- Then restart your terminal or run: source ~/.zshrc
 
     -- Behavior settings
     behaviour = {
