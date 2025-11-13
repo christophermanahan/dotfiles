@@ -92,13 +92,92 @@ vim.keymap.del({ "n", "t" }, "<A-i>")
 vim.keymap.del({ "n", "t" }, "<A-h>")
 
 -- ============================================================================
--- Foreground Terminal Tracking System
+-- Multi-Instance Terminal System
 -- ============================================================================
--- Track which floating terminal is currently in the foreground
-_G.foreground_terminal = nil
--- Track which terminal buffers have been created (persists even when window closes)
+
+-- Base offsets for each terminal type (used as starting position)
+local BASE_OFFSETS = {
+  claude_term = { row = 0.02, col = 0.02 },
+  tmux_term = { row = 0.03, col = 0.03 },      -- Note: actual ID is floatTerm_<pid>
+  k9s_term = { row = 0.04, col = 0.04 },
+  lazygit_term = { row = 0.05, col = 0.05 },
+  openai_term = { row = 0.06, col = 0.06 },
+  lazydockerTerm = { row = 0.07, col = 0.07 },
+  posting_term = { row = 0.08, col = 0.08 },
+  e1sTerm = { row = 0.09, col = 0.09 },
+}
+
+-- Calculate diagonal offset for instance N of a terminal type
+-- instance_index: 0-based index (0 = first instance, 1 = second, etc.)
+-- Returns: { row = float, col = float }
+local function calculate_instance_offset(term_type, instance_index)
+  local base = BASE_OFFSETS[term_type]
+  if not base then
+    -- Fallback for unknown types (shouldn't happen)
+    base = { row = 0.02, col = 0.02 }
+  end
+
+  -- ~7 pixels diagonal offset per instance (0.007 ≈ 7px on typical screen)
+  local pixel_offset = 0.007 * instance_index
+
+  return {
+    row = base.row + pixel_offset,
+    col = base.col + pixel_offset,
+  }
+end
+
+-- Instance tracking registry
+-- Structure: terminal_instances[term_type] = {
+--   instances = { { id, bufnr, started, offset_index }, ... },
+--   focused_index = number,
+--   visible = boolean
+-- }
+if not _G.terminal_instances then
+  _G.terminal_instances = {}
+end
+
+-- Track which terminal TYPE is currently in foreground (e.g., "claude_term", "k9s_term")
+_G.active_terminal_type = _G.active_terminal_type or nil
+
+-- Backward compatibility: keep existing tracking for migration
+_G.foreground_terminal = _G.foreground_terminal or nil
 if not _G.terminal_buffers then
   _G.terminal_buffers = {}
+end
+
+-- Normalize term_type: handle special cases like floatTerm_<pid> → tmux_term
+-- This allows us to group tmux instances under a single type despite dynamic IDs
+local function normalize_term_type(term_id)
+  if term_id:match("^floatTerm_") then
+    return "tmux_term"
+  end
+  return term_id
+end
+
+-- Get base term_type from instance ID
+-- Example: "claude_term_2" → "claude_term", "floatTerm_12345" → "tmux_term"
+local function get_base_term_type(instance_id)
+  -- Handle tmux special case first
+  if instance_id:match("^floatTerm_") then
+    return "tmux_term"
+  end
+
+  -- For other types, strip "_N" suffix if present
+  local base = instance_id:match("^(.-)_%d+$")
+  return base or instance_id
+end
+
+-- Get or create registry entry for a terminal type
+-- Returns the registry entry (table with instances, focused_index, visible)
+local function get_or_create_registry(term_type)
+  if not _G.terminal_instances[term_type] then
+    _G.terminal_instances[term_type] = {
+      instances = {},
+      focused_index = 0,
+      visible = false,
+    }
+  end
+  return _G.terminal_instances[term_type]
 end
 
 -- Find a terminal window by term_id
