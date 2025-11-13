@@ -512,3 +512,12 @@ alias glog="git log --oneline --graph --decorate --all"
 
 # Rust environment
 export PATH="$HOME/.cargo/bin:$PATH"
+
+# Load secrets (API keys, tokens, etc.) from separate gitignored file
+# Create ~/.zshrc.secrets and add your secrets there:
+#   export ANTHROPIC_API_KEY="sk-ant-your-key-here"
+#   export OPENAI_API_KEY="sk-your-key-here"
+# This file is gitignored to prevent accidental commits of sensitive data
+if [ -f ~/.zshrc.secrets ]; then
+  source ~/.zshrc.secrets
+fi

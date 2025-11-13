@@ -19,41 +19,40 @@ This isn't just NvChad with plugins. It's a complete development environment bui
 
 ### What Makes This Different from Stock NvChad?
 
-**10 Integrated Floating Terminals** with cascading window positions (ALT+k/i/j/h/o/d/e/c/1/2):
+**8 Integrated Floating Terminals** with left-hand optimized keybindings (ALT+a/s/d/f/g/e/r/x):
 - Each terminal auto-starts its tool with smart defaults
 - Seamless context switching without leaving your editor
-- Visual window stacking prevents disorientation
-- Kill and restart any terminal instantly (ALT+p)
+- Visual window stacking with diagonal offsets prevents disorientation
+- Kill currently focused terminal instantly (ALT+z)
 
 **Intelligent Auto-Start Behavior:**
 - **k9s** prompts for Kubernetes cluster → namespace selection
 - **e1s** prompts for AWS profile → region selection (ECS)
-- **e2s** launches with interactive AWS instance browser (EC2)
-- **Claude Code** and **Codex** CLI ready immediately
-- **Browsers** (w3m, Carbonyl) open to useful defaults
+- **Claude Code** offers to continue previous session or start fresh
+- **Codex** and **Posting** CLI ready immediately
+- **tmux** creates unique session per nvim instance
 
 The result: A development environment where CLI tools aren't separate apps—they're integrated, context-aware, and instantly available.
 
 ## Features
 
-- **Neovim**: CLI-first IDE built on NvChad v2.5 with 10 integrated floating terminals
+- **Neovim**: CLI-first IDE built on NvChad v2.5 with 8 integrated floating terminals
 - **Wezterm**: Smart terminal with custom tab formatting, smart-splits integration, and per-directory tab colors
-- **ZSH**: Vi-mode, autosuggestions, syntax highlighting, FZF integration, and enhanced directory navigation
+- **ZSH**: Vi-mode, autosuggestions, syntax highlighting, FZF integration, and secure secrets management
 - **Git**: Version control with comprehensive aliases and modern defaults
 - **Starship**: Custom prompt with Catppuccin Mocha theme
 
 ### Integrated CLI Tools (First-Class Citizens)
 
-- **Claude Code** (ALT+k): AI pair programmer with auto-launch
-- **Tmux** (ALT+i): Terminal multiplexer with unique session per nvim instance
-- **k9s** (ALT+j): Kubernetes manager with cluster/namespace selection
-- **Lazygit** (ALT+h): TUI for git operations
-- **Codex CLI** (ALT+o): OpenAI assistant with auto-launch
+**Left-Hand Optimized Keybindings:**
+- **Claude Code** (ALT+a): AI pair programmer with session continuation prompt
+- **Tmux** (ALT+s): Terminal multiplexer with unique session per nvim instance
 - **Lazydocker** (ALT+d): Docker TUI for container management
-- **w3m** (ALT+e): Lightweight browser with vim keys + search (ALT+s)
-- **Carbonyl** (ALT+c): Chromium-based terminal browser
-- **e1s** (ALT+1): AWS ECS cluster browser with profile/region selection
-- **e2s** (ALT+2): AWS EC2 instance browser with interactive fzf menus
+- **Lazygit** (ALT+f): TUI for git operations
+- **k9s** (ALT+g): Kubernetes manager with cluster/namespace selection
+- **e1s** (ALT+e): AWS ECS cluster browser with profile/region selection
+- **Posting** (ALT+r): HTTP API client (Postman/Insomnia alternative)
+- **OpenAI Codex** (ALT+x): OpenAI assistant with auto-launch
 
 ## Requirements
 
@@ -74,11 +73,9 @@ The result: A development environment where CLI tools aren't separate apps—the
  - fd (find alternative)
  - bat (cat alternative with syntax highlighting)
  - codex (OpenAI Codex CLI)
- - w3m (lightweight terminal browser with vim keys)
- - carbonyl (Chromium-based terminal browser, via npm)
+ - posting (HTTP API client TUI)
  - e1s (AWS ECS terminal UI)
- - e2s (AWS EC2 browser, custom-built: https://github.com/christophermanahan/e2s)
- - aws-cli (required for e1s/e2s)
+ - aws-cli (required for e1s)
  - zsh
  - zsh-vi-mode
  - zsh-autosuggestions
@@ -89,24 +86,9 @@ The result: A development environment where CLI tools aren't separate apps—the
 ### 1. Install Homebrew dependencies
 
 ```bash
-brew install eza zoxide stow zsh zsh-vi-mode zsh-autosuggestions zsh-syntax-highlighting starship neovim ripgrep tmux k9s lazydocker git-delta fzf fd bat codex w3m awscli e1s
-npm install -g carbonyl
+brew install eza zoxide stow zsh zsh-vi-mode zsh-autosuggestions zsh-syntax-highlighting starship neovim ripgrep tmux k9s lazydocker git-delta fzf fd bat codex posting awscli e1s
 brew install --cask font-hack-nerd-font wezterm
 ```
-
-### 1a. Install e2s (AWS EC2 Browser)
-
-e2s is a custom-built tool for browsing AWS EC2 instances with interactive fzf menus:
-
-```bash
-# Clone and install e2s
-git clone https://github.com/christophermanahan/e2s.git
-cd e2s
-chmod +x install.sh
-./install.sh
-```
-
-This installs the `e2s` binary to `~/.local/bin/e2s` (PATH automatically configured in zsh config).
 
 ### 2. Clone repository
 
@@ -131,13 +113,33 @@ stow tmux
 stow k9s      # Cross-platform: deploys to ~/.config/k9s/ (K9S_CONFIG_DIR enforces XDG)
 ```
 
-### 4. Reload shell configuration
+### 4. Set up secrets (API keys)
+
+For AI-powered tools like Avante (Claude) and OpenAI Codex, you'll need API keys:
+
+```bash
+# Copy the secrets template to your home directory
+cp zsh/.zshrc.secrets.template ~/.zshrc.secrets
+chmod 600 ~/.zshrc.secrets
+
+# Edit the file and add your actual API keys
+vim ~/.zshrc.secrets
+# Replace placeholder with: export ANTHROPIC_API_KEY="sk-ant-your-key-here"
+```
+
+**Get your API keys:**
+- Anthropic Claude: https://console.anthropic.com/
+- OpenAI: https://platform.openai.com/api-keys
+
+**Security Note:** The `~/.zshrc.secrets` file is gitignored and will never be committed to version control.
+
+### 5. Reload shell configuration
 
 ```bash
 source ~/.zshrc
 ```
 
-### 5. Launch Neovim to install plugins
+### 6. Launch Neovim to install plugins
 
 On first launch, Neovim will automatically:
 - Install NvChad (v2.5)
@@ -158,11 +160,11 @@ Once you've installed Paradiddle, here's a quick workflow to get you coding:
 2. **Navigate to a project** - Press `<leader>cd` (Space+cd) to fuzzy find and jump to any directory
 3. **Browse files** - Press `Ctrl+n` to open the file tree
 4. **Find code** - Press `<leader>fw` to fuzzy search for function calls or any text
-5. **Get AI help** - Press `ALT+k` to open Claude Code for pair programming
-6. **Context-aware assistance** - Highlight some code and press `<leader>aa` to bring up Avante (turns any LLM into Cursor)
-7. **Happy coding!** - All your CLI tools are one keystroke away (ALT+h for git, ALT+j for k8s, ALT+i for tmux, etc.)
+5. **Get AI help** - Press `ALT+a` to open Claude Code for pair programming
+6. **Context-aware assistance** - Highlight some code and press `<leader>aa` to bring up Avante (Cursor-like AI with Claude Sonnet 4)
+7. **Happy coding!** - All your CLI tools are one keystroke away (ALT+f for git, ALT+g for k8s, ALT+s for tmux, etc.)
 
-**Pro tip:** Use `ALT+p` to kill any floating terminal when you're done, and press the same key again to restart it fresh.
+**Pro tip:** Use `ALT+z` to kill the currently focused floating terminal, then press the same shortcut again to restart it fresh.
 
 ## Shortcuts
 
@@ -244,39 +246,59 @@ Once you've installed Paradiddle, here's a quick workflow to get you coding:
 | `gT` | Previous tab |
 | `<leader>X` | Close all other buffers |
 
-#### Terminal Management (10 Integrated Floating Terminals)
+#### Terminal Management (8 Integrated Floating Terminals)
 
-All terminals use cascading window positions (0.02 to 0.12 offset) for visual clarity:
+**Left-Hand Optimized Layout** - All terminals use left-hand keys for seamless use with tiling window managers:
 
+**Home Row (Most Used):**
 | Shortcut | Tool | Action |
 |----------|------|--------|
-| `ALT+k` | Claude Code | Toggle AI pair programmer (auto-starts) |
-| `ALT+i` | Tmux | Toggle terminal multiplexer (unique session per nvim) |
-| `ALT+j` | k9s | Toggle Kubernetes browser (cluster → namespace selection) |
-| `ALT+h` | Lazygit | Toggle Git TUI |
-| `ALT+o` | Codex | Toggle OpenAI CLI (auto-starts) |
+| `ALT+a` | Claude Code | Toggle AI pair programmer (offers session continuation) |
+| `ALT+s` | Tmux | Toggle terminal multiplexer (unique session per nvim) |
 | `ALT+d` | Lazydocker | Toggle Docker TUI |
-| `ALT+e` | w3m | Toggle lightweight browser (vim keys) |
-| `ALT+s` | w3m Search | Search DuckDuckGo in w3m |
-| `ALT+c` | Carbonyl | Toggle Chromium browser (opens ChatGPT) |
-| `ALT+1` | e1s | Toggle AWS ECS browser (profile → region selection) |
-| `ALT+2` | e2s | Toggle AWS EC2 browser (interactive instance selector) |
-| `ALT+a` | Avante | Ask AI assistant (Cursor-like AI coding) |
-| `ALT+p` | Kill Terminal | Kill any floating terminal (restarts on reopen) |
-| `Ctrl+q` | Normal Mode | Exit terminal mode (allows scrolling) |
+| `ALT+f` | Lazygit | Toggle Git TUI |
+| `ALT+g` | k9s | Toggle Kubernetes browser (cluster → namespace selection) |
+
+**Top Row (Secondary Tools):**
+| Shortcut | Tool | Action |
+|----------|------|--------|
+| `ALT+e` | e1s | Toggle AWS ECS browser (profile → region selection) |
+| `ALT+r` | Posting | Toggle HTTP API client (Postman alternative) |
+
+**Bottom Row:**
+| Shortcut | Tool | Action |
+|----------|------|--------|
+| `ALT+x` | OpenAI Codex | Toggle OpenAI CLI (auto-starts) |
+| `ALT+z` | Kill Terminal | Kill currently focused floating terminal |
+
+**Command Search:**
+| Shortcut | Action |
+|----------|--------|
+| `ALT+q` | Search all commands (~500 commands) |
+| `ALT+Shift+G` | Filter to Git commands |
+| `ALT+Shift+D` | Filter to Docker/K8s commands |
+| `ALT+Shift+A` | Filter to AWS commands |
+| `ALT+Shift+X` | Search aliases/functions |
+| `ALT+Shift+B` | Search Homebrew packages |
+
+**Other:**
+| Shortcut | Action |
+|----------|--------|
+| `ALT+Shift+?` | Show terminal shortcuts cheatsheet |
+| `Ctrl+q` | Exit terminal mode (allows scrolling) |
 
 **Intelligent Auto-Start Features:**
+- **Claude Code**: Prompts to continue previous session or start fresh
 - **k9s**: Two-step fzf menu (cluster → namespace or "all")
 - **e1s**: Two-step fzf menu (AWS profile → region → ECS clusters)
-- **e2s**: Multi-step fzf menu (AWS profile → region → EC2 instance → actions)
-- **Claude Code** & **Codex**: Launch immediately on first open
-- **Browsers**: w3m opens DuckDuckGo Lite, Carbonyl opens ChatGPT
+- **Codex** & **Posting**: Launch immediately on first open
+- **tmux**: Creates unique session per nvim instance
 
 **Terminal Session Management:**
 - Each Neovim instance creates a unique tmux session
 - Sessions auto-cleanup on Neovim exit (prevents orphans)
-- ALT+p resets all terminal start flags for clean restart
-- To kill a running app: Press `Ctrl+q` first, then `ALT+p`
+- All terminals have diagonal stacking offsets for visual clarity
+- To kill a running app: Press `Ctrl+q` first, then `ALT+z`
 
 #### Window & Display
 | Shortcut | Action |
@@ -442,12 +464,13 @@ Seamless integration between Neovim and the macOS system clipboard:
 
 ### Neovim Configuration Highlights
 
-**CLI Tool Integration (10 Floating Terminals):**
+**CLI Tool Integration (8 Floating Terminals):**
+- Left-hand optimized keybindings (ALT+a/s/d/f/g/e/r/x)
 - Each terminal with auto-start and intelligent defaults
-- Cascading window positions (0.02 to 0.12 offset) for visual clarity
+- Diagonal stacking offsets for visual clarity
 - Session management: unique tmux sessions per nvim instance, auto-cleanup on exit
 - Seamless context switching without leaving editor
-- Tools: Claude Code, Tmux, k9s, Lazygit, Codex, Lazydocker, w3m, Carbonyl, e1s (AWS ECS), e2s (AWS EC2)
+- Tools: Claude Code, Tmux, Lazydocker, Lazygit, k9s, e1s (AWS ECS), Posting (HTTP client), OpenAI Codex
 
 **macOS System Integration:**
 - Full clipboard integration via `clipboard=unnamedplus`
@@ -470,12 +493,13 @@ Seamless integration between Neovim and the macOS system clipboard:
 - Signature help enabled
 
 **AI Assistance:**
-- avante.nvim (Cursor-like AI coding assistant with Claude integration)
-  - `ALT+a` or `<leader>aa`: Ask AI
+- avante.nvim (Cursor-like AI coding assistant with **Claude Sonnet 4** integration)
+  - `<leader>aa`: Ask AI about selected code
   - `<leader>ae`: Edit selection with AI
   - `<leader>at`: Toggle sidebar
   - `<leader>ar`: Refresh
   - `<leader>af`: Focus sidebar
+  - Requires `ANTHROPIC_API_KEY` in `~/.zshrc.secrets`
 - CopilotChat.nvim for GitHub Copilot integration
 
 **Navigation:**
@@ -537,7 +561,7 @@ Traditional IDEs hide terminal tools in sidebars or require context switching to
 - Browsers open to useful defaults
 - No repetitive setup on each launch
 
-**Visual Clarity:** 11 cascading windows (0.02–0.12 offset) prevent disorientation when toggling between tools.
+**Visual Clarity:** 8 terminals with diagonal stacking offsets prevent disorientation when toggling between tools.
 
 **Seamless Integration:**
 - Copy from Neovim → paste anywhere on macOS
@@ -550,22 +574,22 @@ Traditional IDEs hide terminal tools in sidebars or require context switching to
 
 **Kubernetes Development:**
 1. Write code in Neovim
-2. `ALT+j` → select cluster/namespace → check pod status in k9s
-3. `ALT+h` → commit changes in lazygit
-4. `ALT+p` → kill terminals when done
+2. `ALT+g` → select cluster/namespace → check pod status in k9s
+3. `ALT+f` → commit changes in lazygit
+4. `ALT+z` → close terminals when done
 
 **AWS Infrastructure Work:**
-1. `ALT+1` → select AWS profile/region → browse ECS clusters in e1s
-2. `ALT+2` → browse EC2 instances in e2s
-3. `ALT+k` → ask Claude Code about infrastructure code
+1. `ALT+e` → select AWS profile/region → browse ECS clusters in e1s
+2. `ALT+a` → ask Claude Code about infrastructure code
+3. Select code → `<leader>aa` → get AI suggestions with Avante
 4. Never leave your editor
 
-**Research & Documentation:**
-1. Select unfamiliar function in code
-2. `ALT+e` → look up documentation in w3m
-3. `ALT+s` → search for more details
-4. Yank example code → paste directly into editor
-5. `ALT+p` → close browser when done
+**API Testing:**
+1. Write API endpoint code
+2. `ALT+r` → open Posting HTTP client
+3. Test requests interactively with TUI
+4. Copy response → paste into code
+5. `ALT+z` → close when done
 
 **The Result:** A development environment where context switching is measured in milliseconds, not seconds. Where terminals are not separate apps, but integrated tools at your fingertips.
 

@@ -27,12 +27,25 @@ return {
   },
   opts = {
     ---@alias Provider "claude" | "openai" | "azure" | "gemini" | "cohere" | "copilot" | "ollama"
-    provider = "copilot", -- Using GitHub Copilot
-    auto_suggestions_provider = "copilot",
+    provider = "claude", -- Using Claude API
+    auto_suggestions_provider = "claude",
 
-    -- Copilot will use your existing copilot.lua authentication
-    -- No additional configuration needed - avante will leverage
-    -- the copilot plugin already installed in your setup
+    -- Claude configuration
+    claude = {
+      endpoint = "https://api.anthropic.com",
+      model = "claude-sonnet-4-20250514",
+      timeout = 30000,
+      temperature = 0,
+      max_tokens = 4096,
+      -- Read API key from command (more reliable than env var)
+      api_key_name = "cmd:bash -c 'source ~/.zshrc.secrets && echo $ANTHROPIC_API_KEY'",
+    },
+
+    -- API Key Configuration
+    -- Create ~/.zshrc.secrets (gitignored) and add:
+    --   export ANTHROPIC_API_KEY="sk-ant-your-api-key-here"
+    -- Then run: source ~/.zshrc
+    -- The main .zshrc will automatically source ~/.zshrc.secrets on shell startup
 
     -- Behavior settings
     behaviour = {
@@ -59,6 +72,9 @@ return {
       sidebar_header = {
         align = "center",
         rounded = true,
+      },
+      selected_files = {
+        height = 12, -- Increased from default 6 for better code visibility
       },
     },
 
