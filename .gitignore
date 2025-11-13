@@ -1,6 +1,9 @@
 # Local session context - not tracked in git
 SESSION_CONTEXT.md
 
+# Secrets and API keys
+.zshrc.secrets
+
 # Editor/IDE files
 .vscode/
 .idea/

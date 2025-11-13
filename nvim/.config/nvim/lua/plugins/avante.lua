@@ -40,9 +40,10 @@ return {
     },
 
     -- API Key Configuration
-    -- Set ANTHROPIC_API_KEY in your ~/.zshrc:
+    -- Create ~/.zshrc.secrets (gitignored) and add:
     --   export ANTHROPIC_API_KEY="sk-ant-your-api-key-here"
-    -- Then restart your terminal or run: source ~/.zshrc
+    -- Then run: source ~/.zshrc
+    -- The main .zshrc will automatically source ~/.zshrc.secrets on shell startup
 
     -- Behavior settings
     behaviour = {
