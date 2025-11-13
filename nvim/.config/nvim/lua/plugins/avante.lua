@@ -27,12 +27,12 @@ return {
   },
   opts = {
     ---@alias Provider "claude" | "openai" | "azure" | "gemini" | "cohere" | "copilot" | "ollama"
-    provider = "copilot", -- Using GitHub Copilot
-    auto_suggestions_provider = "copilot",
+    provider = "claude", -- Using Claude API
+    auto_suggestions_provider = "claude",
 
-    -- Copilot will use your existing copilot.lua authentication
-    -- No additional configuration needed - avante will leverage
-    -- the copilot plugin already installed in your setup
+    -- Claude configuration
+    -- Requires ANTHROPIC_API_KEY environment variable to be set
+    -- Get your API key from: https://console.anthropic.com/
 
     -- Behavior settings
     behaviour = {
