@@ -10,14 +10,33 @@ alfred/
     └── Application Support/
         └── Alfred/
             └── Alfred.alfredpreferences/
+                ├── preferences/    # Custom feature preferences (7 files)
+                │   ├── appearance/options/prefs.plist
+                │   └── features/
+                │       ├── calculator/prefs.plist
+                │       ├── clipboard/prefs.plist
+                │       ├── contacts/prefs.plist
+                │       ├── itunes/prefs.plist
+                │       ├── system/prefs.plist
+                │       └── terminal/prefs.plist
                 └── resources/      # Custom web search icons (4 files)
 ```
 
 ## What's Included
 
-**Only custom/personalized configurations** - 5 files, 44KB total.
+**Only custom/personalized configurations** - 12 files, 72KB total.
 
-- **4 custom web search icons** (resources/)
+### Custom Preferences (7 files)
+- **calculator**: Disabled
+- **contacts**: Disabled
+- **clipboard**: Custom hotkey (Cmd+Opt+C), 2-item limit, 3-month persistence
+- **itunes/music**: All features disabled
+- **terminal**: WezTerm integration with CLI support
+- **system**: Custom keywords (`et` for empty trash, `lock` for screensaver), volume controls disabled
+- **appearance**: Auto-highlight disabled, hat/menu hidden, custom screen positioning
+
+### Custom Resources (4 files)
+- **4 custom web search icons** (Twitch, Calendar, Docs, Weather)
 
 **What's NOT included:**
 - Default web searches (Google, Amazon, YouTube, etc.)
@@ -99,7 +118,8 @@ stow alfred
 
 ## Notes
 
-- Total size: **44KB (5 files)**
-- **Only truly custom content** - 4 web search icons you created
-- Alfred will apply all default settings on first launch
+- Total size: **72KB (12 files)**
+- **Only truly custom content** - 7 preference files with your custom settings + 4 web search icons
+- Alfred will apply defaults for any preferences not included (web searches, file search, dictionary, etc.)
+- **WezTerm integration**: Terminal script uses `wezterm cli send-text` for proper command execution
 - Works with Alfred 5.x
