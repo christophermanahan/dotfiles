@@ -10,23 +10,21 @@ alfred/
     └── Application Support/
         └── Alfred/
             └── Alfred.alfredpreferences/
-                ├── resources/      # Custom web search icons (4 files)
-                └── remote/         # Alfred Remote custom pages & images
+                └── resources/      # Custom web search icons (4 files)
 ```
 
 ## What's Included
 
-**Only custom/personalized configurations** - 16 files, 232KB total.
+**Only custom/personalized configurations** - 5 files, 44KB total.
 
 - **4 custom web search icons** (resources/)
-- **5 Alfred Remote page layouts** (remote/pages/)
-- **5 custom Remote page background images** (remote/images/pages/)
 
 **What's NOT included:**
 - Default web searches (Google, Amazon, YouTube, etc.)
 - Default feature preferences (calculator, contacts, etc.)
 - Default appearance settings
 - Default Alfred Remote item icons (64 default app/system icons)
+- Alfred Remote pages and layouts (all defaults)
 - Workflows (none created yet)
 
 ## Installation
@@ -53,7 +51,7 @@ Symlink created:
   → ~/paradiddle/alfred/Library/Application Support/Alfred/Alfred.alfredpreferences
 ```
 
-**Note:** Alfred will use its defaults for everything except your custom searches and Remote config.
+**Note:** Alfred will use its defaults for everything except your custom web search icons.
 
 ## Updating Configuration
 
@@ -76,7 +74,7 @@ cd ~/paradiddle
 stow alfred
 
 # Open Alfred and enter Powerpack license
-# Custom searches and Remote pages will be available immediately
+# Custom searches will be available immediately
 ```
 
 ## Troubleshooting
@@ -101,8 +99,7 @@ stow alfred
 
 ## Notes
 
-- Total size: 232KB (16 files)
-- **Only truly custom configurations** - no defaults
-- Alfred Remote will use default item icons automatically
-- Alfred will apply default settings on first launch
+- Total size: **44KB (5 files)**
+- **Only truly custom content** - 4 web search icons you created
+- Alfred will apply all default settings on first launch
 - Works with Alfred 5.x
