@@ -25,7 +25,7 @@ sketchybar --default \
            padding_right=5 \
            icon.font="SF Pro:Semibold:14.0" \
            label.font="SF Pro:Semibold:12.0s" \
-           icon.color=$WHITE \
+           icon.color=$PASTEL_FUCHSIA \
            label.color=$WHITE \
            icon.padding_left=8 \
            icon.padding_right=4 \

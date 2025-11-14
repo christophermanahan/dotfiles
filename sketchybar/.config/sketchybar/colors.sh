@@ -5,6 +5,7 @@ accent=$(defaults read -g AppleAccentColor 2>/dev/null || echo "nil")
 appearance=$(defaults read -g AppleInterfaceStyle 2>/dev/null || echo "Light")
 
 export WHITE=0xffffffff
+export PASTEL_FUCHSIA=0xfff5a9f2
 
 # Convert RGB to hex with alpha
 to_hex() {
