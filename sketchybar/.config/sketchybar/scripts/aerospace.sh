@@ -7,12 +7,12 @@ if [ "$1" = "$FOCUSED_WORKSPACE" ]; then
   sketchybar --set $NAME background.drawing=on \
                          background.color=$ITEM_BG_COLOR \
                          background.corner_radius=8 \
-                         label.color=$LABEL_COLOR \
-                         icon.color=$LABEL_COLOR
+                         label.color=$PASTEL_FUCHSIA \
+                         icon.color=$PASTEL_FUCHSIA
 else
   sketchybar --set $NAME background.drawing=off \
-                         label.color=$ACCENT_COLOR \
-                         icon.color=$ACCENT_COLOR
+                         label.color=$PASTEL_FUCHSIA \
+                         icon.color=$PASTEL_FUCHSIA
 fi
 
 # Load all icons on startup

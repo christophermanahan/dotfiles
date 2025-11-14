@@ -54,8 +54,8 @@ done
 # Separator
 sketchybar --add item space_separator left \
            --set space_separator \
-           icon="􀆊" \
-           icon.color=$ACCENT_COLOR \
+           icon="" \
+           icon.color=$PASTEL_FUCHSIA \
            icon.padding_left=4 \
            label.drawing=off \
            background.drawing=off \
@@ -91,7 +91,8 @@ sketchybar --add item battery right \
 # CPU
 sketchybar --add item cpu right \
            --set cpu update_freq=2 \
-                  icon=􀧓 \
+                  icon="" \
+                  icon.color=$PASTEL_FUCHSIA \
                   background.color=0x00000000 \
                   script="$CONFIG_DIR/scripts/cpu.sh"
                   
