@@ -9,6 +9,15 @@
 	tell application "WezTerm"
 		activate
 	end tell
+
+	-- Open floating tmux terminal (ALT+s in nvim)
+	-- ESC+s is the terminal escape sequence for ALT+s
+	do shell script "printf '\\033s' | /Applications/WezTerm.app/Contents/MacOS/wezterm cli send-text --no-paste"
+
+	-- Wait 300ms for terminal to open
+	delay 0.3
+
+	-- Send the command
 	do shell script "/Applications/WezTerm.app/Contents/MacOS/wezterm cli send-text --no-paste -- " &amp; quoted form of (q &amp; linefeed)
 end alfred_script</string>
 </dict>
