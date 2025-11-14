@@ -110,13 +110,15 @@ rm -f ~/.zshrc
 # Stow configurations (creates symlinks from repo to home directory)
 stow git      # Deploys to ~/.gitconfig
 stow aerospace
-stow alfred   # Important: Backup existing Alfred preferences first!
 stow wezterm
 stow zsh
 stow starship
 stow nvim
 stow tmux
 stow k9s      # Cross-platform: deploys to ~/.config/k9s/ (K9S_CONFIG_DIR enforces XDG)
+
+# Alfred uses native sync (not stow) - see alfred/README.md
+# Open Alfred Preferences → Advanced → Set preferences folder to ~/paradiddle/alfred/Alfred.alfredpreferences
 ```
 
 ### 4. Set up secrets (API keys)
