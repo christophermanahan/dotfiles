@@ -49,7 +49,34 @@ alfred/
 - Default appearance settings
 - Default Alfred Remote item icons (64 default app/system icons)
 - Alfred Remote pages and layouts (all defaults)
-- Workflows (none created yet)
+- Workflows (installed separately from Alfred Gallery, see below)
+
+## Recommended Workflows
+
+These workflows are installed from the [Alfred Gallery](https://alfred.app/) and are **not** version controlled in this repo:
+
+### 1. [Chromium Bookmarks and History Search](https://alfred.app/)
+Search Chrome/Chromium bookmarks and browsing history directly from Alfred.
+- Fast bookmark search with favicon display
+- Recent history browsing
+- Domain-based grouping
+- Open in browser or copy URL actions
+
+### 2. [Menu Bar Search](https://alfred.app/)
+Search and execute menu bar items from any application.
+- Real-time menu indexing using Accessibility APIs
+- Fuzzy search across all menu items
+- Execute menu actions without mouse navigation
+- Requires Accessibility permissions
+
+### 3. [1Password](https://alfred.app/)
+Quick access to 1Password items and vaults.
+- Search across all vaults
+- Copy passwords, usernames, OTP codes
+- Open items in 1Password app
+- Requires 1Password CLI: `brew install 1password-cli`
+
+**Installation:** Open Alfred → Workflows → "+" → Alfred Gallery → Search for workflow name
 
 ## Installation
 

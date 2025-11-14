@@ -19,3 +19,4 @@ Thumbs.db
 # Alfred machine-specific files
 alfred/Alfred.alfredpreferences/preferences/local/
 alfred/Alfred.alfredpreferences/remote/
+alfred/Alfred.alfredpreferences/workflows/
