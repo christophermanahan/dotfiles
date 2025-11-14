@@ -5,14 +5,15 @@ source "$CONFIG_DIR/icon_map_fn.sh"
 
 if [ "$1" = "$FOCUSED_WORKSPACE" ]; then
   sketchybar --set $NAME background.drawing=on \
-                         background.color=$ITEM_BG_COLOR \
+                         background.color=0x40000000 \
                          background.corner_radius=8 \
-                         label.color=$PASTEL_FUCHSIA \
-                         icon.color=$PASTEL_FUCHSIA
+                         background.y_offset=-0.5 \
+                         icon.color=$WHITE \
+                         label.color=$PASTEL_FUCHSIA
 else
   sketchybar --set $NAME background.drawing=off \
-                         label.color=$PASTEL_FUCHSIA \
-                         icon.color=$PASTEL_FUCHSIA
+                         icon.color=$WHITE \
+                         label.color=$PASTEL_FUCHSIA
 fi
 
 # Load all icons on startup

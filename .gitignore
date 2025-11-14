@@ -15,3 +15,7 @@ SESSION_CONTEXT.md
 # OS files
 .DS_Store
 Thumbs.db
+
+# Alfred - machine-specific files
+alfred/Alfred.alfredpreferences/preferences/local/
+alfred/Alfred.alfredpreferences/workflows/

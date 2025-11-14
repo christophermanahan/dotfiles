@@ -2,23 +2,23 @@ function icon_map() {
   case "$1" in
   # Terminal apps
   "WezTerm" | "wezterm-gui")
-    icon_result=""
+    icon_result=""
     ;;
   # Browsers
   "Google Chrome")
     icon_result="󰊯"
     ;;
   "Firefox")
-    icon_result=""
+    icon_result="󰈹"
     ;;
   "Safari")
     icon_result="󰀹"
     ;;
   "qutebrowser")
-    icon_result=""
+    icon_result=""
     ;;
   "Ladybird")
-    icon_result=""
+    icon_result="󰖟"
     ;;
   # Communication
   "Slack")
@@ -41,10 +41,10 @@ function icon_map() {
     icon_result="󰘧"
     ;;
   "1Password")
-    icon_result=""
+    icon_result="󰟵"
     ;;
   "Obsidian")
-    icon_result="󱓷"
+    icon_result=""
     ;;
   "Craft")
     icon_result="󱓷"
@@ -56,20 +56,17 @@ function icon_map() {
   "Pages")
     icon_result=""
     ;;
+  "Preview")
+    icon_result=""
+    ;;
   "Numbers")
     icon_result="󰎚"
     ;;
-  "GarageBand")
-    icon_result=""
-    ;;
-  "iMovie")
-    icon_result=""
-    ;;
   "Finder")
-    icon_result=""
+    icon_result=""
     ;;
   "System Preferences" | "System Settings")
-    icon_result=""
+    icon_result=""
     ;;
   # Google apps
   "Google Docs" | "Google Sheets" | "Google Slides" | "Google Drive")
@@ -77,10 +74,10 @@ function icon_map() {
     ;;
   # Development
   "Lens")
-    icon_result="󰡨"
+    icon_result=""
     ;;
   "OrbStack")
-    icon_result=""
+    icon_result="󰡨"
     ;;
   "Neo4j Desktop 2")
     icon_result="󰆼"
@@ -88,10 +85,6 @@ function icon_map() {
   # Karabiner
   "Karabiner-Elements" | "Karabiner-EventViewer")
     icon_result="⌨"
-    ;;
-  # Security
-  "Falcon" | "Code42-AAT" | "Workspace ONE Intelligent Hub")
-    icon_result=""
     ;;
   # Media
   "Stremio")
@@ -106,7 +99,7 @@ function icon_map() {
     ;;
   # Default fallback
   *)
-    icon_result=""
+    icon_result=""
     ;;
   esac
   echo "$icon_result"
