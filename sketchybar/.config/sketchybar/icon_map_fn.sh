@@ -1,7 +1,7 @@
 function icon_map() {
   case "$1" in
   # Terminal apps
-  "WezTerm")
+  "WezTerm" | "wezterm-gui")
     icon_result=""
     ;;
   # Browsers
