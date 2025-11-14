@@ -33,8 +33,18 @@ case ${PERCENTAGE} in
   *) ICON=""
 esac
 
+# Set color based on percentage
 if [[ $CHARGING != "" ]]; then
   ICON="󰂄"
+  COLOR="0xff89dceb"  # Cyan for charging
+elif [ $PERCENTAGE -ge 80 ]; then
+  COLOR="0xffa6e3a1"  # Green for high battery
+elif [ $PERCENTAGE -ge 40 ]; then
+  COLOR="0xfff9e2af"  # Yellow for medium battery
+elif [ $PERCENTAGE -ge 20 ]; then
+  COLOR="0xfffab387"  # Orange for low battery
+else
+  COLOR="0xfff38ba8"  # Red for critical battery
 fi
 
-sketchybar --set $NAME icon="$ICON" icon.color=$PASTEL_FUCHSIA label="${PERCENTAGE}%"
+sketchybar --set $NAME icon="$ICON" icon.color="$COLOR" label="${PERCENTAGE}%"

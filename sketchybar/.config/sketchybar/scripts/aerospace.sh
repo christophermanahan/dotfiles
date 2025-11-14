@@ -2,18 +2,25 @@
 
 source "$CONFIG_DIR/colors.sh"
 source "$CONFIG_DIR/icon_map_fn.sh"
+source "$CONFIG_DIR/hash_color_fn.sh"
+
+# Get the focused app name
+FOCUSED_APP=$(aerospace list-windows --focused | awk -F'|' '{gsub(/^ *| *$/, "", $2); print $2}')
+APP_COLOR=$(hash_color "$FOCUSED_APP")
 
 if [ "$1" = "$FOCUSED_WORKSPACE" ]; then
   sketchybar --set $NAME background.drawing=on \
                          background.color=0x40000000 \
                          background.corner_radius=8 \
                          background.y_offset=-0.5 \
+                         background.border_width=1 \
+                         background.border_color=$WHITE \
                          icon.color=$WHITE \
-                         label.color=$PASTEL_FUCHSIA
+                         label.color="$APP_COLOR"
 else
   sketchybar --set $NAME background.drawing=off \
                          icon.color=$WHITE \
-                         label.color=$PASTEL_FUCHSIA
+                         label.color=$WHITE
 fi
 
 # Load all icons on startup

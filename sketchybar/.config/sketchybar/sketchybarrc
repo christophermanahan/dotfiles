@@ -55,8 +55,11 @@ done
 # Separator
 sketchybar --add item space_separator left \
            --set space_separator \
-           icon="" \
-           icon.color=$PASTEL_FUCHSIA \
+           icon="│" \
+           icon.font="SF Pro:Semibold:14.0" \
+           icon.color=$WHITE \
+           icon.padding_left=0 \
+           icon.padding_right=12 \
            label.drawing=off \
            background.drawing=off \
            --subscribe space_separator aerospace_workspace_change
@@ -70,8 +73,9 @@ sketchybar --add item front_app left \
            label.padding_left=8 \
            label.padding_right=8 \
            background.corner_radius=8 \
-           background.color=0x40000000 \
-           label.color=$WHITE \
+           background.color=0x30000000 \
+           background.border_width=1 \
+           background.border_color=$WHITE \
            script="$CONFIG_DIR/scripts/front_app.sh" \
            --subscribe front_app front_app_switched
 
@@ -90,12 +94,21 @@ sketchybar --add item battery right \
                   background.color=0x00000000 \
                   script="$CONFIG_DIR/scripts/battery.sh" \
            --subscribe battery system_woke power_source_change
-                  
+
 # Volume
 sketchybar --add item volume right \
-           --set volume background.color=0x00000000 \
+           --set volume icon.font="Hack Nerd Font:Semibold:14.0" \
+                       icon.color=$WHITE \
+                       background.color=0x00000000 \
                        script="$CONFIG_DIR/scripts/volume.sh" \
            --subscribe volume volume_change
+
+# Weather (leftmost on right side)
+sketchybar --add item weather right \
+           --set weather update_freq=1800 \
+                  icon.font="Hack Nerd Font:Semibold:14.0" \
+                  background.color=0x00000000 \
+                  script="$CONFIG_DIR/scripts/weather.sh"
 
 # Force all scripts to run the first time
 sketchybar --update
