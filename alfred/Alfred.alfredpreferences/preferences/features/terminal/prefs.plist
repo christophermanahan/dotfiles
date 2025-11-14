@@ -9,7 +9,7 @@
 	tell application "WezTerm"
 		activate
 	end tell
-	do shell script "/Applications/WezTerm.app/Contents/MacOS/wezterm cli send-text --no-paste " &amp; quoted form of (q &amp; return)
+	do shell script "/Applications/WezTerm.app/Contents/MacOS/wezterm cli send-text --no-paste -- " &amp; quoted form of (q &amp; linefeed)
 end alfred_script</string>
 </dict>
 </plist>
