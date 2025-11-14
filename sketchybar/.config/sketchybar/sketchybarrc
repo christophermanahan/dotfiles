@@ -44,6 +44,7 @@ for sid in $(aerospace list-workspaces --all); do
              --subscribe space.$sid aerospace_workspace_change \
              --set space.$sid \
              icon=$sid \
+             icon.y_offset=-1 \
              label.font="Hack Nerd Font:Regular:16.0" \
              label.padding_right=20 \
              label.y_offset=-1 \
@@ -65,11 +66,12 @@ sketchybar --add item space_separator left \
 sketchybar --add item front_app left \
            --set front_app \
            icon.drawing=off \
+           label.align=center \
            label.padding_left=8 \
            label.padding_right=8 \
            background.corner_radius=8 \
            background.color=$ITEM_BG_COLOR \
-           label.color=$LABEL_COLOR \
+           label.color=$WHITE \
            script="$CONFIG_DIR/scripts/front_app.sh" \
            --subscribe front_app front_app_switched
 
