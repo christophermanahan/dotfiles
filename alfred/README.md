@@ -7,7 +7,7 @@ This directory contains **only custom Alfred configurations** - default settings
 ```
 alfred/
 └── Alfred.alfredpreferences/
-    ├── preferences/    # Custom feature preferences (7 files)
+    ├── preferences/    # Custom feature preferences (9 files)
     │   ├── appearance/options/prefs.plist
     │   └── features/
     │       ├── calculator/prefs.plist
@@ -15,15 +15,17 @@ alfred/
     │       ├── contacts/prefs.plist
     │       ├── itunes/prefs.plist
     │       ├── system/prefs.plist
-    │       └── terminal/prefs.plist
+    │       ├── terminal/prefs.plist
+    │       ├── webbookmarks/prefs.plist
+    │       └── websearch/prefs.plist
     └── resources/      # Custom web search icons (4 files)
 ```
 
 ## What's Included
 
-**Only custom/personalized configurations** - 12 files, 72KB total.
+**Only custom/personalized configurations** - 14 files, 74KB total.
 
-### Custom Preferences (7 files)
+### Custom Preferences (9 files)
 - **calculator**: Disabled
 - **contacts**: Disabled
 - **clipboard**: Custom hotkey (Cmd+Opt+C), 2-item limit, 3-month persistence
@@ -31,6 +33,12 @@ alfred/
 - **terminal**: WezTerm integration with CLI support
 - **system**: Custom keywords (`et` for empty trash, `lock` for screensaver), volume controls disabled
 - **appearance**: Auto-highlight disabled, hat/menu hidden, custom screen positioning
+- **websearch**: 4 custom web searches
+  - `w` - Weather (Google weather search)
+  - `d` - Search docs (Google Docs)
+  - `cal` - Open calendar (Google Calendar)
+  - `t` - Open twitch (Twitch.tv)
+- **webbookmarks**: Custom keyword `b`, mode 1
 
 ### Custom Resources (4 files)
 - **4 custom web search icons** (Twitch, Calendar, Docs, Weather)
@@ -181,8 +189,8 @@ If still not working, check `alfred/Alfred.alfredpreferences/preferences/feature
 
 ## Notes
 
-- **Total size:** 72KB (12 files)
-- **Only truly custom content:** 7 preference files with your custom settings + 4 web search icons
+- **Total size:** 74KB (14 files)
+- **Only truly custom content:** 9 preference files with your custom settings + 4 web search icons + 1 README
 - **Alfred will apply defaults** for any preferences not included (web searches, file search, dictionary, etc.)
 - **WezTerm integration:** Terminal script uses `wezterm cli send-text` for proper command execution
 - **No symlinks needed:** Alfred's native sync feature handles everything
