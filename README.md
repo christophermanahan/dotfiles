@@ -38,6 +38,7 @@ The result: A development environment where CLI tools aren't separate apps—the
 
 - **Neovim**: CLI-first IDE built on NvChad v2.5 with 8 integrated floating terminals
 - **AeroSpace**: Tiling window manager for macOS with i3-inspired keybindings
+- **SketchyBar**: Custom macOS menu bar with Aerospace workspace integration
 - **Alfred**: Productivity app with custom preferences and workflows
 - **Wezterm**: Smart terminal with custom tab formatting, smart-splits integration, and per-directory tab colors
 - **ZSH**: Vi-mode, autosuggestions, syntax highlighting, FZF integration, and secure secrets management
@@ -64,6 +65,7 @@ The result: A development environment where CLI tools aren't separate apps—the
  - zoxide
  - stow
  - aerospace (tiling window manager)
+ - sketchybar (custom menu bar)
  - alfred (productivity app with Powerpack)
  - wezterm
  - starship
@@ -94,6 +96,7 @@ The result: A development environment where CLI tools aren't separate apps—the
 ```bash
 brew install eza zoxide stow zsh zsh-vi-mode zsh-autosuggestions zsh-syntax-highlighting starship neovim ripgrep tmux k9s lazygit lazydocker git-delta fzf fd bat codex posting awscli e1s
 brew install --cask font-hack-nerd-font wezterm nikitabobko/tap/aerospace alfred
+brew install sketchybar
 
 # Install Claude Code CLI via npm
 npm install -g @anthropic-ai/claude-code
@@ -113,14 +116,15 @@ cd ~/paradiddle
 rm -f ~/.zshrc
 
 # Stow configurations (creates symlinks from repo to home directory)
-stow git      # Deploys to ~/.gitconfig
-stow aerospace
+stow git        # Deploys to ~/.gitconfig
+stow aerospace  # Tiling window manager
+stow sketchybar # Menu bar customization
 stow wezterm
 stow zsh
 stow starship
 stow nvim
 stow tmux
-stow k9s      # Cross-platform: deploys to ~/.config/k9s/ (K9S_CONFIG_DIR enforces XDG)
+stow k9s        # Cross-platform: deploys to ~/.config/k9s/ (K9S_CONFIG_DIR enforces XDG)
 
 # Alfred uses native sync (not stow) - see alfred/README.md
 # Open Alfred Preferences → Advanced → Set preferences folder to ~/paradiddle/alfred/Alfred.alfredpreferences
