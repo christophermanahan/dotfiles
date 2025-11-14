@@ -72,10 +72,12 @@ The result: A development environment where CLI tools aren't separate apps—the
  - ripgrep
  - tmux
  - k9s
+ - lazygit (Git TUI)
  - lazydocker (Docker TUI)
  - fzf (fuzzy finder)
  - fd (find alternative)
  - bat (cat alternative with syntax highlighting)
+ - claude (Claude Code CLI - installed via npm)
  - codex (OpenAI Codex CLI)
  - posting (HTTP API client TUI)
  - e1s (AWS ECS terminal UI)
@@ -90,8 +92,11 @@ The result: A development environment where CLI tools aren't separate apps—the
 ### 1. Install Homebrew dependencies
 
 ```bash
-brew install eza zoxide stow zsh zsh-vi-mode zsh-autosuggestions zsh-syntax-highlighting starship neovim ripgrep tmux k9s lazydocker git-delta fzf fd bat codex posting awscli e1s
+brew install eza zoxide stow zsh zsh-vi-mode zsh-autosuggestions zsh-syntax-highlighting starship neovim ripgrep tmux k9s lazygit lazydocker git-delta fzf fd bat codex posting awscli e1s
 brew install --cask font-hack-nerd-font wezterm nikitabobko/tap/aerospace alfred
+
+# Install Claude Code CLI via npm
+npm install -g @anthropic-ai/claude-code
 ```
 
 ### 2. Clone repository
