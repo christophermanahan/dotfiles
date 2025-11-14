@@ -547,6 +547,96 @@ local function toggle_terminal_group(term_type)
   end
 end
 
+-- ============================================================================
+-- Phase 4: Cycling Mechanism - Navigate between instances
+-- ============================================================================
+
+-- Bring a specific instance to the front (focus)
+-- Uses close/reopen trick since NvChad doesn't support native z-order
+-- term_type: normalized type (e.g., "claude_term")
+-- index: 0-based instance index
+local function focus_instance(term_type, index)
+  local registry = _G.terminal_instances[term_type]
+  if not registry then
+    return
+  end
+
+  local instance = registry.instances[index + 1]  -- Lua is 1-indexed
+  if not instance then
+    return
+  end
+
+  local win, _ = find_term_window(instance.id)
+  if not win then
+    return
+  end
+
+  -- Close and reopen to bring to front (z-order workaround)
+  vim.api.nvim_win_close(win, false)
+
+  vim.defer_fn(function()
+    local offset = calculate_instance_offset(term_type, instance.offset_index)
+    local cfg = get_default_config(term_type)
+    local term = require("nvchad.term")
+
+    term.toggle {
+      pos = "float",
+      id = instance.id,
+      float_opts = {
+        row = offset.row,
+        col = offset.col,
+        width = cfg.width,
+        height = cfg.height,
+        title = cfg.title .. " (" .. (index + 1) .. ")",  -- Show instance number
+        title_pos = "center",
+      }
+    }
+
+    -- Focus the reopened window
+    local new_win, _ = find_term_window(instance.id)
+    if new_win then
+      vim.api.nvim_set_current_win(new_win)
+      vim.cmd("startinsert")
+    end
+  end, 50)
+end
+
+-- Cycle focus between instances of the currently active terminal type
+-- direction: "next" (clockwise) or "prev" (counter-clockwise)
+local function cycle_instance(direction)
+  if not _G.active_terminal_type then
+    vim.notify("No terminal type is currently active", vim.log.levels.WARN)
+    return
+  end
+
+  local term_type = _G.active_terminal_type
+  local registry = _G.terminal_instances[term_type]
+
+  if not registry or #registry.instances <= 1 then
+    -- Nothing to cycle through (0 or 1 instance)
+    return
+  end
+
+  local current_index = registry.focused_index
+  local num_instances = #registry.instances
+
+  -- Calculate next index with wrap-around
+  local next_index
+  if direction == "next" then
+    next_index = (current_index + 1) % num_instances
+  else  -- "prev"
+    next_index = (current_index - 1) % num_instances
+    -- Handle negative wrap-around
+    if next_index < 0 then
+      next_index = num_instances - 1
+    end
+  end
+
+  -- Update focus
+  registry.focused_index = next_index
+  focus_instance(term_type, next_index)
+end
+
 wk.add {
   {
     "<leader>e",
@@ -1268,6 +1358,20 @@ end, { desc = "spawn new posting instance" })
 map({ "n", "t" }, "<leader>ne", function()
   spawn_new_instance("e1sTerm")
 end, { desc = "spawn new e1s instance" })
+
+-- ============================================================================
+-- Cycling Keybindings
+-- ============================================================================
+
+-- ALT+] cycles to next instance (clockwise)
+map({ "n", "t" }, "<A-]>", function()
+  cycle_instance("next")
+end, { desc = "cycle to next terminal instance" })
+
+-- ALT+[ cycles to previous instance (counter-clockwise)
+map({ "n", "t" }, "<A-[>", function()
+  cycle_instance("prev")
+end, { desc = "cycle to previous terminal instance" })
 
 -- ALT+z closes and kills any floating terminal
 -- Note: When in terminal mode with apps like k9s running, press Ctrl+q first to exit terminal mode,
