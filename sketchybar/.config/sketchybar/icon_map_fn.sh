@@ -37,7 +37,7 @@ function icon_map() {
     icon_result="󰍡"
     ;;
   # Productivity
-  "Alfred" | "Alfred 5")
+  "Alfred" | "Alfred 5" | "Alfred Preferences")
     icon_result="󰘧"
     ;;
   "1Password")

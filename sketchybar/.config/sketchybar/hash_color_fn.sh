@@ -4,16 +4,25 @@
 function hash_color() {
   local app_name="$1"
 
+  # Define 7 distinct colors (evenly spread across color wheel)
+  local colors=(
+    "0xffff8888"  # Coral Red
+    "0xffff9d00"  # Bright Orange
+    "0xffffd700"  # Bright Gold
+    "0xff50fa7b"  # Bright Green
+    "0xff5599ff"  # Bright Blue
+    "0xffbb88ff"  # Bright Purple
+    "0xffff69b4"  # Bright Pink
+  )
+
   # Generate hash from app name (use cksum for portability)
   local hash=$(echo -n "$app_name" | cksum | awk '{print $1}')
 
-  # Extract RGB components from hash (ensure good color distribution)
-  local r=$(( (hash >> 16) % 156 + 100 ))  # 100-255 range
-  local g=$(( (hash >> 8) % 156 + 100 ))   # 100-255 range
-  local b=$(( hash % 156 + 100 ))          # 100-255 range
+  # Select color deterministically using modulo
+  local color_index=$((hash % 7))
 
-  # Format as hex color with full opacity
-  printf "0xff%02x%02x%02x" $r $g $b
+  # Return the selected color
+  echo "${colors[$color_index]}"
 }
 
 hash_color "$1"
