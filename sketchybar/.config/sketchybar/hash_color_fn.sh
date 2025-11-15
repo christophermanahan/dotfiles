@@ -4,18 +4,18 @@
 function hash_color() {
   local app_name="$1"
 
-  # Define 10 neon pastel colors
+  # Define 10 distinct neon pastel colors (spread across color wheel)
   local colors=(
-    "0xffff6ec7"  # Neon Pink
-    "0xff8bffa3"  # Neon Mint Green
-    "0xffffb86c"  # Neon Peach
-    "0xff7dd3fc"  # Neon Sky Blue
-    "0xffffa6ff"  # Neon Lavender
-    "0xffffeb3b"  # Neon Lemon
-    "0xffff6b6b"  # Neon Coral
-    "0xff6bffcc"  # Neon Aqua
-    "0xffffaa00"  # Neon Orange
-    "0xffbd93f9"  # Neon Purple
+    "0xffff5555"  # Bright Red
+    "0xffff9d00"  # Bright Orange
+    "0xffffd700"  # Bright Gold
+    "0xff50fa7b"  # Bright Green
+    "0xff00f5ff"  # Bright Cyan
+    "0xff5599ff"  # Bright Blue
+    "0xffbb88ff"  # Bright Purple
+    "0xffff55ff"  # Bright Magenta
+    "0xffaaff00"  # Bright Lime
+    "0xffff69b4"  # Bright Pink
   )
 
   # Generate hash from app name (use cksum for portability)
