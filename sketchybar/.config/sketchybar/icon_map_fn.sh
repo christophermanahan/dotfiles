@@ -20,6 +20,9 @@ function icon_map() {
   "Ladybird")
     icon_result="󰖟"
     ;;
+  "Brave Browser")
+    icon_result="󰊯"
+    ;;
   # Communication
   "Slack")
     icon_result="󰒱"
@@ -36,7 +39,9 @@ function icon_map() {
   "Duo Desktop")
     icon_result="󰍡"
     ;;
-  # Productivity
+  "Live")
+    icon_result="󰽲"
+    ;;
   "Alfred" | "Alfred 5" | "Alfred Preferences")
     icon_result="󰘧"
     ;;
@@ -96,6 +101,9 @@ function icon_map() {
     ;;
   "kindaVim" | "Wooshy" | "Scrolla")
     icon_result="󰘶"
+    ;;
+  "Splice")
+    icon_result="󰎆"
     ;;
   # Default fallback
   *)
